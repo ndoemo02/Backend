@@ -1,0 +1,21 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`order pipeline snapshot > creates a normalized and validated order item snapshot 1`] = `
+{
+  "item": {
+    "category": "Pizza",
+    "name": "Pepperoni",
+    "sizes": [
+      "medium",
+      "large",
+    ],
+  },
+  "message": "Jaki rozmiar pizzy "Pepperoni" wybierasz?",
+  "ok": false,
+  "reason": "missing_size",
+  "suggestions": [
+    "medium",
+    "large",
+  ],
+}
+`;

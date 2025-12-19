@@ -1,0 +1,2493 @@
+request_received
+•
+02:34:29.799
+Input: "Pokaż menu Klaps Burgers"
+response_sent
+•
+02:34:35.917
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "569a7d29-57be-4224-bdf3-09c483415cea"
+  },
+  "reply": "W Klaps Burgers dostępne są m.in.: Desperado Double za 46 zł, Desperado Standard za 36 zł, Głodzilla za 59 zł, Grzybiarz z Piekaryhill za 40 zł, Halloween Double za 49 zł oraz Halloween Standard za 39 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 5232,
+    "nluMs": 1029,
+    "ttsMs": 0,
+    "totalMs": 6777
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+02:34:35.918
+{
+  "reply": "W Klaps Burgers dostępne m.in.: Desperado Double (46.00 zł), Desperado Standard (36.00 zł), Głodzilla (59.00 zł), Grzybiarz z Piekaryhill (40.00 zł), Halloween Double (49.00 zł), Halloween Standard (39.00 zł). Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 1
+}
+response_sent
+•
+02:34:36.103
+{
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T01:34:36.102Z"
+}
+request_received
+•
+02:35:18.477
+Input: "Pokaż menu Stara Kamienica"
+response_sent
+•
+02:35:26.486
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
+  },
+  "reply": "W Restauracji Stara Kamienica dostępne m.in.: \n\n- Filet z kurczaka po hawajsku – 19 zł\n- Filet z kurczaka tradycyjny (panierowany) – 15 zł\n- Fondant czekoladowy z lodami i bitą śmietaną – 22 zł\n- Grillowany filet z kurczaka – 15 zł\n- Gulasz wieprzowy po węgiersku – 23 zł\n- Jajecznica z 2 szt. jaj – 11 zł\n\nCo chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 5827,
+    "nluMs": 2285,
+    "ttsMs": 0,
+    "totalMs": 8474
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+02:35:26.486
+{
+  "reply": "W Restauracja Stara Kamienica dostępne m.in.: Filet z kurczaka po hawajsku (19.00 zł), Filet z kurczaka tradycyjny (panierowany) (15.00 zł), Fondant czekoladowy z lodami i bitą śmietaną (22.00 zł), Grillowany filet z kurczaka (15.00 zł), Gulasz wieprzowy po węgiersku (23.00 zł), Jajecznica z 2 szt. jaj (11.00 zł). Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "llm",
+  "confidence": 0.9
+}
+response_sent
+•
+02:35:26.665
+{
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T01:35:26.665Z"
+}
+request_received
+•
+04:14:04.719
+Input: "co polecisz w Piekarach Śląskich"
+request_received
+•
+04:14:15.045
+Input: "Pokaż trzy restauracje najbliżej"
+intent_resolved
+•
+04:14:20.548
+{
+  "reply": "Znalazłam 9. Oto top 3 propozycje w Piekary Śląskie:\n1. Restauracja Stara Kamienica (Polska)\n2. Rezydencja Luxury Hotel (Międzynarodowa)\n3. Klaps Burgers (Amerykańska)\n\nKtórą wybierasz?",
+  "intent": "show_city_results",
+  "source": "classic",
+  "confidence": 0.9
+}
+request_received
+•
+04:14:44.615
+Input: "Pokaż klaps Burger"
+intent_resolved
+•
+04:14:52.637
+{
+  "reply": "W Klaps Burgers dostępne m.in.: \n\n- Desperado Double (46 zł)\n- Desperado Standard (36 zł)\n- Głodzilla (59 zł)\n- Grzybiarz z Piekaryhill (40 zł)\n- Halloween Double (49 zł)\n- Halloween Standard (39 zł)\n\nCo chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "llm",
+  "confidence": 0.9
+}
+response_sent
+•
+04:14:52.637
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wyraża chęć poszukiwania szczegółów dotyczących restauracji Klaps Burgers, co sugeruje, że chce zobaczyć menu tej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "569a7d29-57be-4224-bdf3-09c483415cea"
+  },
+  "reply": "W Klaps Burgers dostępne m.in.: \n\n- Desperado Double (46 zł)\n- Desperado Standard (36 zł)\n- Głodzilla (59 zł)\n- Grzybiarz z Piekaryhill (40 zł)\n- Halloween Double (49 zł)\n- Halloween Standard (39 zł)\n\nCo chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 6271,
+    "nluMs": 1893,
+    "ttsMs": 0,
+    "totalMs": 8139
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+04:14:52.788
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wyraża chęć poszukiwania szczegółów dotyczących restauracji Klaps Burgers, co sugeruje, że chce zobaczyć menu tej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": "pokaż",
+      "quantity": null,
+      "targetItems": [
+        "klaps burger"
+      ],
+      "isContextLocked": false,
+      "targetRestaurant": {
+        "id": "569a7d29-57be-4224-bdf3-09c483415cea",
+        "name": "Klaps Burgers"
+      }
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T03:14:52.788Z"
+}
+request_received
+•
+04:18:15.598
+Input: "poleć mi stan do zjedzenia w pobliżu"
+intent_resolved
+•
+04:18:21.102
+{
+  "reply": "Mam 3 miejsca w Piekary Śląskie:\n1. Restauracja Stara Kamienica - Polska\n2. Rezydencja Luxury Hotel - Międzynarodowa\n3. Klaps Burgers - Amerykańska\n\nKtóre Cię interesuje?",
+  "intent": "find_nearby",
+  "source": "classic",
+  "confidence": 0.9
+}
+request_received
+•
+04:18:41.930
+Input: "wybieram Stara Kamienica"
+response_sent
+•
+04:18:49.876
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację 'Stara Kamienica', co wskazuje na zamiar przeglądania menu tej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
+  },
+  "reply": "W Restauracji Stara Kamienica dostępne są m.in. Filet z kurczaka po hawajsku za 19 zł, Filet z kurczaka tradycyjny za 15 zł, Fondant czekoladowy z lodami za 22 zł, Grillowany filet z kurczaka za 15 zł, Gulasz wieprzowy po węgiersku za 23 zł oraz Jajecznica za 11 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 7589,
+    "nluMs": 520,
+    "ttsMs": 0,
+    "totalMs": 8228
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+04:18:49.876
+{
+  "reply": "W Restauracji Stara Kamienica dostępne są m.in. Filet z kurczaka po hawajsku za 19 zł, Filet z kurczaka tradycyjny za 15 zł, Fondant czekoladowy z lodami za 22 zł, Grillowany filet z kurczaka za 15 zł, Gulasz wieprzowy po węgiersku za 23 zł oraz Jajecznica za 11 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 1
+}
+response_sent
+•
+04:18:50.000
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację 'Stara Kamienica', co wskazuje na zamiar przeglądania menu tej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "Stara Kamienica"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T03:18:50.000Z"
+}
+request_received
+•
+05:05:30.835
+Input: "Pokaż restauracje w Piekarach"
+request_received
+•
+05:07:29.488
+Input: "Tak"
+intent_resolved
+•
+05:07:34.019
+{
+  "reply": "Znalazłam 9. Oto top 3 propozycje w Piekary:\n1. Restauracja Stara Kamienica (Polska)\n2. Rezydencja Luxury Hotel (Międzynarodowa)\n3. Klaps Burgers (Amerykańska)\n\nKtórą wybierasz?",
+  "intent": "show_city_results",
+  "source": "classic",
+  "confidence": 0.9
+}
+request_received
+•
+05:08:29.553
+Input: "Otwórz City Burger Piekary Śląskie"
+response_sent
+•
+05:08:38.850
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    }
+  },
+  "reply": "Nie znalazłam \"City Burger Piekary Śląskie\", ale mogę pokazać menu z innych restauracji w Piekarach Śląskich. Oto one: Restauracja Stara Kamienica, Rezydencja Luxury Hotel, Klaps Burgers, Vien-Thien, Bar Praha, Callzone, Dwór Hubertus, Tasty King Kebab, Pizzeria Monte Carlo. Którą z nich wybierasz?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 6515,
+    "nluMs": 2773,
+    "ttsMs": 0,
+    "totalMs": 9476
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+05:08:38.852
+{
+  "reply": "Nie znalazłam \"City Burger Piekary Śląskie\", ale mogę pokazać menu z innych restauracji w Piekarach Śląskich. Oto one: Restauracja Stara Kamienica, Rezydencja Luxury Hotel, Klaps Burgers, Vien-Thien, Bar Praha, Callzone, Dwór Hubertus, Tasty King Kebab, Pizzeria Monte Carlo. Którą z nich wybierasz?",
+  "intent": "menu_request",
+  "source": "llm",
+  "confidence": 0.9
+}
+response_sent
+•
+05:08:38.995
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "City Burger Piekary Śląskie"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T04:08:38.995Z"
+}
+request_received
+•
+05:23:14.956
+Input: "co polecisz w okolicy"
+intent_resolved
+•
+05:23:20.568
+{
+  "reply": "Mam 3 miejsca w Piekary:\n1. Restauracja Stara Kamienica - Polska\n2. Rezydencja Luxury Hotel - Międzynarodowa\n3. Klaps Burgers - Amerykańska\n\nKtóre Cię interesuje?",
+  "intent": "find_nearby",
+  "source": "classic",
+  "confidence": 0.9
+}
+request_received
+•
+05:23:31.839
+Input: "Rezydencja Luxury Hotel"
+response_sent
+•
+05:23:37.114
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
+  },
+  "reply": "W Rezydencji Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki marynowanej w grzańcu za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 4755,
+    "nluMs": 755,
+    "ttsMs": 0,
+    "totalMs": 5425
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+05:23:37.115
+{
+  "reply": "W Rezydencji Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki marynowanej w grzańcu za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 1
+}
+response_sent
+•
+05:23:37.286
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "Rezydencja Luxury Hotel"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T04:23:37.286Z"
+}
+request_received
+•
+05:24:04.641
+Input: "wybieram zamka z kluczykiem"
+intent_resolved
+•
+05:24:11.945
+{
+  "reply": "Wybrałaś Rezydencję Luxury Hotel w Piekarach Śląskich. Oto kilka dań z menu: \n\n- Carpaccio z kaczki marynowanej w grzańcu za 36 zł\n- Grzanka z krupniokiem za 28 zł\n- Kartacze z dzikiem za 48 zł\n- Makaron ryżowy z warzywami za 37 zł\n\nCo chciałabyś zamówić?",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 0.9
+}
+response_sent
+•
+05:24:11.945
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
+  },
+  "reply": "Wybrałaś Rezydencję Luxury Hotel w Piekarach Śląskich. Oto kilka dań z menu: \n\n- Carpaccio z kaczki marynowanej w grzańcu za 36 zł\n- Grzanka z krupniokiem za 28 zł\n- Kartacze z dzikiem za 48 zł\n- Makaron ryżowy z warzywami za 37 zł\n\nCo chciałabyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 6880,
+    "nluMs": 423,
+    "ttsMs": 0,
+    "totalMs": 7432
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+05:24:12.111
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "Rezydencja Luxury Hotel"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T04:24:12.111Z"
+}
+request_received
+•
+05:24:36.826
+Input: "Pokaż menu"
+intent_resolved
+•
+05:24:46.879
+{
+  "reply": "W Rezydencji Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni za 35 zł oraz Makaron ryżowy za 37 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 0.9
+}
+response_sent
+•
+05:24:46.879
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik prosi o pokazanie menu, co jest zgodne z jego intencją.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
+  },
+  "reply": "W Rezydencji Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni za 35 zł oraz Makaron ryżowy za 37 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 9439,
+    "nluMs": 744,
+    "ttsMs": 0,
+    "totalMs": 10228
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+05:24:47.052
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik prosi o pokazanie menu, co jest zgodne z jego intencją.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "Rezydencja Luxury Hotel"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T04:24:47.052Z"
+}
+request_received
+•
+05:25:08.391
+Input: "co polecisz w okolicy"
+intent_resolved
+•
+05:25:12.483
+{
+  "reply": "Mam 3 miejsca w Piekary:\n1. Restauracja Stara Kamienica - Polska\n2. Rezydencja Luxury Hotel - Międzynarodowa\n3. Klaps Burgers - Amerykańska\n\nKtóre Cię interesuje?",
+  "intent": "find_nearby",
+  "source": "classic",
+  "confidence": 0.9
+}
+request_received
+•
+05:25:29.481
+Input: "wybieram klaps Burger"
+response_sent
+•
+05:25:37.117
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik chce wybrać klaps Burger, który jest dostępny w restauracji Klaps Burgers, a system oczekuje na wybór restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "569a7d29-57be-4224-bdf3-09c483415cea"
+  },
+  "reply": "W Klaps Burgers dostępne są następujące burgerowe propozycje: \n\n- Desperado Double za 46 zł\n- Desperado Standard za 36 zł\n- Głodzilla za 59 zł\n- Grzybiarz z Piekaryhill za 40 zł\n- Halloween Double za 49 zł\n- Halloween Standard za 39 zł\n\nCo chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 7183,
+    "nluMs": 557,
+    "ttsMs": 0,
+    "totalMs": 7809
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+05:25:37.118
+{
+  "reply": "W Klaps Burgers dostępne są następujące burgerowe propozycje: \n\n- Desperado Double za 46 zł\n- Desperado Standard za 36 zł\n- Głodzilla za 59 zł\n- Grzybiarz z Piekaryhill za 40 zł\n- Halloween Double za 49 zł\n- Halloween Standard za 39 zł\n\nCo chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 1
+}
+response_sent
+•
+05:25:37.290
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik chce wybrać klaps Burger, który jest dostępny w restauracji Klaps Burgers, a system oczekuje na wybór restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": [
+        "klaps burger"
+      ],
+      "isContextLocked": false,
+      "targetRestaurant": "Rezydencja Luxury Hotel"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T04:25:37.290Z"
+}
+request_received
+•
+05:26:06.500
+Input: "wybieram Halloween standard"
+intent_resolved
+•
+05:26:13.347
+{
+  "reply": "Wygląda na to, że \"Halloween Standard\" nie jest dostępne w menu Klaps Burgers. Mogę pomóc w złożeniu zamówienia na inne danie. Czy chcesz zobaczyć ich menu?",
+  "intent": "create_order",
+  "source": "classic",
+  "confidence": 0.85
+}
+response_sent
+•
+05:26:13.347
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "Wybrano complete_order ponieważ użytkownik wskazał konkretną pozycję z menu ('Halloween Standard') oraz ostatni kontekst wskazuje na zamówienie z restauracji Klaps Burgers.",
+      "searchMenu": false,
+      "completeOrder": true,
+      "askClarification": false,
+      "searchRestaurants": false
+    }
+  },
+  "reply": "Wygląda na to, że \"Halloween Standard\" nie jest dostępne w menu Klaps Burgers. Mogę pomóc w złożeniu zamówienia na inne danie. Czy chcesz zobaczyć ich menu?",
+  "intent": "create_order",
+  "timings": {
+    "dbMs": 6087,
+    "nluMs": 756,
+    "ttsMs": 0,
+    "totalMs": 6981
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+05:26:13.521
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "Wybrano complete_order ponieważ użytkownik wskazał konkretną pozycję z menu ('Halloween Standard') oraz ostatni kontekst wskazuje na zamówienie z restauracji Klaps Burgers.",
+      "searchMenu": false,
+      "completeOrder": true,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": [
+        "halloeen standard"
+      ],
+      "isContextLocked": false,
+      "targetRestaurant": "Klaps Burgers"
+    }
+  },
+  "intent": "create_order",
+  "timestamp": "2025-12-18T04:26:13.521Z"
+}
+request_received
+•
+05:26:37.464
+Input: "wybieram Stara Kamienica"
+intent_resolved
+•
+05:26:46.340
+{
+  "reply": "W Restauracji Stara Kamienica dostępne m.in. Filet z kurczaka po hawajsku za 19 zł, Filet z kurczaka tradycyjny za 15 zł, Fondant czekoladowy za 22 zł, Grillowany filet z kurczaka za 15 zł, Gulasz wieprzowy za 23 zł oraz Jajecznica za 11 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "llm",
+  "confidence": 0.9
+}
+response_sent
+•
+05:26:46.340
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację 'Stara Kamienica', więc konieczne jest wyszukiwanie menu tej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
+  },
+  "reply": "W Restauracji Stara Kamienica dostępne m.in. Filet z kurczaka po hawajsku za 19 zł, Filet z kurczaka tradycyjny za 15 zł, Fondant czekoladowy za 22 zł, Grillowany filet z kurczaka za 15 zł, Gulasz wieprzowy za 23 zł oraz Jajecznica za 11 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 7121,
+    "nluMs": 1913,
+    "ttsMs": 0,
+    "totalMs": 9045
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+05:26:46.523
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację 'Stara Kamienica', więc konieczne jest wyszukiwanie menu tej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "Stara Kamienica"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T04:26:46.523Z"
+}
+request_received
+•
+05:27:26.099
+Input: "wybieram filet z kurczaka po hawajsku"
+intent_resolved
+•
+05:27:31.360
+{
+  "reply": "Nie znalazłam \"filetu z kurczaka po hawajsku\", ale w Restauracji Stara Kamienica możesz spróbować podobnych dań, jak filet z kurczaka tradycyjny, grillowany filet z kurczaka lub gulasz wieprzowy. Chcesz zobaczyć pełne menu?",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 0.85
+}
+response_sent
+•
+05:27:31.360
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
+  },
+  "reply": "Nie znalazłam \"filetu z kurczaka po hawajsku\", ale w Restauracji Stara Kamienica możesz spróbować podobnych dań, jak filet z kurczaka tradycyjny, grillowany filet z kurczaka lub gulasz wieprzowy. Chcesz zobaczyć pełne menu?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 4661,
+    "nluMs": 598,
+    "ttsMs": 0,
+    "totalMs": 5366
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+05:27:31.600
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": 1,
+      "targetItems": [
+        "filet z kurczaka po haajsk"
+      ],
+      "isContextLocked": false,
+      "targetRestaurant": "Restauracja Stara Kamienica"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T04:27:31.600Z"
+}
+request_received
+•
+05:27:50.100
+Input: "filet z kurczaka po hawajsku"
+response_sent
+•
+05:27:56.347
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
+  },
+  "reply": "Nie znalazłam \"kurczaka po hawajsku\", ale w Restauracji Stara Kamienica w Piekarach Śląskich mam dla Ciebie filet z kurczaka po hawajsku. To danie główne zawiera filet, ananasa, ser, sos, ziemniaki i surówkę, w cenie 19 zł. Czy chcesz złożyć zamówienie lub potrzebujesz więcej informacji?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 5877,
+    "nluMs": 368,
+    "ttsMs": 0,
+    "totalMs": 6425
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+05:27:56.347
+{
+  "reply": "Nie znalazłam \"kurczaka po hawajsku\", ale w Restauracji Stara Kamienica w Piekarach Śląskich mam dla Ciebie filet z kurczaka po hawajsku. To danie główne zawiera filet, ananasa, ser, sos, ziemniaki i surówkę, w cenie 19 zł. Czy chcesz złożyć zamówienie lub potrzebujesz więcej informacji?",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 0.85
+}
+response_sent
+•
+05:27:56.508
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": 1,
+      "targetItems": [
+        "filet z kurczaka po haajsk"
+      ],
+      "isContextLocked": false,
+      "targetRestaurant": "Restauracja Stara Kamienica"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T04:27:56.508Z"
+}
+request_received
+•
+05:42:40.966
+Input: "Pokaż trzy restauracje w pobliżu"
+intent_resolved
+•
+05:42:45.081
+{
+  "reply": "",
+  "intent": "find_nearby",
+  "source": "classic",
+  "confidence": 0.9
+}
+request_received
+•
+05:42:52.443
+Input: "Pokaż trzy restauracje w Piekarach Śląskich"
+request_received
+•
+05:46:58.274
+Input: "Poleć czy restauracje w pobliżu"
+intent_resolved
+•
+05:47:02.824
+{
+  "reply": "",
+  "intent": "find_nearby",
+  "source": "classic",
+  "confidence": 0.9
+}
+request_received
+•
+05:47:08.992
+Input: "Pokaż trzy restauracje w Piekarach"
+intent_resolved
+•
+05:47:09.106
+{
+  "reply": "Znalazłam 9 restauracji w lokalizacji Piekary. Czy chcesz zobaczyć konkretne propozycje?",
+  "intent": "find_nearby",
+  "source": "geo_context",
+  "confidence": 0.95
+}
+response_sent
+•
+05:47:09.223
+{
+  "meta": {
+    "count": 9,
+    "location": "Piekary"
+  },
+  "reply": "Znalazłam 9 restauracji w lokalizacji Piekary. Czy chcesz zobaczyć konkretne propozycje?",
+  "intent": "find_nearby_confirmation",
+  "timestamp": "2025-12-18T04:47:09.222Z"
+}
+request_received
+•
+05:47:16.735
+Input: "Pokaż czym restauracje w Piekarach Śląskich"
+intent_resolved
+•
+05:47:17.068
+{
+  "reply": "Znalazłam 9 restauracji w lokalizacji Piekary Śląskie. Czy chcesz zobaczyć konkretne propozycje?",
+  "intent": "find_nearby",
+  "source": "geo_context",
+  "confidence": 0.95
+}
+response_sent
+•
+05:47:17.238
+{
+  "meta": {
+    "count": 9,
+    "location": "Piekary Śląskie"
+  },
+  "reply": "Znalazłam 9 restauracji w lokalizacji Piekary Śląskie. Czy chcesz zobaczyć konkretne propozycje?",
+  "intent": "find_nearby_confirmation",
+  "timestamp": "2025-12-18T04:47:17.238Z"
+}
+request_received
+•
+05:47:20.994
+Input: "gdzie zjem w pobliżu"
+intent_resolved
+•
+05:47:25.543
+{
+  "reply": "Mam 3 miejsca w Piekary Śląskie:\n1. Restauracja Stara Kamienica - Polska\n2. Rezydencja Luxury Hotel - Międzynarodowa\n3. Klaps Burgers - Amerykańska\n\nKtóre Cię interesuje?",
+  "intent": "find_nearby",
+  "source": "classic",
+  "confidence": 1
+}
+request_received
+•
+05:47:45.365
+Input: "wybieram klaps Burger"
+response_sent
+•
+05:47:51.830
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wyraźnie wskazuje na chęć zamówienia z restauracji Klaps Burgers, co wymaga przeszukania menu tej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "569a7d29-57be-4224-bdf3-09c483415cea"
+  },
+  "reply": "W Klaps Burgers dostępne są m.in. takie burgery jak: Desperado Double za 46 zł, Desperado Standard za 36 zł, Głodzilla za 59 zł, Grzybiarz z Piekaryhill za 40 zł, Halloween Double za 49 zł oraz Halloween Standard za 39 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 5868,
+    "nluMs": 761,
+    "ttsMs": 0,
+    "totalMs": 6568
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+05:47:51.831
+{
+  "reply": "W Klaps Burgers dostępne są m.in. takie burgery jak: Desperado Double za 46 zł, Desperado Standard za 36 zł, Głodzilla za 59 zł, Grzybiarz z Piekaryhill za 40 zł, Halloween Double za 49 zł oraz Halloween Standard za 39 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 1
+}
+response_sent
+•
+05:47:51.993
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wyraźnie wskazuje na chęć zamówienia z restauracji Klaps Burgers, co wymaga przeszukania menu tej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "klaps Burger"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T04:47:51.993Z"
+}
+request_received
+•
+05:48:20.121
+Input: "wybieram Desperado standard"
+response_sent
+•
+05:48:25.112
+{
+  "meta": {
+    "reasoning": null
+  },
+  "reply": "Przykro mi, ale nie znalazłem dania \"Desperado Standard\" w menu restauracji Klaps Burgers. Mogę pokazać dostępne pozycje z menu. Chcesz zobaczyć, co oferują?",
+  "intent": "create_order",
+  "timings": {
+    "dbMs": 4213,
+    "nluMs": 773,
+    "ttsMs": 0,
+    "totalMs": 5168
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+05:48:25.113
+{
+  "reply": "Przykro mi, ale nie znalazłem dania \"Desperado Standard\" w menu restauracji Klaps Burgers. Mogę pokazać dostępne pozycje z menu. Chcesz zobaczyć, co oferują?",
+  "intent": "create_order",
+  "source": "classic",
+  "confidence": 0.85
+}
+response_sent
+•
+05:48:25.279
+{
+  "meta": {
+    "llm_refinement": {
+      "action": "order",
+      "quantity": 1,
+      "targetItems": [
+        "despera standard"
+      ],
+      "isContextLocked": false,
+      "targetRestaurant": "Klaps Burgers"
+    }
+  },
+  "intent": "create_order",
+  "timestamp": "2025-12-18T04:48:25.278Z"
+}
+request_received
+•
+06:36:29.471
+Input: "Poleć trzy miejsca w Piekarach Śląskich"
+intent_resolved
+•
+06:36:29.735
+{
+  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
+  "intent": "find_nearby",
+  "source": "geo_context",
+  "confidence": 0.95
+}
+response_sent
+•
+06:36:29.903
+{
+  "meta": {
+    "count": 9,
+    "location": "Piekary Śląskie"
+  },
+  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
+  "intent": "find_nearby",
+  "timestamp": "2025-12-18T05:36:29.903Z"
+}
+request_received
+•
+06:36:47.403
+Input: "wybieram Stara Kamienica"
+response_sent
+•
+06:36:49.888
+{
+  "meta": {
+    "reasoning": null,
+    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
+  },
+  "reply": "Wybrano restaurację Stara Kamienica. Chcesz zobaczyć menu?",
+  "intent": "select_restaurant",
+  "timings": {
+    "dbMs": 1322,
+    "nluMs": 1157,
+    "ttsMs": 0,
+    "totalMs": 2665
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+06:36:49.888
+{
+  "reply": "Wybrano restaurację Stara Kamienica. Chcesz zobaczyć menu?",
+  "intent": "select_restaurant",
+  "source": "classic",
+  "confidence": 1
+}
+response_sent
+•
+06:36:50.053
+{
+  "meta": {
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": true,
+      "targetRestaurant": {
+        "id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd",
+        "name": "Restauracja Stara Kamienica"
+      }
+    }
+  },
+  "intent": "select_restaurant",
+  "timestamp": "2025-12-18T05:36:50.053Z"
+}
+request_received
+•
+06:37:10.377
+Input: "tak Pokaż menu stare Kamienica"
+response_sent
+•
+06:37:14.493
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
+  },
+  "reply": "Oto menu Restauracji Stara Kamienica. Wybierz danie, które Cię interesuje, a ja podam szczegóły!",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 3601,
+    "nluMs": 512,
+    "ttsMs": 0,
+    "totalMs": 4218
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+06:37:14.493
+{
+  "reply": "Oto menu Restauracji Stara Kamienica. Wybierz danie, które Cię interesuje, a ja podam szczegóły!",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 1
+}
+response_sent
+•
+06:37:14.663
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "Restauracja Stara Kamienica"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T05:37:14.663Z"
+}
+request_received
+•
+06:37:30.916
+Input: "Pokaż menu Stara Kamienica"
+intent_resolved
+•
+06:37:38.602
+{
+  "reply": "W Restauracji Stara Kamienica dostępne są m.in.: \n\n- Filet z kurczaka po hawajsku – 19 zł\n- Filet z kurczaka tradycyjny (panierowany) – 15 zł\n- Fondant czekoladowy z lodami i bitą śmietaną – 22 zł\n- Grillowany filet z kurczaka – 15 zł\n- Gulasz wieprzowy po węgiersku – 23 zł\n- Jajecznica z 2 szt. jaj – 11 zł\n\nCo chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "llm",
+  "confidence": 0.9
+}
+response_sent
+•
+06:37:38.602
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
+  },
+  "reply": "W Restauracji Stara Kamienica dostępne są m.in.: \n\n- Filet z kurczaka po hawajsku – 19 zł\n- Filet z kurczaka tradycyjny (panierowany) – 15 zł\n- Fondant czekoladowy z lodami i bitą śmietaną – 22 zł\n- Grillowany filet z kurczaka – 15 zł\n- Gulasz wieprzowy po węgiersku – 23 zł\n- Jajecznica z 2 szt. jaj – 11 zł\n\nCo chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 5545,
+    "nluMs": 2308,
+    "ttsMs": 0,
+    "totalMs": 7884
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+06:37:38.706
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "Restauracja Stara Kamienica"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T05:37:38.706Z"
+}
+request_received
+•
+06:37:54.332
+Input: "filet z kurczaka po hawajsku"
+intent_resolved
+•
+06:37:58.243
+{
+  "reply": "Wybrałaś Restaurację Starą Kamienicę. Zamówienie na filet z kurczaka po hawajsku jest możliwe. Chcesz dodać jeszcze coś z menu, czy to wystarczy?",
+  "intent": "create_order",
+  "source": "classic",
+  "confidence": 0.85
+}
+response_sent
+•
+06:37:58.243
+{
+  "meta": {
+    "reasoning": null
+  },
+  "reply": "Wybrałaś Restaurację Starą Kamienicę. Zamówienie na filet z kurczaka po hawajsku jest możliwe. Chcesz dodać jeszcze coś z menu, czy to wystarczy?",
+  "intent": "create_order",
+  "timings": {
+    "dbMs": 3391,
+    "nluMs": 517,
+    "ttsMs": 0,
+    "totalMs": 4101
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+06:37:58.369
+{
+  "meta": {
+    "llm_refinement": {
+      "action": null,
+      "quantity": 1,
+      "targetItems": [
+        "filet z kurczaka po haajsk"
+      ],
+      "isContextLocked": false,
+      "targetRestaurant": "Restauracja Stara Kamienica"
+    }
+  },
+  "intent": "create_order",
+  "timestamp": "2025-12-18T05:37:58.368Z"
+}
+request_received
+•
+06:39:05.853
+Input: "Poleć 3 najlepsze restauracje w okolicy"
+intent_resolved
+•
+06:39:11.944
+{
+  "reply": "Mam 3 miejsca w Piekary Śląskie:\n1. Restauracja Stara Kamienica - Polska\n2. Rezydencja Luxury Hotel - Międzynarodowa\n3. Klaps Burgers - Amerykańska\n\nKtóre Cię interesuje?",
+  "intent": "find_nearby",
+  "source": "classic",
+  "confidence": 0.9
+}
+request_received
+•
+06:39:32.071
+Input: "wybieram Rezydencja Luxury"
+intent_resolved
+•
+06:39:33.863
+{
+  "reply": "Wybrano restaurację Rezydencja Luxury Hotel. Chcesz zobaczyć menu?",
+  "intent": "select_restaurant",
+  "source": "classic",
+  "confidence": 1
+}
+response_sent
+•
+06:39:33.863
+{
+  "meta": {
+    "reasoning": null,
+    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
+  },
+  "reply": "Wybrano restaurację Rezydencja Luxury Hotel. Chcesz zobaczyć menu?",
+  "intent": "select_restaurant",
+  "timings": {
+    "dbMs": 1217,
+    "nluMs": 572,
+    "ttsMs": 0,
+    "totalMs": 1904
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+06:39:33.968
+{
+  "meta": {
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": true,
+      "targetRestaurant": {
+        "id": "4d27fbe3-20d0-4eb4-b003-1935be53af25",
+        "name": "Rezydencja Luxury Hotel"
+      }
+    }
+  },
+  "intent": "select_restaurant",
+  "timestamp": "2025-12-18T05:39:33.968Z"
+}
+request_received
+•
+06:39:45.084
+Input: "tak Pokaż menu Rezydencja Luxury hotel"
+response_sent
+•
+06:39:50.546
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
+  },
+  "reply": "W Rezydencja Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki marynowanej w grzańcu za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 4882,
+    "nluMs": 691,
+    "ttsMs": 0,
+    "totalMs": 5626
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+06:39:50.546
+{
+  "reply": "W Rezydencja Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki marynowanej w grzańcu za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 1
+}
+response_sent
+•
+06:39:50.707
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "Rezydencja Luxury Hotel"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T05:39:50.707Z"
+}
+request_received
+•
+06:39:55.546
+Input: "prezydencja Raczyńska to jest dostępny Empik"
+intent_resolved
+•
+06:40:03.157
+{
+  "reply": "W Rezydencji Luxury Hotel dostępne m.in. BUFFAL za 54 zł, Carpaccio z kaczki marynowanej za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 0.9
+}
+response_sent
+•
+06:40:03.157
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik chce wyjaśnić szczegóły zamówienia, a ostatni kontekst wskazuje na żądanie menu dla restauracji 'Rezydencja Luxury Hotel'.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
+  },
+  "reply": "W Rezydencji Luxury Hotel dostępne m.in. BUFFAL za 54 zł, Carpaccio z kaczki marynowanej za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 7170,
+    "nluMs": 595,
+    "ttsMs": 0,
+    "totalMs": 7741
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+06:40:03.249
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik chce wyjaśnić szczegóły zamówienia, a ostatni kontekst wskazuje na żądanie menu dla restauracji 'Rezydencja Luxury Hotel'.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "Rezydencja Luxury Hotel"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T05:40:03.249Z"
+}
+request_received
+•
+06:40:31.980
+Input: "wybieram grzanka z krupniokiem"
+intent_resolved
+•
+06:40:36.213
+{
+  "reply": "W restauracji Rezydencja Luxury Hotel nie ma grzanki z krupniokiem w menu. Mogę zaproponować inne dania lub sprawdzić inne dostępne opcje. Co byś chciał zamówić?",
+  "intent": "create_order",
+  "source": "classic",
+  "confidence": 0.85
+}
+response_sent
+•
+06:40:36.213
+{
+  "meta": {
+    "reasoning": null
+  },
+  "reply": "W restauracji Rezydencja Luxury Hotel nie ma grzanki z krupniokiem w menu. Mogę zaproponować inne dania lub sprawdzić inne dostępne opcje. Co byś chciał zamówić?",
+  "intent": "create_order",
+  "timings": {
+    "dbMs": 3859,
+    "nluMs": 372,
+    "ttsMs": 0,
+    "totalMs": 4325
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+06:40:36.309
+{
+  "meta": {
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": [
+        "grzanka z krpniokiem"
+      ],
+      "isContextLocked": false,
+      "targetRestaurant": "Rezydencja Luxury Hotel"
+    }
+  },
+  "intent": "create_order",
+  "timestamp": "2025-12-18T05:40:36.309Z"
+}
+request_received
+•
+06:40:53.398
+Input: "wybieram Rezydencja Luxury hotel"
+intent_resolved
+•
+06:40:59.701
+{
+  "reply": "W Rezydencji Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki marynowanej w grzańcu za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "llm",
+  "confidence": 0.9
+}
+response_sent
+•
+06:40:59.701
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
+  },
+  "reply": "W Rezydencji Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki marynowanej w grzańcu za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 4946,
+    "nluMs": 1507,
+    "ttsMs": 0,
+    "totalMs": 6409
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+06:40:59.799
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "Rezydencja Luxury Hotel"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T05:40:59.799Z"
+}
+request_received
+•
+06:41:34.573
+Input: "carpaccio z kaczki marynowanej w grzańca"
+response_sent
+•
+06:41:38.919
+{
+  "meta": {
+    "reasoning": null
+  },
+  "reply": "W Rezydencji Luxury Hotel nie znalazłam pozycji \"Carpaccio z kaczki marynowanej w grzańcu\" w menu. Mogę jednak pokazać inne dostępne dania. Chcesz zobaczyć menu tej restauracji?",
+  "intent": "create_order",
+  "timings": {
+    "dbMs": 4022,
+    "nluMs": 322,
+    "ttsMs": 0,
+    "totalMs": 4452
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+06:41:38.920
+{
+  "reply": "W Rezydencji Luxury Hotel nie znalazłam pozycji \"Carpaccio z kaczki marynowanej w grzańcu\" w menu. Mogę jednak pokazać inne dostępne dania. Chcesz zobaczyć menu tej restauracji?",
+  "intent": "create_order",
+  "source": "classic",
+  "confidence": 0.85
+}
+response_sent
+•
+06:41:39.035
+{
+  "meta": {
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": [
+        "carpaccio z kaczki marynowanej",
+        "grzańca"
+      ],
+      "isContextLocked": false,
+      "targetRestaurant": "Rezydencja Luxury Hotel"
+    }
+  },
+  "intent": "create_order",
+  "timestamp": "2025-12-18T05:41:39.035Z"
+}
+request_received
+•
+06:47:44.124
+Input: "Poleć trzy miejsca w pobliżu"
+intent_resolved
+•
+06:47:49.250
+{
+  "reply": "",
+  "intent": "find_nearby",
+  "source": "classic",
+  "confidence": 0.85
+}
+request_received
+•
+06:47:54.621
+Input: "Podaj trzy restauracje w pobliżu"
+intent_resolved
+•
+06:47:58.651
+{
+  "reply": "",
+  "intent": "find_nearby",
+  "source": "classic",
+  "confidence": 0.9
+}
+request_received
+•
+06:48:11.441
+Input: "Poleć trzy restauracje w Piekarach Śląskich"
+intent_resolved
+•
+06:48:11.604
+{
+  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
+  "intent": "find_nearby",
+  "source": "geo_context",
+  "confidence": 0.95
+}
+response_sent
+•
+06:48:11.776
+{
+  "meta": {
+    "count": 9,
+    "location": "Piekary Śląskie"
+  },
+  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
+  "intent": "find_nearby",
+  "timestamp": "2025-12-18T05:48:11.776Z"
+}
+request_received
+•
+06:48:18.894
+Input: "Restauracja Stara Kamienica"
+response_sent
+•
+06:48:26.113
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "Użytkownik wyraził zamiar wybrania restauracji 'Restauracja Stara Kamienica', która została wymieniona w dostępnej liście restauracji. Dlatego wybrano akcję 'search_menu', aby wyszukać menu tej konkretnej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    }
+  },
+  "reply": "Niestety, nie mogę teraz pobrać menu z Restauracji Stara Kamienica. Sprawdź połączenie z serwerem lub spróbuj ponownie później.",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 6455,
+    "nluMs": 857,
+    "ttsMs": 0,
+    "totalMs": 7398
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+06:48:26.114
+{
+  "reply": "Niestety, nie mogę teraz pobrać menu z Restauracji Stara Kamienica. Sprawdź połączenie z serwerem lub spróbuj ponownie później.",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 1
+}
+response_sent
+•
+06:48:26.388
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "Użytkownik wyraził zamiar wybrania restauracji 'Restauracja Stara Kamienica', która została wymieniona w dostępnej liście restauracji. Dlatego wybrano akcję 'search_menu', aby wyszukać menu tej konkretnej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "stara kamienica"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T05:48:26.387Z"
+}
+request_received
+•
+06:49:10.502
+Input: "gdzie VIN w Piekarach Śląskich"
+intent_resolved
+•
+06:49:10.503
+{
+  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
+  "intent": "find_nearby",
+  "source": "geo_context",
+  "confidence": 0.95
+}
+response_sent
+•
+06:49:10.623
+{
+  "meta": {
+    "count": 9,
+    "location": "Piekary Śląskie"
+  },
+  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
+  "intent": "find_nearby",
+  "timestamp": "2025-12-18T05:49:10.623Z"
+}
+request_received
+•
+06:49:24.177
+Input: "wybieram Rezydencja Luxury hotel"
+intent_resolved
+•
+06:49:25.985
+{
+  "reply": "Wybrano restaurację Rezydencja Luxury Hotel. Chcesz zobaczyć menu?",
+  "intent": "select_restaurant",
+  "source": "classic",
+  "confidence": 1
+}
+response_sent
+•
+06:49:25.985
+{
+  "meta": {
+    "reasoning": null,
+    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
+  },
+  "reply": "Wybrano restaurację Rezydencja Luxury Hotel. Chcesz zobaczyć menu?",
+  "intent": "select_restaurant",
+  "timings": {
+    "dbMs": 1223,
+    "nluMs": 583,
+    "ttsMs": 0,
+    "totalMs": 1932
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+06:49:26.094
+{
+  "meta": {
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": true,
+      "targetRestaurant": {
+        "id": "4d27fbe3-20d0-4eb4-b003-1935be53af25",
+        "name": "Rezydencja Luxury Hotel"
+      }
+    }
+  },
+  "intent": "select_restaurant",
+  "timestamp": "2025-12-18T05:49:26.094Z"
+}
+request_received
+•
+06:49:34.192
+Input: "tak Pokaż menu"
+response_sent
+•
+06:49:40.792
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wykazał zamiar pokazania menu konkretniej restauracji (Rezydencja Luxury Hotel) po wcześniejszym wyborze tej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
+  },
+  "reply": "W Rezydencja Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 6412,
+    "nluMs": 348,
+    "ttsMs": 0,
+    "totalMs": 6791
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+06:49:40.792
+{
+  "reply": "W Rezydencja Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 0.9
+}
+response_sent
+•
+06:49:41.064
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wykazał zamiar pokazania menu konkretniej restauracji (Rezydencja Luxury Hotel) po wcześniejszym wyborze tej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "Rezydencja Luxury Hotel"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T05:49:41.064Z"
+}
+request_received
+•
+06:49:51.354
+Input: "grzanka z krupniokiem"
+intent_resolved
+•
+06:49:55.844
+{
+  "reply": "Nie znalazłam pozycji „Grzanka z krupniokiem” w menu Rezydencji Luxury Hotel. Chcesz, żebym pokazała inne dostępne dania w tej restauracji?",
+  "intent": "create_order",
+  "source": "classic",
+  "confidence": 0.85
+}
+response_sent
+•
+06:49:55.844
+{
+  "meta": {
+    "reasoning": null
+  },
+  "reply": "Nie znalazłam pozycji „Grzanka z krupniokiem” w menu Rezydencji Luxury Hotel. Chcesz, żebym pokazała inne dostępne dania w tej restauracji?",
+  "intent": "create_order",
+  "timings": {
+    "dbMs": 3981,
+    "nluMs": 507,
+    "ttsMs": 0,
+    "totalMs": 4668
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+06:49:55.952
+{
+  "meta": {
+    "llm_refinement": {
+      "action": "order",
+      "quantity": 1,
+      "targetItems": [
+        "grzanka z krpniokiem"
+      ],
+      "isContextLocked": false,
+      "targetRestaurant": "Rezydencja Luxury Hotel"
+    }
+  },
+  "intent": "create_order",
+  "timestamp": "2025-12-18T05:49:55.952Z"
+}
+request_received
+•
+15:04:22.379
+Input: "Poleć restauracje w pobliżu"
+intent_resolved
+•
+15:04:28.675
+{
+  "reply": "",
+  "intent": "find_nearby",
+  "source": "classic",
+  "confidence": 0.85
+}
+request_received
+•
+15:04:47.801
+Input: "wybieram klaps Burger"
+intent_resolved
+•
+15:04:55.908
+{
+  "reply": "Niestety, nie mogę pobrać danych z menu Klaps Burgers. Sprawdź połączenie z serwerem. Jeśli potrzebujesz pomocy, daj mi znać!",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 1
+}
+response_sent
+•
+15:04:55.908
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał, że chce zamówić 'Klaps Burger', a system powinien teraz wyszukać menu tej konkretnej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    }
+  },
+  "reply": "Niestety, nie mogę pobrać danych z menu Klaps Burgers. Sprawdź połączenie z serwerem. Jeśli potrzebujesz pomocy, daj mi znać!",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 7985,
+    "nluMs": 633,
+    "ttsMs": 0,
+    "totalMs": 8635
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+15:04:56.010
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał, że chce zamówić 'Klaps Burger', a system powinien teraz wyszukać menu tej konkretnej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "klaps burger"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T14:04:56.010Z"
+}
+request_received
+•
+15:20:06.098
+Input: "Rezydencja Luxury Hotel"
+intent_resolved
+•
+15:20:14.846
+{
+  "reply": "Przykro mi, ale nie mogę pobrać menu z restauracji Rezydencja Luxury Hotel. Sprawdź proszę połączenie z serwerem, lub spróbuj później.",
+  "intent": "menu_request",
+  "source": "llm",
+  "confidence": 0.8
+}
+response_sent
+•
+15:20:14.846
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    }
+  },
+  "reply": "Przykro mi, ale nie mogę pobrać menu z restauracji Rezydencja Luxury Hotel. Sprawdź proszę połączenie z serwerem, lub spróbuj później.",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 5077,
+    "nluMs": 4034,
+    "ttsMs": 0,
+    "totalMs": 9309
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+15:20:14.971
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "rezydencja lxry hotel"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T14:20:14.971Z"
+}
+request_received
+•
+15:20:59.157
+Input: "gdzie zjem w pobliżu"
+intent_resolved
+•
+15:21:05.262
+{
+  "reply": "",
+  "intent": "find_nearby",
+  "source": "llm",
+  "confidence": 0.9
+}
+request_received
+•
+15:21:31.983
+Input: "Poleć trzy miejsca w Piekarach Śląskich"
+intent_resolved
+•
+15:21:32.284
+{
+  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
+  "intent": "find_nearby",
+  "source": "geo_context",
+  "confidence": 0.95
+}
+response_sent
+•
+15:21:32.421
+{
+  "meta": {
+    "count": 9,
+    "location": "Piekary Śląskie"
+  },
+  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
+  "intent": "find_nearby",
+  "timestamp": "2025-12-18T14:21:32.421Z"
+}
+request_received
+•
+15:21:39.901
+Input: "Restauracja Stara Kamienica"
+intent_resolved
+•
+15:21:45.950
+{
+  "reply": "Oto menu Restauracji Stara Kamienica. Proszę chwilę poczekać, a ja postaram się je pobrać.",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 1
+}
+response_sent
+•
+15:21:45.950
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wyraził chęć wybrania restauracji Stara Kamienica, a kontekst sesji wskazuje, że chce kontynuować z menu tej konkretniej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    }
+  },
+  "reply": "Oto menu Restauracji Stara Kamienica. Proszę chwilę poczekać, a ja postaram się je pobrać.",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 5726,
+    "nluMs": 502,
+    "ttsMs": 0,
+    "totalMs": 6177
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+15:21:46.095
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wyraził chęć wybrania restauracji Stara Kamienica, a kontekst sesji wskazuje, że chce kontynuować z menu tej konkretniej restauracji.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "stara kamienica"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T14:21:46.095Z"
+}
+request_received
+•
+15:22:40.318
+Input: "Pokaż trzy restauracje w Piekarach"
+intent_resolved
+•
+15:22:40.736
+{
+  "reply": "Oto 9 restauracji w lokalizacji Piekary:",
+  "intent": "find_nearby",
+  "source": "geo_context",
+  "confidence": 0.95
+}
+response_sent
+•
+15:22:40.907
+{
+  "meta": {
+    "count": 9,
+    "location": "Piekary"
+  },
+  "reply": "Oto 9 restauracji w lokalizacji Piekary:",
+  "intent": "find_nearby",
+  "timestamp": "2025-12-18T14:22:40.907Z"
+}
+request_received
+•
+15:22:49.056
+Input: "Restauracja Stara Kamienica"
+response_sent
+•
+15:22:55.878
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację 'Restauracja Stara Kamienica', co sugeruje, że chce zobaczyć jej menu.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    }
+  },
+  "reply": "Niestety, nie mogę pobrać menu Restauracji Stara Kamienica w tej chwili. Proszę sprawdzić połączenie z serwerem. W razie potrzeby mogę pomóc w inny sposób.",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 6420,
+    "nluMs": 572,
+    "ttsMs": 0,
+    "totalMs": 6998
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+intent_resolved
+•
+15:22:55.879
+{
+  "reply": "Niestety, nie mogę pobrać menu Restauracji Stara Kamienica w tej chwili. Proszę sprawdzić połączenie z serwerem. W razie potrzeby mogę pomóc w inny sposób.",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 1
+}
+response_sent
+•
+15:22:56.029
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację 'Restauracja Stara Kamienica', co sugeruje, że chce zobaczyć jej menu.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "stara kamienica"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T14:22:56.029Z"
+}
+request_received
+•
+15:23:51.380
+Input: "Pokaż menu klaps Burger"
+intent_resolved
+•
+15:23:58.764
+{
+  "reply": "W Klaps Burgers dostępne m.in.: \n\n- Desperado Double – 46 zł\n- Desperado Standard – 36 zł\n- Głodzilla – 59 zł\n- Grzybiarz z Piekaryhill – 40 zł\n- Halloween Double – 49 zł\n- Halloween Standard – 39 zł\n\nCo chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "llm",
+  "confidence": 0.9
+}
+response_sent
+•
+15:23:58.764
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "569a7d29-57be-4224-bdf3-09c483415cea"
+  },
+  "reply": "W Klaps Burgers dostępne m.in.: \n\n- Desperado Double – 46 zł\n- Desperado Standard – 36 zł\n- Głodzilla – 59 zł\n- Grzybiarz z Piekaryhill – 40 zł\n- Halloween Double – 49 zł\n- Halloween Standard – 39 zł\n\nCo chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 4947,
+    "nluMs": 2544,
+    "ttsMs": 0,
+    "totalMs": 7499
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+15:23:58.936
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": [
+        "klaps brger"
+      ],
+      "isContextLocked": false,
+      "targetRestaurant": "stara kamienica"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T14:23:58.936Z"
+}
+request_received
+•
+15:24:17.915
+Input: "Poproszę Desperado Double"
+intent_resolved
+•
+15:24:22.087
+{
+  "reply": "Rozumiem: 1x Desperado Double za 46 zł. Dodać do koszyka?",
+  "intent": "create_order",
+  "source": "classic",
+  "confidence": 0.85
+}
+response_sent
+•
+15:24:22.087
+{
+  "meta": {
+    "reasoning": null
+  },
+  "reply": "Rozumiem: 1x Desperado Double za 46 zł. Dodać do koszyka?",
+  "intent": "create_order",
+  "timings": {
+    "dbMs": 3512,
+    "nluMs": 657,
+    "ttsMs": 0,
+    "totalMs": 4503
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+15:24:22.263
+{
+  "meta": {
+    "llm_refinement": {
+      "action": "order",
+      "quantity": 1,
+      "targetItems": [
+        "despera ble"
+      ],
+      "isContextLocked": false,
+      "targetRestaurant": "Klaps Burgers"
+    }
+  },
+  "intent": "create_order",
+  "timestamp": "2025-12-18T14:24:22.263Z"
+}
+request_received
+•
+15:44:42.391
+Input: "Poleć trzy miejsca w okolicy"
+intent_resolved
+•
+15:44:47.243
+{
+  "reply": "Mam 3 miejsca w Piekary:\n1. Restauracja Stara Kamienica - Polska\n2. Rezydencja Luxury Hotel - Międzynarodowa\n3. Klaps Burgers - Amerykańska\n\nKtóre Cię interesuje?",
+  "intent": "find_nearby",
+  "source": "classic",
+  "confidence": 0.85
+}
+request_received
+•
+15:45:06.039
+Input: "która"
+request_received
+•
+15:45:22.452
+Input: "wybieram restauracja Stara Kamienica"
+intent_resolved
+•
+15:45:31.473
+{
+  "reply": "W Restauracji Stara Kamienica dostępne m.in.: \n\n- Filet z kurczaka po hawajsku - 19 zł\n- Filet z kurczaka tradycyjny (panierowany) - 15 zł\n- Fondant czekoladowy z lodami i bitą śmietaną - 22 zł\n- Grillowany filet z kurczaka - 15 zł\n- Gulasz wieprzowy po węgiersku - 23 zł\n- Jajecznica z 2 szt. jaj - 11 zł\n\nCo chciałbyś zamówić?",
+  "intent": "menu_request",
+  "source": "classic",
+  "confidence": 1
+}
+response_sent
+•
+15:45:31.473
+{
+  "meta": {
+    "reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację, dla której chcemy teraz wyszukać menu.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
+  },
+  "reply": "W Restauracji Stara Kamienica dostępne m.in.: \n\n- Filet z kurczaka po hawajsku - 19 zł\n- Filet z kurczaka tradycyjny (panierowany) - 15 zł\n- Fondant czekoladowy z lodami i bitą śmietaną - 22 zł\n- Grillowany filet z kurczaka - 15 zł\n- Gulasz wieprzowy po węgiersku - 23 zł\n- Jajecznica z 2 szt. jaj - 11 zł\n\nCo chciałbyś zamówić?",
+  "intent": "menu_request",
+  "timings": {
+    "dbMs": 8251,
+    "nluMs": 903,
+    "ttsMs": 0,
+    "totalMs": 9414
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+15:45:31.655
+{
+  "meta": {
+    "llm_reasoning": {
+      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację, dla której chcemy teraz wyszukać menu.",
+      "searchMenu": true,
+      "completeOrder": false,
+      "askClarification": false,
+      "searchRestaurants": false
+    },
+    "llm_refinement": {
+      "action": null,
+      "quantity": null,
+      "targetItems": null,
+      "isContextLocked": false,
+      "targetRestaurant": "stara kamienica"
+    }
+  },
+  "intent": "menu_request",
+  "timestamp": "2025-12-18T14:45:31.655Z"
+}
+request_received
+•
+15:46:12.593
+Input: "filet z kurczaka po hawajsku proszę"
+intent_resolved
+•
+15:46:18.147
+{
+  "reply": "Rozumiem, chcesz zamówić filet z kurczaka po hawajsku w Restauracji Stara Kamienica. Obecnie w koszyku masz 1x Hawajska za 32 zł i 1x Pollo za 34 zł, razem 66 zł. Czy dodać filet z kurczaka po hawajsku do koszyka?",
+  "intent": "create_order",
+  "source": "classic",
+  "confidence": 0.85
+}
+response_sent
+•
+15:46:18.147
+{
+  "meta": {
+    "reasoning": null
+  },
+  "reply": "Rozumiem, chcesz zamówić filet z kurczaka po hawajsku w Restauracji Stara Kamienica. Obecnie w koszyku masz 1x Hawajska za 32 zł i 1x Pollo za 34 zł, razem 66 zł. Czy dodać filet z kurczaka po hawajsku do koszyka?",
+  "intent": "create_order",
+  "timings": {
+    "dbMs": 4939,
+    "nluMs": 613,
+    "ttsMs": 0,
+    "totalMs": 5953
+  },
+  "fallback": false,
+  "confidence": 0.9
+}
+response_sent
+•
+15:46:18.317
+{
+  "meta": {
+    "llm_refinement": {
+      "action": null,
+      "quantity": 1,
+      "targetItems": [
+        "filet z kurczaka po haajsku"
+      ],
+      "isContextLocked": false,
+      "targetRestaurant": "Restauracja Stara Kamienica"
+    }
+  },
+  "intent": "create_order",
+  "timestamp": "2025-12-18T14:46:18.317Z"
+}

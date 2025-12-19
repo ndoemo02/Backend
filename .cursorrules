@@ -1,0 +1,29 @@
+# 🎯 FreeFlow Cursor AI Rules
+version: 1
+
+providers:
+  default: gpt-4o
+  backend: gpt-5
+  ui: gpt-4o
+  tests: claude-3.5-sonnet
+
+rules:
+  - match: "api/brain/**"
+    provider: gpt-5
+    reasoning: "Deep logical flow & session context handling for Amber Brain."
+  
+  - match: "api/**"
+    provider: gpt-4o
+    reasoning: "Standard API routes – balance speed and accuracy."
+
+  - match: "frontend/src/**"
+    provider: gpt-4o
+    reasoning: "Frontend, React and GSAP animations – smooth conversational flow."
+
+  - match: "tests/**"
+    provider: claude-3.5-sonnet
+    reasoning: "Long contextual reasoning, multi-step validation."
+
+  - match: "scripts/**"
+    provider: gpt-4o-mini
+    reasoning: "Fast CLI or automation patching."

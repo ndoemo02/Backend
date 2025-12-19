@@ -1,0 +1,1367 @@
+﻿
+ RUN  v1.6.1 C:/Freeflow (Cursor vers. GITHUB)/freeflow-backend
+
+stdout | api\brain\supabaseClient.js:13:11
+­čîŹ Loaded .env from: C:\Freeflow (Cursor vers. GITHUB)\freeflow-backend\.env
+
+stdout | api\brain\supabaseClient.js:35:11
+Ôťů Supabase client initialized (singleton mode)
+
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should find restaurants in the city directly
+[brainRouter] ­čÜÇ Handler called
+[Supabase] Creating client with URL: https://ezemaacyyvbpjlagchds.supabase.co
+
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should find restaurants in the city directly
+­čžá [DEBUG] Handler called with: {
+  sessionId: [32m'test_mc_std_1766057660360'[39m,
+  text: [32m'Gdzie mog─Ö zje┼Ť─ç w Piekarach ┼Ül─ůskich?'[39m,
+  method: [32m'POST'[39m,
+  body: {
+    sessionId: [32m'test_mc_std_1766057660360'[39m,
+    text: [32m'Gdzie mog─Ö zje┼Ť─ç w Piekarach ┼Ül─ůskich?'[39m,
+    lat: [33m50.37[39m,
+    lng: [33m18.94[39m
+  },
+  hasText: [33mtrue[39m,
+  textLength: [33m38[39m
+}
+­čžá [DEBUG] Current session state: {
+  sessionId: [32m'test_mc_std_1766057660360'[39m,
+  session: {
+    expectedContext: [32m'neutral'[39m,
+    lastIntent: [1mnull[22m,
+    lastRestaurant: [1mnull[22m,
+    lastRestaurantsList: [],
+    lastRestaurants: [],
+    lastRestaurantsTimestamp: [1mnull[22m,
+    lastMenu: [],
+    locationOverride: [1mnull[22m,
+    history: []
+  },
+  hasExpectedContext: [33mtrue[39m,
+  expectedContextValue: [32m'neutral'[39m,
+  hasLastRestaurant: [33mfalse[39m,
+  lastRestaurantName: [90mundefined[39m,
+  hasLastLocation: [33mfalse[39m,
+  lastLocation: [90mundefined[39m,
+  hasPendingOrder: [33mfalse[39m,
+  lastIntent: [1mnull[22m,
+  sessionKeys: [
+    [32m'expectedContext'[39m,
+    [32m'lastIntent'[39m,
+    [32m'lastRestaurant'[39m,
+    [32m'lastRestaurantsList'[39m,
+    [32m'lastRestaurants'[39m,
+    [32m'lastRestaurantsTimestamp'[39m,
+    [32m'lastMenu'[39m,
+    [32m'locationOverride'[39m,
+    [32m'history'[39m
+  ]
+}
+­čžş GeoContext Layer activated for: "Piekary ┼Ül─ůskie"
+
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should find restaurants in the city directly
+­čŚ║´ŞĆ Found 9 restaurants in "Piekary ┼Ül─ůskie"
+­čĺż Cache SAVED for location: "Piekary ┼Ül─ůskie"
+­čÜÇ GeoContext: Direct request detected -> Skipping confirmation
+
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should show the menu for Pizzeria Monte Carlo
+[brainRouter] ­čÜÇ Handler called
+
+ ├Ś api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should find restaurants in the city directly 726ms
+   Ôćĺ expected 'Oto 9 restauracji w lokalizacji PiekaÔÇŽ' to match /Pizzeria Monte Carlo/i
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should show the menu for Pizzeria Monte Carlo
+­čžá [DEBUG] Handler called with: {
+  sessionId: [32m'test_mc_std_1766057660360'[39m,
+  text: [32m'Poka┼╝ menu Pizzeria Monte Carlo'[39m,
+  method: [32m'POST'[39m,
+  body: {
+    sessionId: [32m'test_mc_std_1766057660360'[39m,
+    text: [32m'Poka┼╝ menu Pizzeria Monte Carlo'[39m,
+    lat: [33m50.37[39m,
+    lng: [33m18.94[39m
+  },
+  hasText: [33mtrue[39m,
+  textLength: [33m31[39m
+}
+­čžá [DEBUG] Current session state: {
+  sessionId: [32m'test_mc_std_1766057660360'[39m,
+  session: {
+    expectedContext: [32m'select_restaurant'[39m,
+    lastIntent: [32m'find_nearby'[39m,
+    lastRestaurant: [1mnull[22m,
+    lastRestaurantsList: [],
+    lastRestaurants: [],
+    lastRestaurantsTimestamp: [1mnull[22m,
+    lastMenu: [],
+    locationOverride: [1mnull[22m,
+    history: [],
+    locationCache: { [32m'piekary ┼Ťl─ůskie_all'[39m: [36m[Object][39m },
+    last_location: [32m'Piekary ┼Ül─ůskie'[39m,
+    lastUpdated: [33m1766057661075[39m,
+    last_restaurants_list: [
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m
+    ]
+  },
+  hasExpectedContext: [33mtrue[39m,
+  expectedContextValue: [32m'select_restaurant'[39m,
+  hasLastRestaurant: [33mfalse[39m,
+  lastRestaurantName: [90mundefined[39m,
+  hasLastLocation: [33mtrue[39m,
+  lastLocation: [32m'Piekary ┼Ül─ůskie'[39m,
+  hasPendingOrder: [33mfalse[39m,
+  lastIntent: [32m'find_nearby'[39m,
+  sessionKeys: [
+    [32m'expectedContext'[39m,
+    [32m'lastIntent'[39m,
+    [32m'lastRestaurant'[39m,
+    [32m'lastRestaurantsList'[39m,
+    [32m'lastRestaurants'[39m,
+    [32m'lastRestaurantsTimestamp'[39m,
+    [32m'lastMenu'[39m,
+    [32m'locationOverride'[39m,
+    [32m'history'[39m,
+    [32m'locationCache'[39m,
+    [32m'last_location'[39m,
+    [32m'lastUpdated'[39m,
+    [32m'last_restaurants_list'[39m
+  ]
+}
+[brainRouter] ­čžá Calling detectIntent with: {
+  text: [32m'Poka┼╝ menu Pizzeria Monte Carlo'[39m,
+  sessionId: [32m'test_mc_std_1766057660360'[39m
+}
+[brainRouter] ­čžá Current session: {
+  expectedContext: [32m'select_restaurant'[39m,
+  lastIntent: [32m'find_nearby'[39m,
+  lastRestaurant: [1mnull[22m,
+  lastRestaurantsList: [],
+  lastRestaurants: [],
+  lastRestaurantsTimestamp: [1mnull[22m,
+  lastMenu: [],
+  locationOverride: [1mnull[22m,
+  history: [],
+  locationCache: {
+    [32m'piekary ┼Ťl─ůskie_all'[39m: { data: [36m[Array][39m, timestamp: [33m1766057660849[39m }
+  },
+  last_location: [32m'Piekary ┼Ül─ůskie'[39m,
+  lastUpdated: [33m1766057661075[39m,
+  last_restaurants_list: [
+    {
+      id: [32m'1fc1e782-bac6-47b2-978a-f6f2b38000cd'[39m,
+      name: [32m'Restauracja Stara Kamienica'[39m,
+      address: [32m'ul. Bytomska 61'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Polska'[39m,
+      lat: [33m50.3856[39m,
+      lng: [33m18.94886[39m
+    },
+    {
+      id: [32m'4d27fbe3-20d0-4eb4-b003-1935be53af25'[39m,
+      name: [32m'Rezydencja Luxury Hotel'[39m,
+      address: [32m'ul. Stara 1'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Mi─Ödzynarodowa'[39m,
+      lat: [33m50.39352[39m,
+      lng: [33m18.94742[39m
+    },
+    {
+      id: [32m'569a7d29-57be-4224-bdf3-09c483415cea'[39m,
+      name: [32m'Klaps Burgers'[39m,
+      address: [32m'ul. Piotra Skargi 15'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Ameryka┼äska'[39m,
+      lat: [33m50.38643[39m,
+      lng: [33m18.95422[39m
+    },
+    {
+      id: [32m'70842598-1632-43f6-8015-706d5adf182f'[39m,
+      name: [32m'Vien-Thien'[39m,
+      address: [32m'ul. Diamentowa 4'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Wietnamska'[39m,
+      lat: [33m50.39883[39m,
+      lng: [33m18.95574[39m
+    },
+    {
+      id: [32m'8b00b05e-72f7-4a5f-b50c-5630a75d6312'[39m,
+      name: [32m'Bar Praha'[39m,
+      address: [32m'ul. Bytomska 139'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Czeska / Polska'[39m,
+      lat: [33m50.38807[39m,
+      lng: [33m18.93657[39m
+    },
+    {
+      id: [32m'bd9f2244-7618-4071-aa96-52616a7b4c70'[39m,
+      name: [32m'Callzone'[39m,
+      address: [32m'ul. Ksi─Ödza Piotra Skargi 3'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Pizzeria'[39m,
+      lat: [33m50.38594[39m,
+      lng: [33m18.95647[39m
+    },
+    {
+      id: [32m'af8448ef-974b-46c8-a4ae-b04b8dc7c9f8'[39m,
+      name: [32m'Dw├│r Hubertus'[39m,
+      address: [32m'ul. Inwalid├│w Wojennych 72'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'┼Ül─ůska / Europejska'[39m,
+      lat: [33m50.39233[39m,
+      lng: [33m18.94243[39m
+    },
+    {
+      id: [32m'fc844513-2869-4f42-b04f-c21e1e4cceb7'[39m,
+      name: [32m'Tasty King Kebab'[39m,
+      address: [32m'ul. Bytomska 70'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Kebab'[39m,
+      lat: [33m50.38587[39m,
+      lng: [33m18.94712[39m
+    },
+    {
+      id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Pizzeria Monte Carlo'[39m,
+      address: [32m'Ul. Stanis┼éawa Maczka 22'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [1mnull[22m,
+      lat: [1mnull[22m,
+      lng: [1mnull[22m
+    }
+  ]
+}
+­čöČ Starting Smart Intent Layer...
+[intent-router] ­čÜÇ detectIntent called with: { text: [32m'Poka┼╝ menu Pizzeria Monte Carlo'[39m, sessionId: [90mundefined[39m }
+[intent-router] ­čöŹ Starting early dish detection for text: Poka┼╝ menu Pizzeria Monte Carlo
+[intent-router] ­čöŹ Normalized text: poka┼╝ menu pizzeria monte carlo
+[intent-router] ­čöŹ Session restaurant: NONE
+[intent-router] ­čöŹ Restaurant indicators in text: true
+[intent-router] ­čöŹ Searching for restaurant in text (reason: no session restaurant)
+
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should show the menu for Pizzeria Monte Carlo
+[intent-router] ­čöŹ Checking 9 restaurants for fuzzy match
+[intent-router] ­čĆ¬ Restaurant detected in text (exact): Pizzeria Monte Carlo
+[loadMenuCatalog] ­čöŹ Session: {
+  lastRestaurant: {
+    id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+    name: [32m'Pizzeria Monte Carlo'[39m
+  }
+}
+[loadMenuCatalog] ­čöŹ lastRestaurant: {
+  id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+  name: [32m'Pizzeria Monte Carlo'[39m
+}
+[loadMenuCatalog] ­čöŹ lastId: 83566974-1017-4408-90ee-2571ccc06978
+[loadMenuCatalog] Ôťů Loading menu for restaurant: 83566974-1017-4408-90ee-2571ccc06978 (Pizzeria Monte Carlo)
+
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should show the menu for Pizzeria Monte Carlo
+[loadMenuCatalog] Ôťů Loaded 21 menu items from 1 restaurants
+[loadMenuCatalog] Ôťů Sample items: Hawajska, Coca-Cola, Coca-Cola Zero
+[intent-router] Catalog loaded: 21 items
+[intent-router] ­čöŹ Calling parseOrderItems...
+[intent-router] ­čöŹ Catalog items: Hawajska, Coca-Cola, Coca-Cola Zero, Fanta Pomara┼äczowa, Sprite, Cappy Jab┼éko, Cappy Pomara┼äcza, Woda Mineralna, Tiramisu, Panna Cotta, Brownie, Lody waniliowe z sosem karmelowym, Margherita, Capricciosa, Diavola, Quattro Formaggi, Vegetariana, Prosciutto e Funghi, Salami, Pollo, Spinaci
+[parseOrderItems] ­čôŐ Summary:
+  - requestedNames: []
+  - availableNames: []
+  - unavailableNames: []
+  - matched.length: 0
+  - clarifications.length: 0
+[intent-router] Ôťů Parsed result: {
+  "any": false,
+  "groups": [],
+  "clarify": [],
+  "available": [],
+  "unavailable": [
+    "poka┼╝ menu pizzeria monte carlo"
+  ],
+  "needsClarification": true,
+  "unknownItems": [
+    {
+      "name": "poka┼╝ menu pizzeria monte carlo",
+      "reason": "no_alias_match"
+    }
+  ]
+}
+[intent-router] ­čöŹ parsed.any = false
+[intent-router] ­čöŹ parsed.groups.length = 0
+ÔÜá´ŞĆ Unavailable items detected: poka┼╝ menu pizzeria monte carlo in tym menu
+­čöŹ Checking if text contains restaurant name (using cached list): "poka┼╝ menu pizzeria monte carlo"
+Ôťů Text contains restaurant name: Pizzeria Monte Carlo ÔÇö skipping clarify_order
+[intent-router] ÔŁî No dishes matched in catalog (parsed.any = false)
+[intent-router] ÔŁî Continuing to KROK 4 (targetRestaurant check)...
+
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should show the menu for Pizzeria Monte Carlo
+[intent-router] ­čöŹ KROK 4: Checking targetRestaurant: {
+  id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+  name: [32m'Pizzeria Monte Carlo'[39m
+}
+[intent-router] ­čĆ¬ KROK 4: Restaurant found in early detection: Pizzeria Monte Carlo, checking keywords...
+[intent-router] ­čöŹ KROK 4: Lower text: "pokaz menu pizzeria monte carlo"
+[intent-router] ­čöŹ KROK 4: Menu keywords: [
+  [32m'menu'[39m,             [32m'co moge zjesc'[39m,
+  [32m'co maja'[39m,          [32m'pokaz menu'[39m,
+  [32m'poka┼╝ menu'[39m,       [32m'co jest w menu'[39m,
+  [32m'dania'[39m,            [32m'potrawy'[39m,
+  [32m'co serwuja'[39m,       [32m'co podaja'[39m,
+  [32m'karta dan'[39m,        [32m'karta da┼ä'[39m,
+  [32m'co jest dostepne'[39m, [32m'co dostepne'[39m,
+  [32m'co maja w menu'[39m
+]
+[intent-router] ­čöŹ KROK 4: Order keywords: [
+  [32m'zamow'[39m,
+  [32m'poprosze'[39m,
+  [32m'prosze'[39m,
+  [32m'chce zamowic'[39m,
+  [32m'zloz zamowienie'[39m,
+  [32m'zamowic cos'[39m,
+  [32m'dodaj do zamowienia'[39m,
+  [32m'zloz'[39m,
+  [32m'wybieram'[39m,
+  [32m'biore'[39m,
+  [32m'wezme'[39m,
+  [32m'chce'[39m,
+  [32m'chc─Ö'[39m
+]
+[intent-router] ÔÜá´ŞĆ KROK 4: Menu keyword found, returning menu_request
+[intent-router] ÔÜá´ŞĆ KROK 4: This may override create_order from KROK 2!
+­čöŹ Debug session updated: {
+  intent: [32m'menu_request'[39m,
+  restaurant: [32m'Pizzeria Monte Carlo'[39m,
+  sessionId: [1mnull[22m,
+  confidence: [33m0.9[39m
+}
+Ôťů SmartIntent Resolved: menu_request (0.00) via classic
+­čžá [DEBUG] Hybrid intent detection complete: {
+  ruleIntent: [32m'menu_request'[39m,
+  ruleConfidence: [33m0[39m,
+  llmIntent: [1mnull[22m,
+  llmConfidence: [33m0[39m,
+  finalIntent: [32m'menu_request'[39m,
+  finalConfidence: [33m0[39m,
+  source: [32m'classic'[39m,
+  hasRestaurant: [33mtrue[39m,
+  restaurantName: [32m'Pizzeria Monte Carlo'[39m,
+  hasParsedOrder: [33mfalse[39m,
+  parsedOrderDetails: [1mnull[22m
+}
+­čžá [DEBUG] Calling boostIntent with: {
+  text: [32m'Poka┼╝ menu Pizzeria Monte Carlo'[39m,
+  hybridIntent: [32m'menu_request'[39m,
+  confidence: [33m0[39m,
+  session: {
+    expectedContext: [32m'select_restaurant'[39m,
+    lastRestaurant: [90mundefined[39m,
+    lastIntent: [32m'find_nearby'[39m
+  }
+}
+­čžá [DEBUG] boostIntent result: {
+  originalIntent: [32m'menu_request'[39m,
+  boostedIntent: [32m'menu_request'[39m,
+  isContextLocked: [33mfalse[39m
+}
+­čôő Parsed: { dish: [1mnull[22m, restaurant: [32m'Monte Carlo'[39m }
+­čžá menu_request intent detected
+
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should show the menu for Pizzeria Monte Carlo
+Ôťů Matched restaurant: "Monte Carlo" Ôćĺ Pizzeria Monte Carlo
+Ôťů Restaurant set: Pizzeria Monte Carlo
+
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should show the menu for Pizzeria Monte Carlo
+Ôťů Menu loaded: 21 items (showing 6) from Pizzeria Monte Carlo
+ÔÜá´ŞĆ Skipping LLM reply generation (test mode or no key), using replyCore
+Ôťů Final response: intent=menu_request, confidence=0.9, fallback=false
+­čôŽ Final Response Preparation: MenuItems count = 6
+
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should add Margherita to cart
+[brainRouter] ­čÜÇ Handler called
+
+ Ôťô api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should show the menu for Pizzeria Monte Carlo 968ms
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should add Margherita to cart
+­čžá [DEBUG] Handler called with: {
+  sessionId: [32m'test_mc_std_1766057660360'[39m,
+  text: [32m'Poprosz─Ö jedn─ů pizz─Ö Margherita'[39m,
+  method: [32m'POST'[39m,
+  body: {
+    sessionId: [32m'test_mc_std_1766057660360'[39m,
+    text: [32m'Poprosz─Ö jedn─ů pizz─Ö Margherita'[39m,
+    lat: [33m50.37[39m,
+    lng: [33m18.94[39m
+  },
+  hasText: [33mtrue[39m,
+  textLength: [33m31[39m
+}
+­čžá [DEBUG] Current session state: {
+  sessionId: [32m'test_mc_std_1766057660360'[39m,
+  session: {
+    expectedContext: [1mnull[22m,
+    lastIntent: [32m'menu_request'[39m,
+    lastRestaurant: {
+      id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Pizzeria Monte Carlo'[39m,
+      address: [32m'Ul. Stanis┼éawa Maczka 22'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      lat: [1mnull[22m,
+      lng: [1mnull[22m
+    },
+    lastRestaurantsList: [],
+    lastRestaurants: [],
+    lastRestaurantsTimestamp: [1mnull[22m,
+    lastMenu: [],
+    locationOverride: [1mnull[22m,
+    history: [],
+    locationCache: { [32m'piekary ┼Ťl─ůskie_all'[39m: [36m[Object][39m },
+    last_location: [32m'Piekary ┼Ül─ůskie'[39m,
+    lastUpdated: [33m1766057661840[39m,
+    last_restaurants_list: [
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m
+    ],
+    last_menu: [ [36m[Object][39m, [36m[Object][39m, [36m[Object][39m, [36m[Object][39m, [36m[Object][39m, [36m[Object][39m ]
+  },
+  hasExpectedContext: [33mfalse[39m,
+  expectedContextValue: [1mnull[22m,
+  hasLastRestaurant: [33mtrue[39m,
+  lastRestaurantName: [32m'Pizzeria Monte Carlo'[39m,
+  hasLastLocation: [33mtrue[39m,
+  lastLocation: [32m'Piekary ┼Ül─ůskie'[39m,
+  hasPendingOrder: [33mfalse[39m,
+  lastIntent: [32m'menu_request'[39m,
+  sessionKeys: [
+    [32m'expectedContext'[39m,
+    [32m'lastIntent'[39m,
+    [32m'lastRestaurant'[39m,
+    [32m'lastRestaurantsList'[39m,
+    [32m'lastRestaurants'[39m,
+    [32m'lastRestaurantsTimestamp'[39m,
+    [32m'lastMenu'[39m,
+    [32m'locationOverride'[39m,
+    [32m'history'[39m,
+    [32m'locationCache'[39m,
+    [32m'last_location'[39m,
+    [32m'lastUpdated'[39m,
+    [32m'last_restaurants_list'[39m,
+    [32m'last_menu'[39m
+  ]
+}
+­čžş GeoContext Layer activated for: "Margherita"
+
+node.exe : stderr | api/brai
+n/tests/monteCarlo_std.e2e.t
+est.js > Monte Carlo E2E Tes
+t (Standard Flow) > should a
+dd Margherita to cart
+At C:\Users\frees\AppData\Ro
+aming\npm\npx.ps1:24 char:5
++     & "node$exe"  "$basedi
+r/node_modules/npm/bin/npx-c
+li.js" $args
++     ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~
+    + CategoryInfo          
+    : NotSpecified: (stder  
+  r | api/br...gherita to   
+  cart:String) [], Remot    
+eException
+    + FullyQualifiedErrorId 
+    : NativeCommandError
+ 
+ÔÜÖ´ŞĆ GeoContext: brak wyni
+k├│w w "Margherita"
+ÔÜÖ´ŞĆ GeoContext: brak wyni
+k├│w w "Margherita" ÔÇö kont
+ynuuj normalny flow
+
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should add Margherita to cart
+[brainRouter] ­čžá Calling detectIntent with: {
+  text: [32m'Poprosz─Ö jedn─ů pizz─Ö Margherita'[39m,
+  sessionId: [32m'test_mc_std_1766057660360'[39m
+}
+[brainRouter] ­čžá Current session: {
+  expectedContext: [1mnull[22m,
+  lastIntent: [32m'menu_request'[39m,
+  lastRestaurant: {
+    id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+    name: [32m'Pizzeria Monte Carlo'[39m,
+    address: [32m'Ul. Stanis┼éawa Maczka 22'[39m,
+    city: [32m'Piekary ┼Ül─ůskie'[39m,
+    lat: [1mnull[22m,
+    lng: [1mnull[22m
+  },
+  lastRestaurantsList: [],
+  lastRestaurants: [],
+  lastRestaurantsTimestamp: [1mnull[22m,
+  lastMenu: [],
+  locationOverride: [1mnull[22m,
+  history: [],
+  locationCache: {
+    [32m'piekary ┼Ťl─ůskie_all'[39m: { data: [36m[Array][39m, timestamp: [33m1766057660849[39m }
+  },
+  last_location: [32m'Piekary ┼Ül─ůskie'[39m,
+  lastUpdated: [33m1766057661840[39m,
+  last_restaurants_list: [
+    {
+      id: [32m'1fc1e782-bac6-47b2-978a-f6f2b38000cd'[39m,
+      name: [32m'Restauracja Stara Kamienica'[39m,
+      address: [32m'ul. Bytomska 61'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Polska'[39m,
+      lat: [33m50.3856[39m,
+      lng: [33m18.94886[39m
+    },
+    {
+      id: [32m'4d27fbe3-20d0-4eb4-b003-1935be53af25'[39m,
+      name: [32m'Rezydencja Luxury Hotel'[39m,
+      address: [32m'ul. Stara 1'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Mi─Ödzynarodowa'[39m,
+      lat: [33m50.39352[39m,
+      lng: [33m18.94742[39m
+    },
+    {
+      id: [32m'569a7d29-57be-4224-bdf3-09c483415cea'[39m,
+      name: [32m'Klaps Burgers'[39m,
+      address: [32m'ul. Piotra Skargi 15'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Ameryka┼äska'[39m,
+      lat: [33m50.38643[39m,
+      lng: [33m18.95422[39m
+    },
+    {
+      id: [32m'70842598-1632-43f6-8015-706d5adf182f'[39m,
+      name: [32m'Vien-Thien'[39m,
+      address: [32m'ul. Diamentowa 4'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Wietnamska'[39m,
+      lat: [33m50.39883[39m,
+      lng: [33m18.95574[39m
+    },
+    {
+      id: [32m'8b00b05e-72f7-4a5f-b50c-5630a75d6312'[39m,
+      name: [32m'Bar Praha'[39m,
+      address: [32m'ul. Bytomska 139'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Czeska / Polska'[39m,
+      lat: [33m50.38807[39m,
+      lng: [33m18.93657[39m
+    },
+    {
+      id: [32m'bd9f2244-7618-4071-aa96-52616a7b4c70'[39m,
+      name: [32m'Callzone'[39m,
+      address: [32m'ul. Ksi─Ödza Piotra Skargi 3'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Pizzeria'[39m,
+      lat: [33m50.38594[39m,
+      lng: [33m18.95647[39m
+    },
+    {
+      id: [32m'af8448ef-974b-46c8-a4ae-b04b8dc7c9f8'[39m,
+      name: [32m'Dw├│r Hubertus'[39m,
+      address: [32m'ul. Inwalid├│w Wojennych 72'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'┼Ül─ůska / Europejska'[39m,
+      lat: [33m50.39233[39m,
+      lng: [33m18.94243[39m
+    },
+    {
+      id: [32m'fc844513-2869-4f42-b04f-c21e1e4cceb7'[39m,
+      name: [32m'Tasty King Kebab'[39m,
+      address: [32m'ul. Bytomska 70'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Kebab'[39m,
+      lat: [33m50.38587[39m,
+      lng: [33m18.94712[39m
+    },
+    {
+      id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Pizzeria Monte Carlo'[39m,
+      address: [32m'Ul. Stanis┼éawa Maczka 22'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [1mnull[22m,
+      lat: [1mnull[22m,
+      lng: [1mnull[22m
+    }
+  ],
+  last_menu: [
+    {
+      id: [32m'e472c234-04d2-4872-a635-761f00f9853c'[39m,
+      restaurant_id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Brownie'[39m,
+      description: [32m'Czekoladowe ciasto z orzechami w┼éoskimi'[39m,
+      category: [32m'Deser'[39m,
+      base_type: [1mnull[22m,
+      meat_type: [1mnull[22m,
+      size_or_variant: [1mnull[22m,
+      price_pln: [33m14[39m,
+      spicy: [33mfalse[39m,
+      is_vege: [33mfalse[39m,
+      image_url: [1mnull[22m,
+      available: [33mtrue[39m,
+      created_at: [32m'2025-10-29T14:53:24.683083+00:00'[39m
+    },
+    {
+      id: [32m'1a7eeba7-8c23-4fdb-a7c8-fcccbfa0008d'[39m,
+      restaurant_id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Capricciosa'[39m,
+      description: [32m'Sos pomidorowy, ser mozzarella, szynka, pieczarki'[39m,
+      category: [32m'Pizza'[39m,
+      base_type: [1mnull[22m,
+      meat_type: [1mnull[22m,
+      size_or_variant: [1mnull[22m,
+      price_pln: [33m33[39m,
+      spicy: [33mfalse[39m,
+      is_vege: [33mfalse[39m,
+      image_url: [1mnull[22m,
+      available: [33mtrue[39m,
+      created_at: [32m'2025-10-29T14:49:19.136917+00:00'[39m
+    },
+    {
+      id: [32m'91088af5-2a2a-4bb3-96af-8907fcd4471e'[39m,
+      restaurant_id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Diavola'[39m,
+      description: [32m'Sos pomidorowy, ser mozzarella, pikantne salami, papryczki jalape├▒o'[39m,
+      category: [32m'Pizza'[39m,
+      base_type: [1mnull[22m,
+      meat_type: [1mnull[22m,
+      size_or_variant: [1mnull[22m,
+      price_pln: [33m34[39m,
+      spicy: [33mfalse[39m,
+      is_vege: [33mfalse[39m,
+      image_url: [1mnull[22m,
+      available: [33mtrue[39m,
+      created_at: [32m'2025-10-29T14:49:19.136917+00:00'[39m
+    },
+    {
+      id: [32m'2346a6d2-4f63-4c47-b217-f752cfa02a9b'[39m,
+      restaurant_id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Hawajska'[39m,
+      description: [32m'Sos pomidorowy, ser mozzarella, szynka, ananas'[39m,
+      category: [32m'Pizza'[39m,
+      base_type: [1mnull[22m,
+      meat_type: [1mnull[22m,
+      size_or_variant: [1mnull[22m,
+      price_pln: [33m32[39m,
+      spicy: [33mfalse[39m,
+      is_vege: [33mfalse[39m,
+      image_url: [1mnull[22m,
+      available: [33mtrue[39m,
+      created_at: [32m'2025-10-29T14:53:24.683083+00:00'[39m
+    },
+    {
+      id: [32m'03ce8a1a-be58-407c-87df-48ab33817f5c'[39m,
+      restaurant_id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Margherita'[39m,
+      description: [32m'Sos pomidorowy, ser mozzarella, bazylia'[39m,
+      category: [32m'Pizza'[39m,
+      base_type: [1mnull[22m,
+      meat_type: [1mnull[22m,
+      size_or_variant: [1mnull[22m,
+      price_pln: [33m28[39m,
+      spicy: [33mfalse[39m,
+      is_vege: [33mfalse[39m,
+      image_url: [1mnull[22m,
+      available: [33mtrue[39m,
+      created_at: [32m'2025-10-29T14:49:19.136917+00:00'[39m
+    },
+    {
+      id: [32m'8492d2e8-fc47-4381-af16-8ef4e1aa7b04'[39m,
+      restaurant_id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Panna Cotta'[39m,
+      description: [32m'Z musem truskawkowym'[39m,
+      category: [32m'Deser'[39m,
+      base_type: [1mnull[22m,
+      meat_type: [1mnull[22m,
+      size_or_variant: [1mnull[22m,
+      price_pln: [33m15[39m,
+      spicy: [33mfalse[39m,
+      is_vege: [33mfalse[39m,
+      image_url: [1mnull[22m,
+      available: [33mtrue[39m,
+      created_at: [32m'2025-10-29T14:53:24.683083+00:00'[39m
+    }
+  ]
+}
+­čöČ Starting Smart Intent Layer...
+[intent-router] ­čÜÇ detectIntent called with: { text: [32m'Poprosz─Ö jedn─ů pizz─Ö Margherita'[39m, sessionId: [90mundefined[39m }
+[intent-router] ­čöŹ Starting early dish detection for text: Poprosz─Ö jedn─ů pizz─Ö Margherita
+[intent-router] ­čöŹ Normalized text: poprosz─Ö jedn─ů pizz─Ö margherita
+[intent-router] ­čöŹ Session restaurant: NONE
+[intent-router] ­čöŹ Restaurant indicators in text: false
+[intent-router] ­čöŹ Searching for restaurant in text (reason: no session restaurant)
+
+stderr | api/brain/tests/mon
+teCarlo_std.e2e.test.js > Mo
+nte Carlo E2E Test (Standard
+ Flow) > should add Margheri
+ta to cart
+<empty line>
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should add Margherita to cart
+[intent-router] ­čöŹ Checking 9 restaurants for fuzzy match
+[loadMenuCatalog] ­čöŹ Session: default
+[loadMenuCatalog] ­čöŹ lastRestaurant: [90mundefined[39m
+[loadMenuCatalog] ­čöŹ lastId: [90mundefined[39m
+[loadMenuCatalog] ÔÜá´ŞĆ Loading all menu items (no restaurant in session)
+
+stderr | api/brain/tests/mon
+teCarlo_std.e2e.test.js > Mo
+nte Carlo E2E Test (Standard
+ Flow) > should add Margheri
+ta to cart
+<empty line>
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should add Margherita to cart
+[loadMenuCatalog] Ôťů Loaded 245 menu items from 9 restaurants
+[loadMenuCatalog] Ôťů Sample items: Pizza ┼áunkov├í, Pizza Ekkluzivne, Pizza L├íska Nebesk├í
+[intent-router] Catalog loaded: 245 items
+[intent-router] ­čöŹ Calling parseOrderItems...
+[intent-router] ­čöŹ Catalog items: Pizza ┼áunkov├í, Pizza Ekkluzivne, Pizza L├íska Nebesk├í, Rumcajsowy Burger, Golonka confit, Sa┼éatka z halloumi, Zupa pomidorowa, Kofola klasyczna, Hawajska, Coca-Cola, Coca-Cola Zero, Fanta Pomara┼äczowa, Sprite, Coca-Cola, Fanta, Piwo Tyskie, Pizza Margherita 33cm, Pizza Pepperoni 33cm, Pizza Hawajska 33cm, Pizza Capricciosa 33cm, Pizza Vege 33cm, Bacon Burger, Better Than Drwal - Wo┼éowina, Cheddar Burger, Vege Burger, Spicy Burger, Bowl Gyros-Halloumi, Bowl z Dyni─ů, Bowl Kurczak Zapiekany z Serem, Filet Grillowany, Pulled Pork Bowl Pikantny, Zapiekaniec, Cappy Jab┼éko, Krem z Cebuli i Czosnku, Sa┼éatka Cezar Callzone, Sa┼éatka Grillowany Kurczak, Sa┼éatka Halloumi, Sa┼éatka z Serem Camembert, Sa┼éatka z Serem Feta, Sa┼éatka z Dyni─ů, Szarlotka, Sernik z Musem Malinowym, Ciasto Marchewkowe, Pepsi 0.85L, Kawa Czarna, Kawa Bia┼éa, Flat White, Cappuccino, Latte, Sos Tzatziki, Sos Pikantny, Sos Jogurtowy, G─Ösie ┼╝o┼é─ůdki, Camembert z ┼╝urawin─ů, Deska zak─ůsek dla dwojga, Wodzionka, ┼╗ur ┼Ťl─ůski w chlebie, ┼╗ur ┼Ťl─ůski na talerzu, Krem borowikowy, Zupa pomidorowa, Barszcz z tortellini, Flaki z indyka, Burger wo┼éowy z frytkami i sur├│wk─ů, Burger wegetaria┼äski z Camembertem, frytkami oraz zestawem sur├│wek, Gyros z frytkami i tzatziki, ┼╗eberka wieprzowe z frytkami, Kotlety czopskie, Dzikie placki, W─ůtr├│bka drobiowa, Grillowany filet z kurczaka, Kurczak po parysku, ─ćwiartka kaczki, Rolada wieprzowa, Kotlet schabowy, Pol─Ödwica wieprzowa, Kotlet po szwajcarsku, Rolada wo┼éowa, Oz├│r wo┼éowy, Miruna w panierce, Zupa z kaczki, Zupa Won Ton, Tagliatelle ze szpinakiem, suszonymi pomidorami i p┼éatkami migda┼é├│w, Ros├│┼é z makaronem, Nale┼Ťniki z serem na s┼éodko z bit─ů ┼Ťmietan─ů, Carbonara a'la Hubertus, Filet z ┼éososia na szpinaku, Stek z halibuta sma┼╝ony na ma┼Ťle, Pstr─ůg na zio┼éowo, Pierogi z mi─Ösem, Pierogi ruskie, Kluski z sosem pieczeniowym, Sa┼éatka Hubertusa z pieczywem czosnkowym, Sa┼éatka grecka z pieczywem czosnkowym, Kluski ┼Ťl─ůskie, Ziemniaki z wody, Bratkartoffel, Kapusta modra, Kapusta zasma┼╝ana, Nuggetsy z frytkami oraz sur├│wk─ů z marchewki, Cappy Pomara┼äcza, Woda Mineralna, Tiramisu, Panna Cotta, Brownie, Lody waniliowe z sosem karmelowym, Kosmiczne Jaja Double, Wegetrix Double, ┼╗wirek i Muchomorek Standard, Zupa krabowa, Sajgonki 3 szt., Sajgonki z ry┼╝em, Sajgonki z sur├│wk─ů, Sajgonki z ry┼╝em i sur├│wk─ů, Pierogi Ho Cao z ry┼╝em i sur├│wk─ů, Grzybiarz z Piekaryhill, MrDrwal, Onionator, Hot-dog by KLAPS, Krem z dyni z bia┼é─ů czekolad─ů, Siekany tatar z pol─Ödwicy wo┼éowej, W─Ödzony pstr─ůg, Carpaccio z kaczki marynowanej w grza┼äcu, BUFFAL, Kartacze z dzikiem, Sa┼éatka z dyni─ů marynowan─ů w musztardzie, Grzanka z krupniokiem, Tagliatelle z krewetkami, Makaron ry┼╝owy z warzywami, Zupa dnia, Ros├│┼é z makaronem, Tradycyjny schabowy, Schab po beskidzku, Nale┼Ťnik z kurczakiem i warzywami, Nale┼Ťnik ze szpinakiem i serem feta, Lody z gor─ůcymi malinami i bit─ů ┼Ťmietan─ů, Fondant czekoladowy z lodami i bit─ů ┼Ťmietan─ů, Coca-Cola, Fanta, Sprite, Cappy (200 ml), Woda mineralna (330 ml), Filet z kurczaka tradycyjny (panierowany), Filet z kurczaka po hawajsku, Grillowany filet z kurczaka, Kroket (z kapust─ů i grzybami/b─ůd┼║ z mi─Ösem) 1 szt., Placki ziemniaczane 4 szt., Kluski ┼Ťl─ůskie 7 szt., Rolada wo┼éowa (na zam├│wienie), Piecze┼ä wieprzowa, W─ůtr├│bka drobiowa, Gulasz wieprzowy po w─Ögiersku, Pierogi (ruskie lub z mi─Ösem) 6 szt., Jajecznica z 2 szt. jaj, Placki po w─Ögiersku z gulaszem wieprzowym, Nale┼Ťnik z d┼╝emem truskawkowym lub wi┼Ťniowym, Nale┼Ťnik z nutell─ů, bananami, bit─ů ┼Ťmietan─ů, Margherita, Capricciosa, Diavola, Quattro Formaggi, Vegetariana, Prosciutto e Funghi, Salami, Pollo, Spinaci, Wegetrix Standard, Milczenie Wola Standard, Milczenie Wola Double, Halloween Standard, Halloween Double, Smak Vegas, Klaps Fiction Standard, Klaps Fiction Double, Desperado Standard, Desperado Double, Rodzina Serano Standard, Rodzina Serano Double, G┼éodzilla, Kosmiczne Jaja Standard, Zupa wietnamska, Zupa z kurczakiem, Zupa ┼éajska, Pierogi SiuMai z ry┼╝em i sur├│wk─ů, Kurczak z warzywami, Kurczak s┼éodko-kwa┼Ťny, Kurczak pikantny, Kurczak po chi┼äsku, Kurczak po tajsku, Kurczak na gor─ůcym p├│┼émisku, Kurczak w cie┼Ťcie s┼éodko-kwa┼Ťny, Kurczak w cie┼Ťcie pikantny, Kurczak w cie┼Ťcie curry, Kurczak w cie┼Ťcie pi─Öciu smak├│w, Wieprzowina z warzywami, Wieprzowina s┼éodko-kwa┼Ťna, Wieprzowina pikantna, Wieprzowina Curry, Wieprzowina pi─Öciu smak├│w, Wieprzowina po tajsku, Wo┼éowina z warzywami, Wo┼éowina pikantna, Wo┼éowina Curry, Wo┼éowina 5 smak├│w, Wo┼éowina po tajsku, Wo┼éowina na gor─ůcym p├│┼émisku, Kaczka z warzywami, Kaczka pikantna, Kaczka s┼éodko-kwa┼Ťna, Kaczka po chi┼äsku, Kaczka po tajsku, Kaczka na gor─ůcym p├│┼émisku, Krewetki z warzywami, Krewetki pikantne, Krewetki Curry, Krewetki po tajsku, Krewetki na gor─ůcym p├│┼émisku, Kalmary chrupi─ůce s┼éodko-kwa┼Ťne, Kalmary chrupi─ůce pikantne, Kalmary chrupi─ůce Curry, Kalmary chrupi─ůce w pi─Öciu smakach, Kalmary po tajsku, Kalmary na gor─ůcym p├│┼émisku, Kebab ameryka┼äski, Nuggets box, Falafel, Frytki z serem, Frytki z Indii masala, Sa┼éatka grecka, Sos, Baklava, Sok Cappy, Coca-Cola 0,85l, Coca-Cola 0,5l, Coca-Cola 0,3l, Pepsi / Mirinda / 7up, Monster Energy Drink, Ayran Turecki, Mango Sok, Oshee, Burn, Pita Rollo, Pita Rollo, Pita Rollo, Pita Rollo, Pita Rollo z serem, Pita Rollo z serem, Pita Rollo z serem, Pita Rollo z serem
+[parseOrderItems] ­čôŐ Summary:
+  - requestedNames: [pizza margherita]
+  - availableNames: [pizza margherita 33cm, margherita]
+  - unavailableNames: []
+  - matched.length: 2
+  - clarifications.length: 0
+[intent-router] Ôťů Parsed result: {
+  "any": true,
+  "groups": [
+    {
+      "restaurant_id": "bd9f2244-7618-4071-aa96-52616a7b4c70",
+      "restaurant_name": "Callzone",
+      "items": [
+        {
+          "menuItemId": "e0825375-5306-47c9-9786-cb8ed45884ba",
+          "name": "Pizza Margherita 33cm",
+          "price": 33,
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "restaurant_id": "83566974-1017-4408-90ee-2571ccc06978",
+      "restaurant_name": "Pizzeria Monte Carlo",
+      "items": [
+        {
+          "menuItemId": "03ce8a1a-be58-407c-87df-48ab33817f5c",
+          "name": "Margherita",
+          "price": 28,
+          "quantity": 1
+        }
+      ]
+    }
+  ],
+  "clarify": [],
+  "available": [
+    {
+      "menuItemId": "e0825375-5306-47c9-9786-cb8ed45884ba",
+      "name": "Pizza Margherita 33cm",
+      "price": 33,
+      "quantity": 1,
+      "restaurant_id": "bd9f2244-7618-4071-aa96-52616a7b4c70",
+      "restaurant_name": "Callzone",
+      "matchScore": 1
+    },
+    {
+      "menuItemId": "03ce8a1a-be58-407c-87df-48ab33817f5c",
+      "name": "Margherita",
+      "price": 28,
+      "quantity": 1,
+      "restaurant_id": "83566974-1017-4408-90ee-2571ccc06978",
+      "restaurant_name": "Pizzeria Monte Carlo",
+      "matchScore": 1
+    }
+  ],
+  "unavailable": [],
+  "needsClarification": false,
+  "unknownItems": []
+}
+[intent-router] ­čöŹ parsed.any = true
+[intent-router] ­čöŹ parsed.groups.length = 2
+­čŹŻ´ŞĆ Ôťů EARLY DISH DETECTION SUCCESS! Dish detected: Pizza Margherita 33cm | Margherita
+­čŹŻ´ŞĆ Ôťů Returning create_order immediately (HIGHEST PRIORITY)
+­čŹŻ´ŞĆ Ôťů parsedOrder: {
+  "any": true,
+  "groups": [
+    {
+      "restaurant_id": "bd9f2244-7618-4071-aa96-52616a7b4c70",
+      "restaurant_name": "Callzone",
+      "items": [
+        {
+          "menuItemId": "e0825375-5306-47c9-9786-cb8ed45884ba",
+          "name": "Pizza Margherita 33cm",
+          "price": 33,
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "restaurant_id": "83566974-1017-4408-90ee-2571ccc06978",
+      "restaurant_name": "Pizzeria Monte Carlo",
+      "items": [
+        {
+          "menuItemId": "03ce8a1a-be58-407c-87df-48ab33817f5c",
+          "name": "Margherita",
+          "price": 28,
+          "quantity": 1
+        }
+      ]
+    }
+  ],
+  "clarify": [],
+  "available": [
+    {
+      "menuItemId": "e0825375-5306-47c9-9786-cb8ed45884ba",
+      "name": "Pizza Margherita 33cm",
+      "price": 33,
+      "quantity": 1,
+      "restaurant_id": "bd9f2244-7618-4071-aa96-52616a7b4c70",
+      "restaurant_name": "Callzone",
+      "matchScore": 1
+    },
+    {
+      "menuItemId": "03ce8a1a-be58-407c-87df-48ab33817f5c",
+      "name": "Margherita",
+      "price": 28,
+      "quantity": 1,
+      "restaurant_id": "83566974-1017-4408-90ee-2571ccc06978",
+      "restaurant_name": "Pizzeria Monte Carlo",
+      "matchScore": 1
+    }
+  ],
+  "unavailable": [],
+  "needsClarification": false,
+  "unknownItems": []
+}
+­čöŹ Debug session updated: {
+  intent: [32m'create_order'[39m,
+  restaurant: [32m'Callzone'[39m,
+  sessionId: [1mnull[22m,
+  confidence: [33m0.85[39m
+}
+Ôťů SmartIntent Resolved: create_order (0.85) via classic
+­čžá [DEBUG] Hybrid intent detection complete: {
+  ruleIntent: [32m'create_order'[39m,
+  ruleConfidence: [33m0.85[39m,
+  llmIntent: [1mnull[22m,
+  llmConfidence: [33m0[39m,
+  finalIntent: [32m'create_order'[39m,
+  finalConfidence: [33m0.85[39m,
+  source: [32m'classic'[39m,
+  hasRestaurant: [33mfalse[39m,
+  restaurantName: [90mundefined[39m,
+  hasParsedOrder: [33mtrue[39m,
+  parsedOrderDetails: { any: [33mtrue[39m, groupsCount: [33m2[39m, groups: [ [36m[Object][39m, [36m[Object][39m ] }
+}
+­čöĺ SmartContext: skipping boost (parsedOrder exists)
+­čôő Parsed: { dish: [32m'jedn─ů pizz─Ö Margherita'[39m, restaurant: [1mnull[22m }
+­čžá create_order intent detected
+Ôťů Using parsedOrder from detectIntent()
+
+stderr | api/brain/tests/mon
+teCarlo_std.e2e.test.js > Mo
+nte Carlo E2E Test (Standard
+ Flow) > should add Margheri
+ta to cart
+<empty line>
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should add Margherita to cart
+Ôťů Matched restaurant: "Callzone" Ôćĺ Callzone
+
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should add Margherita to cart
+­čöŹ [create_order] Loaded 35 items for validation
+ÔÜá´ŞĆ Order Validation Issue: missing_size
+ÔÜá´ŞĆ Skipping LLM reply generation (test mode or no key), using replyCore
+Ôťů Final response: intent=create_order, confidence=0.9, fallback=false
+­čôŽ Final Response Preparation: MenuItems count = 6
+
+stderr | api/brain/tests/mon
+teCarlo_std.e2e.test.js > Mo
+nte Carlo E2E Test (Standard
+ Flow) > should add Margheri
+ta to cart
+ÔÜá´ŞĆ Validation failed for
+ "Pizza Margherita 33cm": mi
+ssing_size
+
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should confirm the order
+[brainRouter] ­čÜÇ Handler called
+
+ Ôťô api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should add Margherita to cart 981ms
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should confirm the order
+­čžá [DEBUG] Handler called with: {
+  sessionId: [32m'test_mc_std_1766057660360'[39m,
+  text: [32m'Tak, potwierdzam zam├│wienie'[39m,
+  method: [32m'POST'[39m,
+  body: {
+    sessionId: [32m'test_mc_std_1766057660360'[39m,
+    text: [32m'Tak, potwierdzam zam├│wienie'[39m,
+    lat: [33m50.37[39m,
+    lng: [33m18.94[39m
+  },
+  hasText: [33mtrue[39m,
+  textLength: [33m27[39m
+}
+­čžá [DEBUG] Current session state: {
+  sessionId: [32m'test_mc_std_1766057660360'[39m,
+  session: {
+    expectedContext: [1mnull[22m,
+    lastIntent: [32m'create_order'[39m,
+    lastRestaurant: {
+      id: [32m'bd9f2244-7618-4071-aa96-52616a7b4c70'[39m,
+      name: [32m'Callzone'[39m,
+      address: [32m'ul. Ksi─Ödza Piotra Skargi 3'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      lat: [33m50.38594[39m,
+      lng: [33m18.95647[39m
+    },
+    lastRestaurantsList: [],
+    lastRestaurants: [],
+    lastRestaurantsTimestamp: [1mnull[22m,
+    lastMenu: [],
+    locationOverride: [1mnull[22m,
+    history: [],
+    locationCache: { [32m'piekary ┼Ťl─ůskie_all'[39m: [36m[Object][39m },
+    last_location: [32m'Piekary ┼Ül─ůskie'[39m,
+    lastUpdated: [33m1766057662810[39m,
+    last_restaurants_list: [
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m, [36m[Object][39m,
+      [36m[Object][39m
+    ],
+    last_menu: [ [36m[Object][39m, [36m[Object][39m, [36m[Object][39m, [36m[Object][39m, [36m[Object][39m, [36m[Object][39m ]
+  },
+  hasExpectedContext: [33mfalse[39m,
+  expectedContextValue: [1mnull[22m,
+  hasLastRestaurant: [33mtrue[39m,
+  lastRestaurantName: [32m'Callzone'[39m,
+  hasLastLocation: [33mtrue[39m,
+  lastLocation: [32m'Piekary ┼Ül─ůskie'[39m,
+  hasPendingOrder: [33mfalse[39m,
+  lastIntent: [32m'create_order'[39m,
+  sessionKeys: [
+    [32m'expectedContext'[39m,
+    [32m'lastIntent'[39m,
+    [32m'lastRestaurant'[39m,
+    [32m'lastRestaurantsList'[39m,
+    [32m'lastRestaurants'[39m,
+    [32m'lastRestaurantsTimestamp'[39m,
+    [32m'lastMenu'[39m,
+    [32m'locationOverride'[39m,
+    [32m'history'[39m,
+    [32m'locationCache'[39m,
+    [32m'last_location'[39m,
+    [32m'lastUpdated'[39m,
+    [32m'last_restaurants_list'[39m,
+    [32m'last_menu'[39m
+  ]
+}
+­čžş GeoContext Layer activated for: "Tak"
+
+stderr | api/brain/tests/mon
+teCarlo_std.e2e.test.js > Mo
+nte Carlo E2E Test (Standard
+ Flow) > should confirm the 
+order
+ÔÜÖ´ŞĆ GeoContext: brak wyni
+k├│w w "Tak"
+ÔÜÖ´ŞĆ GeoContext: brak wyni
+k├│w w "Tak" ÔÇö kontynuuj n
+ormalny flow
+
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should confirm the order
+[brainRouter] ­čžá Calling detectIntent with: {
+  text: [32m'Tak, potwierdzam zam├│wienie'[39m,
+  sessionId: [32m'test_mc_std_1766057660360'[39m
+}
+[brainRouter] ­čžá Current session: {
+  expectedContext: [1mnull[22m,
+  lastIntent: [32m'create_order'[39m,
+  lastRestaurant: {
+    id: [32m'bd9f2244-7618-4071-aa96-52616a7b4c70'[39m,
+    name: [32m'Callzone'[39m,
+    address: [32m'ul. Ksi─Ödza Piotra Skargi 3'[39m,
+    city: [32m'Piekary ┼Ül─ůskie'[39m,
+    lat: [33m50.38594[39m,
+    lng: [33m18.95647[39m
+  },
+  lastRestaurantsList: [],
+  lastRestaurants: [],
+  lastRestaurantsTimestamp: [1mnull[22m,
+  lastMenu: [],
+  locationOverride: [1mnull[22m,
+  history: [],
+  locationCache: {
+    [32m'piekary ┼Ťl─ůskie_all'[39m: { data: [36m[Array][39m, timestamp: [33m1766057660849[39m }
+  },
+  last_location: [32m'Piekary ┼Ül─ůskie'[39m,
+  lastUpdated: [33m1766057662810[39m,
+  last_restaurants_list: [
+    {
+      id: [32m'1fc1e782-bac6-47b2-978a-f6f2b38000cd'[39m,
+      name: [32m'Restauracja Stara Kamienica'[39m,
+      address: [32m'ul. Bytomska 61'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Polska'[39m,
+      lat: [33m50.3856[39m,
+      lng: [33m18.94886[39m
+    },
+    {
+      id: [32m'4d27fbe3-20d0-4eb4-b003-1935be53af25'[39m,
+      name: [32m'Rezydencja Luxury Hotel'[39m,
+      address: [32m'ul. Stara 1'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Mi─Ödzynarodowa'[39m,
+      lat: [33m50.39352[39m,
+      lng: [33m18.94742[39m
+    },
+    {
+      id: [32m'569a7d29-57be-4224-bdf3-09c483415cea'[39m,
+      name: [32m'Klaps Burgers'[39m,
+      address: [32m'ul. Piotra Skargi 15'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Ameryka┼äska'[39m,
+      lat: [33m50.38643[39m,
+      lng: [33m18.95422[39m
+    },
+    {
+      id: [32m'70842598-1632-43f6-8015-706d5adf182f'[39m,
+      name: [32m'Vien-Thien'[39m,
+      address: [32m'ul. Diamentowa 4'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Wietnamska'[39m,
+      lat: [33m50.39883[39m,
+      lng: [33m18.95574[39m
+    },
+    {
+      id: [32m'8b00b05e-72f7-4a5f-b50c-5630a75d6312'[39m,
+      name: [32m'Bar Praha'[39m,
+      address: [32m'ul. Bytomska 139'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Czeska / Polska'[39m,
+      lat: [33m50.38807[39m,
+      lng: [33m18.93657[39m
+    },
+    {
+      id: [32m'bd9f2244-7618-4071-aa96-52616a7b4c70'[39m,
+      name: [32m'Callzone'[39m,
+      address: [32m'ul. Ksi─Ödza Piotra Skargi 3'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Pizzeria'[39m,
+      lat: [33m50.38594[39m,
+      lng: [33m18.95647[39m
+    },
+    {
+      id: [32m'af8448ef-974b-46c8-a4ae-b04b8dc7c9f8'[39m,
+      name: [32m'Dw├│r Hubertus'[39m,
+      address: [32m'ul. Inwalid├│w Wojennych 72'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'┼Ül─ůska / Europejska'[39m,
+      lat: [33m50.39233[39m,
+      lng: [33m18.94243[39m
+    },
+    {
+      id: [32m'fc844513-2869-4f42-b04f-c21e1e4cceb7'[39m,
+      name: [32m'Tasty King Kebab'[39m,
+      address: [32m'ul. Bytomska 70'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [32m'Kebab'[39m,
+      lat: [33m50.38587[39m,
+      lng: [33m18.94712[39m
+    },
+    {
+      id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Pizzeria Monte Carlo'[39m,
+      address: [32m'Ul. Stanis┼éawa Maczka 22'[39m,
+      city: [32m'Piekary ┼Ül─ůskie'[39m,
+      cuisine_type: [1mnull[22m,
+      lat: [1mnull[22m,
+      lng: [1mnull[22m
+    }
+  ],
+  last_menu: [
+    {
+      id: [32m'e472c234-04d2-4872-a635-761f00f9853c'[39m,
+      restaurant_id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Brownie'[39m,
+      description: [32m'Czekoladowe ciasto z orzechami w┼éoskimi'[39m,
+      category: [32m'Deser'[39m,
+      base_type: [1mnull[22m,
+      meat_type: [1mnull[22m,
+      size_or_variant: [1mnull[22m,
+      price_pln: [33m14[39m,
+      spicy: [33mfalse[39m,
+      is_vege: [33mfalse[39m,
+      image_url: [1mnull[22m,
+      available: [33mtrue[39m,
+      created_at: [32m'2025-10-29T14:53:24.683083+00:00'[39m
+    },
+    {
+      id: [32m'1a7eeba7-8c23-4fdb-a7c8-fcccbfa0008d'[39m,
+      restaurant_id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Capricciosa'[39m,
+      description: [32m'Sos pomidorowy, ser mozzarella, szynka, pieczarki'[39m,
+      category: [32m'Pizza'[39m,
+      base_type: [1mnull[22m,
+      meat_type: [1mnull[22m,
+      size_or_variant: [1mnull[22m,
+      price_pln: [33m33[39m,
+      spicy: [33mfalse[39m,
+      is_vege: [33mfalse[39m,
+      image_url: [1mnull[22m,
+      available: [33mtrue[39m,
+      created_at: [32m'2025-10-29T14:49:19.136917+00:00'[39m
+    },
+    {
+      id: [32m'91088af5-2a2a-4bb3-96af-8907fcd4471e'[39m,
+      restaurant_id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Diavola'[39m,
+      description: [32m'Sos pomidorowy, ser mozzarella, pikantne salami, papryczki jalape├▒o'[39m,
+      category: [32m'Pizza'[39m,
+      base_type: [1mnull[22m,
+      meat_type: [1mnull[22m,
+      size_or_variant: [1mnull[22m,
+      price_pln: [33m34[39m,
+      spicy: [33mfalse[39m,
+      is_vege: [33mfalse[39m,
+      image_url: [1mnull[22m,
+      available: [33mtrue[39m,
+      created_at: [32m'2025-10-29T14:49:19.136917+00:00'[39m
+    },
+    {
+      id: [32m'2346a6d2-4f63-4c47-b217-f752cfa02a9b'[39m,
+      restaurant_id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Hawajska'[39m,
+      description: [32m'Sos pomidorowy, ser mozzarella, szynka, ananas'[39m,
+      category: [32m'Pizza'[39m,
+      base_type: [1mnull[22m,
+      meat_type: [1mnull[22m,
+      size_or_variant: [1mnull[22m,
+      price_pln: [33m32[39m,
+      spicy: [33mfalse[39m,
+      is_vege: [33mfalse[39m,
+      image_url: [1mnull[22m,
+      available: [33mtrue[39m,
+      created_at: [32m'2025-10-29T14:53:24.683083+00:00'[39m
+    },
+    {
+      id: [32m'03ce8a1a-be58-407c-87df-48ab33817f5c'[39m,
+      restaurant_id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Margherita'[39m,
+      description: [32m'Sos pomidorowy, ser mozzarella, bazylia'[39m,
+      category: [32m'Pizza'[39m,
+      base_type: [1mnull[22m,
+      meat_type: [1mnull[22m,
+      size_or_variant: [1mnull[22m,
+      price_pln: [33m28[39m,
+      spicy: [33mfalse[39m,
+      is_vege: [33mfalse[39m,
+      image_url: [1mnull[22m,
+      available: [33mtrue[39m,
+      created_at: [32m'2025-10-29T14:49:19.136917+00:00'[39m
+    },
+    {
+      id: [32m'8492d2e8-fc47-4381-af16-8ef4e1aa7b04'[39m,
+      restaurant_id: [32m'83566974-1017-4408-90ee-2571ccc06978'[39m,
+      name: [32m'Panna Cotta'[39m,
+      description: [32m'Z musem truskawkowym'[39m,
+      category: [32m'Deser'[39m,
+      base_type: [1mnull[22m,
+      meat_type: [1mnull[22m,
+      size_or_variant: [1mnull[22m,
+      price_pln: [33m15[39m,
+      spicy: [33mfalse[39m,
+      is_vege: [33mfalse[39m,
+      image_url: [1mnull[22m,
+      available: [33mtrue[39m,
+      created_at: [32m'2025-10-29T14:53:24.683083+00:00'[39m
+    }
+  ]
+}
+­čöČ Starting Smart Intent Layer...
+[intent-router] ­čÜÇ detectIntent called with: { text: [32m'Tak, potwierdzam zam├│wienie'[39m, sessionId: [90mundefined[39m }
+[intent-router] ­čöŹ Starting early dish detection for text: Tak, potwierdzam zam├│wienie
+[intent-router] ­čöŹ Normalized text: tak, potwierdzam zam├│wienie
+[intent-router] ­čöŹ Session restaurant: NONE
+[intent-router] ­čöŹ Restaurant indicators in text: false
+[intent-router] ­čöŹ Searching for restaurant in text (reason: no session restaurant)
+
+stderr | api/brain/tests/mon
+teCarlo_std.e2e.test.js > Mo
+nte Carlo E2E Test (Standard
+ Flow) > should confirm the 
+order
+<empty line>
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should confirm the order
+[intent-router] ­čöŹ Checking 9 restaurants for fuzzy match
+[loadMenuCatalog] ­čöŹ Session: default
+[loadMenuCatalog] ­čöŹ lastRestaurant: [90mundefined[39m
+[loadMenuCatalog] ­čöŹ lastId: [90mundefined[39m
+[loadMenuCatalog] ÔÜá´ŞĆ Loading all menu items (no restaurant in session)
+
+stdout | api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should confirm the order
+[loadMenuCatalog] Ôťů Loaded 245 menu items from 9 restaurants
+[loadMenuCatalog] Ôťů Sample items: Pizza ┼áunkov├í, Pizza Ekkluzivne, Pizza L├íska Nebesk├í
+[intent-router] Catalog loaded: 245 items
+[intent-router] ­čöŹ Calling parseOrderItems...
+stderr | api/brain/tests/mon
+teCarlo_std.e2e.test.js > Mo
+nte Carlo E2E Test (Standard
+ Flow) > should confirm the 
+order
+ÔÜá´ŞĆ Unknown intent: clari
+fy_order
+
+[intent-router] ­čöŹ Catalog items: Pizza ┼áunkov├í, Pizza Ekkluzivne, Pizza L├íska Nebesk├í, Rumcajsowy Burger, Golonka confit, Sa┼éatka z halloumi, Zupa pomidorowa, Kofola klasyczna, Hawajska, Coca-Cola, Coca-Cola Zero, Fanta Pomara┼äczowa, Sprite, Coca-Cola, Fanta, Piwo Tyskie, Pizza Margherita 33cm, Pizza Pepperoni 33cm, Pizza Hawajska 33cm, Pizza Capricciosa 33cm, Pizza Vege 33cm, Bacon Burger, Better Than Drwal - Wo┼éowina, Cheddar Burger, Vege Burger, Spicy Burger, Bowl Gyros-Halloumi, Bowl z Dyni─ů, Bowl Kurczak Zapiekany z Serem, Filet Grillowany, Pulled Pork Bowl Pikantny, Zapiekaniec, Cappy Jab┼éko, Krem z Cebuli i Czosnku, Sa┼éatka Cezar Callzone, Sa┼éatka Grillowany Kurczak, Sa┼éatka Halloumi, Sa┼éatka z Serem Camembert, Sa┼éatka z Serem Feta, Sa┼éatka z Dyni─ů, Szarlotka, Sernik z Musem Malinowym, Ciasto Marchewkowe, Pepsi 0.85L, Kawa Czarna, Kawa Bia┼éa, Flat White, Cappuccino, Latte, Sos Tzatziki, Sos Pikantny, Sos Jogurtowy, G─Ösie ┼╝o┼é─ůdki, Camembert z ┼╝urawin─ů, Deska zak─ůsek dla dwojga, Wodzionka, ┼╗ur ┼Ťl─ůski w chlebie, ┼╗ur ┼Ťl─ůski na talerzu, Krem borowikowy, Zupa pomidorowa, Barszcz z tortellini, Flaki z indyka, Burger wo┼éowy z frytkami i sur├│wk─ů, Burger wegetaria┼äski z Camembertem, frytkami oraz zestawem sur├│wek, Gyros z frytkami i tzatziki, ┼╗eberka wieprzowe z frytkami, Kotlety czopskie, Dzikie placki, W─ůtr├│bka drobiowa, Grillowany filet z kurczaka, Kurczak po parysku, ─ćwiartka kaczki, Rolada wieprzowa, Kotlet schabowy, Pol─Ödwica wieprzowa, Kotlet po szwajcarsku, Rolada wo┼éowa, Oz├│r wo┼éowy, Miruna w panierce, Zupa z kaczki, Zupa Won Ton, Tagliatelle ze szpinakiem, suszonymi pomidorami i p┼éatkami migda┼é├│w, Ros├│┼é z makaronem, Nale┼Ťniki z serem na s┼éodko z bit─ů ┼Ťmietan─ů, Carbonara a'la Hubertus, Filet z ┼éososia na szpinaku, Stek z halibuta sma┼╝ony na ma┼Ťle, Pstr─ůg na zio┼éowo, Pierogi z mi─Ösem, Pierogi ruskie, Kluski z sosem pieczeniowym, Sa┼éatka Hubertusa z pieczywem czosnkowym, Sa┼éatka grecka z pieczywem czosnkowym, Kluski ┼Ťl─ůskie, Ziemniaki z wody, Bratkartoffel, Kapusta modra, Kapusta zasma┼╝ana, Nuggetsy z frytkami oraz sur├│wk─ů z marchewki, Cappy Pomara┼äcza, Woda Mineralna, Tiramisu, Panna Cotta, Brownie, Lody waniliowe z sosem karmelowym, Kosmiczne Jaja Double, Wegetrix Double, ┼╗wirek i Muchomorek Standard, Zupa krabowa, Sajgonki 3 szt., Sajgonki z ry┼╝em, Sajgonki z sur├│wk─ů, Sajgonki z ry┼╝em i sur├│wk─ů, Pierogi Ho Cao z ry┼╝em i sur├│wk─ů, Grzybiarz z Piekaryhill, MrDrwal, Onionator, Hot-dog by KLAPS, Krem z dyni z bia┼é─ů czekolad─ů, Siekany tatar z pol─Ödwicy wo┼éowej, W─Ödzony pstr─ůg, Carpaccio z kaczki marynowanej w grza┼äcu, BUFFAL, Kartacze z dzikiem, Sa┼éatka z dyni─ů marynowan─ů w musztardzie, Grzanka z krupniokiem, Tagliatelle z krewetkami, Makaron ry┼╝owy z warzywami, Zupa dnia, Ros├│┼é z makaronem, Tradycyjny schabowy, Schab po beskidzku, Nale┼Ťnik z kurczakiem i warzywami, Nale┼Ťnik ze szpinakiem i serem feta, Lody z gor─ůcymi malinami i bit─ů ┼Ťmietan─ů, Fondant czekoladowy z lodami i bit─ů ┼Ťmietan─ů, Coca-Cola, Fanta, Sprite, Cappy (200 ml), Woda mineralna (330 ml), Filet z kurczaka tradycyjny (panierowany), Filet z kurczaka po hawajsku, Grillowany filet z kurczaka, Kroket (z kapust─ů i grzybami/b─ůd┼║ z mi─Ösem) 1 szt., Placki ziemniaczane 4 szt., Kluski ┼Ťl─ůskie 7 szt., Rolada wo┼éowa (na zam├│wienie), Piecze┼ä wieprzowa, W─ůtr├│bka drobiowa, Gulasz wieprzowy po w─Ögiersku, Pierogi (ruskie lub z mi─Ösem) 6 szt., Jajecznica z 2 szt. jaj, Placki po w─Ögiersku z gulaszem wieprzowym, Nale┼Ťnik z d┼╝emem truskawkowym lub wi┼Ťniowym, Nale┼Ťnik z nutell─ů, bananami, bit─ů ┼Ťmietan─ů, Margherita, Capricciosa, Diavola, Quattro Formaggi, Vegetariana, Prosciutto e Funghi, Salami, Pollo, Spinaci, Wegetrix Standard, Milczenie Wola Standard, Milczenie Wola Double, Halloween Standard, Halloween Double, Smak Vegas, Klaps Fiction Standard, Klaps Fiction Double, Desperado Standard, Desperado Double, Rodzina Serano Standard, Rodzina Serano Double, G┼éodzilla, Kosmiczne Jaja Standard, Zupa wietnamska, Zupa z kurczakiem, Zupa ┼éajska, Pierogi SiuMai z ry┼╝em i sur├│wk─ů, Kurczak z warzywami, Kurczak s┼éodko-kwa┼Ťny, Kurczak pikantny, Kurczak po chi┼äsku, Kurczak po tajsku, Kurczak na gor─ůcym p├│┼émisku, Kurczak w cie┼Ťcie s┼éodko-kwa┼Ťny, Kurczak w cie┼Ťcie pikantny, Kurczak w cie┼Ťcie curry, Kurczak w cie┼Ťcie pi─Öciu smak├│w, Wieprzowina z warzywami, Wieprzowina s┼éodko-kwa┼Ťna, Wieprzowina pikantna, Wieprzowina Curry, Wieprzowina pi─Öciu smak├│w, Wieprzowina po tajsku, Wo┼éowina z warzywami, Wo┼éowina pikantna, Wo┼éowina Curry, Wo┼éowina 5 smak├│w, Wo┼éowina po tajsku, Wo┼éowina na gor─ůcym p├│┼émisku, Kaczka z warzywami, Kaczka pikantna, Kaczka s┼éodko-kwa┼Ťna, Kaczka po chi┼äsku, Kaczka po tajsku, Kaczka na gor─ůcym p├│┼émisku, Krewetki z warzywami, Krewetki pikantne, Krewetki Curry, Krewetki po tajsku, Krewetki na gor─ůcym p├│┼émisku, Kalmary chrupi─ůce s┼éodko-kwa┼Ťne, Kalmary chrupi─ůce pikantne, Kalmary chrupi─ůce Curry, Kalmary chrupi─ůce w pi─Öciu smakach, Kalmary po tajsku, Kalmary na gor─ůcym p├│┼émisku, Kebab ameryka┼äski, Nuggets box, Falafel, Frytki z serem, Frytki z Indii masala, Sa┼éatka grecka, Sos, Baklava, Sok Cappy, Coca-Cola 0,85l, Coca-Cola 0,5l, Coca-Cola 0,3l, Pepsi / Mirinda / 7up, Monster Energy Drink, Ayran Turecki, Mango Sok, Oshee, Burn, Pita Rollo, Pita Rollo, Pita Rollo, Pita Rollo, Pita Rollo z serem, Pita Rollo z serem, Pita Rollo z serem, Pita Rollo z serem
+[parseOrderItems] ­čôŐ Summary:
+  - requestedNames: []
+  - availableNames: []
+  - unavailableNames: []
+  - matched.length: 0
+  - clarifications.length: 0
+[intent-router] Ôťů Parsed result: {
+  "any": false,
+  "groups": [],
+  "clarify": [],
+  "available": [],
+  "unavailable": [
+    "tak, potwierdzam zam├│wienie"
+  ],
+  "needsClarification": true,
+  "unknownItems": [
+    {
+      "name": "tak, potwierdzam zam├│wienie",
+      "reason": "no_alias_match"
+    }
+  ]
+}
+[intent-router] ­čöŹ parsed.any = false
+[intent-router] ­čöŹ parsed.groups.length = 0
+ÔÜá´ŞĆ Unavailable items detected: tak, potwierdzam zam├│wienie in tym menu
+­čöŹ Checking if text contains restaurant name (using cached list): "tak, potwierdzam zam├│wienie"
+­čöŹ Debug session updated: {
+  intent: [32m'clarify_order'[39m,
+  restaurant: [32m'tym menu'[39m,
+  sessionId: [1mnull[22m,
+  confidence: [33m0.9[39m
+}
+Ôťů SmartIntent Resolved: clarify_order (0.90) via classic
+­čžá [DEBUG] Hybrid intent detection complete: {
+  ruleIntent: [32m'clarify_order'[39m,
+  ruleConfidence: [33m0.9[39m,
+  llmIntent: [1mnull[22m,
+  llmConfidence: [33m0[39m,
+  finalIntent: [32m'clarify_order'[39m,
+  finalConfidence: [33m0.9[39m,
+  source: [32m'classic'[39m,
+  hasRestaurant: [33mfalse[39m,
+  restaurantName: [90mundefined[39m,
+  hasParsedOrder: [33mtrue[39m,
+  parsedOrderDetails: { any: [33mfalse[39m, groupsCount: [33m0[39m, groups: [] }
+}
+­čžá [DEBUG] Calling boostIntent with: {
+  text: [32m'Tak, potwierdzam zam├│wienie'[39m,
+  hybridIntent: [32m'clarify_order'[39m,
+  confidence: [33m0.9[39m,
+  session: {
+    expectedContext: [1mnull[22m,
+    lastRestaurant: [32m'Callzone'[39m,
+    lastIntent: [32m'create_order'[39m
+  }
+}
+­čžá [DEBUG] boostIntent result: {
+  originalIntent: [32m'clarify_order'[39m,
+  boostedIntent: [32m'clarify_order'[39m,
+  isContextLocked: [33mfalse[39m
+}
+­čôő Parsed: { dish: [1mnull[22m, restaurant: [1mnull[22m }
+­čžá Context fallback: using last_restaurant = Callzone
+ÔÜá´ŞĆ Skipping LLM reply generation (test mode or no key), using replyCore
+Ôťů Final response: intent=clarify_order, confidence=0.9, fallback=false
+­čôŽ Final Response Preparation: MenuItems count = 6
+
+ ├Ś api/brain/tests/monteCarlo_std.e2e.test.js > Monte Carlo E2E Test (Standard Flow) > should confirm the order 566ms
+   Ôćĺ expected [ 'confirm_order', 'create_order' ] to include 'clarify_order'
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ» Failed
+ Tests 2 ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»Ô
+Ä»
+
+ FAIL  api/brain/tests/monte
+Carlo_std.e2e.test.js > Mont
+e Carlo E2E Test (Standard F
+low) > should find restauran
+ts in the city directly
+AssertionError: expected 'Ot
+o 9 restauracji w lokalizacj
+i PiekaÔÇŽ' to match /Pizzer
+ia Monte Carlo/i
+
+[32m- Expected:[39m 
+/Pizzeria Monte Carlo/i
+
+[31m+ Received:[39m 
+"Oto 9 restauracji w lokaliz
+acji Piekary ┼Ül─ůskie:"
+
+ ÔŁ» api/brain/tests/monteCa
+rlo_std.e2e.test.js:34:32
+     32|         expect(res.
+body.ok).toBe(true);
+     33|         expect(res.
+body.intent).toBe('find_near
+by');
+     34|         expect(res.
+body.reply).toMatch(/Pizzeri
+a Monte Carlo/i);
+       |                    
+            ^
+     35|     });
+     36| 
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»Ô
+Ä»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ
+»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[1/2]ÔÄ»
+
+ FAIL  api/brain/tests/monte
+Carlo_std.e2e.test.js > Mont
+e Carlo E2E Test (Standard F
+low) > should confirm the or
+der
+AssertionError: expected [ '
+confirm_order', 'create_orde
+r' ] to include 'clarify_ord
+er'
+ ÔŁ» api/brain/tests/monteCa
+rlo_std.e2e.test.js:84:51
+     82|         // Sometime
+s it stays on create_order i
+f confirmation isn't peÔÇŽ
+     83|         // but 'Tak
+' in confirm_order context s
+hould work.
+     84|         expect(['co
+nfirm_order', 'create_order'
+]).toContain(res.body.iÔÇŽ
+       |                    
+                            
+   ^
+     85|         expect(res.
+body.reply).toMatch(/przyj─Ö
+┼éam|potwierdzam|gotowe|zÔÇŽ
+     86|     });
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»Ô
+Ä»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ
+»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[2/2]ÔÄ»
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 passed (4)
+   Start at  12:34:18
+   Duration  5.16s (transform 298ms, setup 0ms, collect 1.08s, tests 3.24s, environment 0ms, prepare 226ms)
+

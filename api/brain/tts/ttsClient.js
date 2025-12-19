@@ -1,0 +1,423 @@
+import { getVertexAccessToken } from "../utils/googleAuth.js";
+import OpenAI from "openai";
+import { VertexAI } from "@google-cloud/vertexai";
+import { getConfig } from "../../config/configService.js";
+
+let openaiClient = null;
+let geminiModel = null;
+let vertexClient = null;
+const ttsCache = new Map();
+const stylizeCache = new Map();
+
+function normalizeGoogleVoice(engineRaw, voice) {
+  const raw = String(voice || "");
+  if (/Chirp3-HD-Erinome/i.test(raw)) {
+    return "pl-PL-Wavenet-A";
+  }
+  return raw;
+}
+
+function getVertexClient() {
+  if (vertexClient) return vertexClient;
+  const project =
+    process.env.GOOGLE_PROJECT_ID ||
+    process.env.GCLOUD_PROJECT ||
+    process.env.GOOGLE_PROJECT ||
+    process.env.GOOGLE_CLOUD_PROJECT;
+  const location =
+    process.env.GOOGLE_TTS_LOCATION ||
+    process.env.GCLOUD_LOCATION ||
+    process.env.GEMINI_TTS_LOCATION ||
+    process.env.GOOGLE_VERTEX_LOCATION ||
+    "global";
+  if (!project) {
+    throw new Error("Brak GOOGLE_PROJECT_ID / GCLOUD_PROJECT – VertexAI wymaga jawnego project id");
+  }
+  vertexClient = new VertexAI({ project, location });
+  return vertexClient;
+}
+
+function getGeminiModel(isLive = false) {
+  if (geminiModel && !isLive) return geminiModel;
+
+  const vertex = getVertexClient();
+  const modelName =
+    (isLive
+      ? process.env.GEMINI_LIVE_MODEL
+      : process.env.GEMINI_TTS_MODEL) ||
+    (isLive ? "gemini-2.5-pro-tts" : "gemini-2.5-pro-tts");
+
+  const model = vertex.getGenerativeModel({ model: modelName });
+  if (!isLive) geminiModel = model;
+  return model;
+}
+
+async function playGeminiTTS(text, { voice, pitch, speakingRate, live = false }) {
+  const model = getGeminiModel(live);
+  const voiceId = String(voice || "ZEPHYR");
+
+  const result = await model.generateContent({
+    contents: [
+      {
+        role: "user",
+        parts: [{ text: String(text || "") }],
+      },
+    ],
+    generationConfig: {
+      audioConfig: {
+        voiceConfig: { voice: voiceId },
+        audioEncoding: "LINEAR16",
+        pitch: typeof pitch === "number" ? pitch : 0,
+        speakingRate:
+          typeof speakingRate === "number" ? speakingRate : 1.0,
+      },
+    },
+  });
+
+  const candidate = result?.response?.candidates?.[0];
+  const part = candidate?.content?.parts?.find(
+    (p) => p.inlineData && /^audio\//.test(p.inlineData.mimeType || "")
+  );
+  const base64 = part?.inlineData?.data || "";
+  if (!base64) {
+    console.warn("⚠️ Gemini TTS: no audio data in response");
+  }
+  return base64;
+}
+
+export function clearTtsCaches() {
+  try { ttsCache.clear(); } catch {}
+  try { stylizeCache.clear(); } catch {}
+}
+function getOpenAI() {
+  if (openaiClient) return openaiClient;
+  const apiKey = process.env.OPENAI_API_KEY || '';
+  if (!apiKey) return null;
+  openaiClient = new OpenAI({ apiKey });
+  return openaiClient;
+}
+
+export function refineSpeechText(text, intent) {
+  try {
+    if (!text) return text;
+    text = text.replace(/,?\s*(hotel|restauracja)\s+jest/gi, ' – około').replace(/\s{2,}/g, ' ');
+    text = text.replace(/,\s*/g, ' – ').replace(/– –/g, ' – ');
+    text = text.replace(/(\d+)\s*metr(y|ów)/gi, '$1 metr$2 stąd');
+    if (intent === 'find_nearby') {
+      text = text.replace(/^W pobliżu mam[:]?/i, 'Znalazłam kilka miejsc w pobliżu:').replace(/\b(\d+)\.\s*/g, '').replace(/\s{2,}/g, ' ');
+    }
+    text = text.replace(/\b(burger|hamburger)\b(?:\s+\1\b)+/gi, '$1');
+    text = text.replace(/\b(hotel|pizzeria|restauracja|bar)\b(?:\s+\1\b)+/gi, '$1');
+    try { text = text.replace(/\b([\p{L}]{2,})\b(?:\s+\1\b)+/giu, '$1'); } catch {}
+    return text.trim();
+  } catch { return text; }
+}
+
+function normalizeForTTS(text) {
+  if (!text) return "";
+  let t = text;
+  t = t.replace(/(\d)\.(\d)/g, "$1,$2");
+  t = t.replace(/(\p{L})\s*-\s*(\p{L})/gu, "$1 $2");
+  t = t.replace(/\s+/g, " ").trim();
+  return t;
+}
+
+export function applySSMLStyling(reply, intent = 'neutral') {
+  try {
+    let raw = typeof reply === 'string' ? reply.trim() : '';
+    if (!raw) return reply;
+    if (/<\s*speak[\s>]/i.test(raw)) return raw;
+    raw = refineSpeechText(raw, intent) || raw;
+    raw = raw.replace(/\s*,\s*/g, ', <break time="300ms"/> ');
+    raw = raw.replace(/\s+oraz\s+/gi, ' <break time="280ms"/> oraz ');
+    raw = raw.replace(/\s+i\s+/gi, ' <break time="260ms"/> i ');
+    raw = raw.replace(/([\.!])\s+/g, '$1 <break time="350ms"/> ');
+    return `<speak>${raw}</speak>`;
+  } catch { return reply; }
+}
+
+export async function formatTTSReply(rawText, intent = 'neutral') {
+  try {
+    if (!rawText || typeof rawText !== 'string') return rawText;
+    const pre = refineSpeechText(rawText, intent);
+    if (process.env.NODE_ENV === 'test') return pre;
+    const openai = getOpenAI();
+    if (!openai) return pre;
+    const stylePrompts = {
+      find_nearby: 'mów z entuzjazmem, jak doradca gastronomiczny – polecaj miejsca ciepło, ale konkretnie.',
+      select_by_name: 'mów naturalnie, potwierdzająco, jakbyś wybierała coś w rozmowie.',
+      confirm_order: 'mów spokojnie i profesjonalnie, z nutą serdeczności.',
+      cancel_order: 'mów łagodnie, neutralnie – bez napięcia.',
+      recommend: 'mów z lekko promocyjnym tonem, jakbyś znała te miejsca osobiście.',
+      none: 'mów z zaciekawieniem i empatią, jakbyś chciała doprecyzować pytanie.',
+    };
+    const systemPrompt = `Jesteś Amber – głosem FreeFlow. Nie zmieniaj faktów – tylko ton wypowiedzi. Intencja: "${intent}". Styl: ${stylePrompts[intent] || 'mów naturalnie, jasno i przyjaźnie.'}`;
+    const resp = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      temperature: 0.7,
+      messages: [ { role: 'system', content: systemPrompt }, { role: 'user', content: `Przeredaguj do mowy:\n${pre}` } ]
+    });
+    const out = resp?.choices?.[0]?.message?.content?.trim();
+    return out || pre;
+  } catch (e) {
+    console.error('formatTTSReply error:', e);
+    return refineSpeechText(rawText, intent);
+  }
+}
+
+export async function stylizeWithGPT4o(rawText, intent = 'neutral') {
+  try {
+    if (!rawText || typeof rawText !== 'string') return rawText;
+    const model = process.env.OPENAI_MODEL;
+    if (!model) return rawText;
+    if (process.env.NODE_ENV === 'test') return rawText;
+    const openai = getOpenAI();
+    if (!openai) return rawText;
+    const key = `${rawText}|${intent}`;
+    if (stylizeCache.has(key)) return stylizeCache.get(key);
+    let system = `Jesteś Amber – głosem FreeFlow. Przekształć surowy tekst w krótką, naturalną wypowiedź (max 2 zdania), ciepły lokalny ton, lekko dowcipny. Nie używaj list, numeracji ani nawiasów. Nie dodawaj informacji, nie używaj znaczników i SSML. Intencja: ${intent}.`;
+
+    try {
+      const cfg = await getConfig();
+      const style = (cfg?.speech_style || 'standard').toLowerCase();
+
+      if (cfg?.amber_prompt && typeof cfg.amber_prompt === "string" && cfg.amber_prompt.trim().length > 0) {
+        system = cfg.amber_prompt;
+      } else if (style === 'silesian' || style === 'śląska' || style === 'slask') {
+        system = `Jesteś Amber – głosem FreeFlow. Przekształć surowy tekst w krótką, naturalną wypowiedź (max 2 zdania).
+Mów przyjaźnie i jasno, ale używaj śląskiej gwary (gōdka) – lekkiej i zrozumiałej dla osób spoza regionu.
+Unikaj bardzo rzadkich słów, nie przesadzaj z gwarą, tylko dodaj lokalny klimat (np. „joch”, „kaj”, "po naszymu").
+Nie zmieniaj faktów ani liczb. Intencja użytkownika: "${intent}".`;
+      }
+    } catch {}
+    let out = '';
+    if (process.env.OPENAI_STREAM === 'true') {
+      const completion = await openai.chat.completions.create({
+        model,
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: `Przeredaguj na mowę rozmowną:\n${rawText}` }
+        ],
+        temperature: 0.6,
+        stream: true
+      });
+      for await (const chunk of completion) {
+        out += chunk?.choices?.[0]?.delta?.content || '';
+      }
+    } else {
+      const resp = await openai.chat.completions.create({
+        model,
+        temperature: 0.6,
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: `Przeredaguj na mowę rozmowną:\n${rawText}` }
+        ]
+      });
+      out = resp?.choices?.[0]?.message?.content?.trim() || '';
+    }
+    if (!out) return rawText;
+    const cleaned = out.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+    stylizeCache.set(key, cleaned);
+    if (stylizeCache.size > 20) stylizeCache.delete(stylizeCache.keys().next().value);
+    return cleaned;
+  } catch (e) {
+    console.warn('stylizeWithGPT4o error:', e?.message || e);
+    return rawText;
+  }
+}
+
+export async function playTTS(text, options = {}) {
+  try {
+    text = normalizeForTTS(text);
+    let cfg;
+    try {
+      cfg = await getConfig();
+    } catch {}
+
+    const engineRaw = (cfg?.tts_engine?.engine || process.env.TTS_MODE || "vertex").toLowerCase();
+    const voiceCfg = cfg?.tts_voice?.voice || process.env.TTS_VOICE || "pl-PL-Wavenet-A";
+    const rawVoice = options.voice || voiceCfg;
+    const voice = normalizeGoogleVoice(engineRaw, rawVoice);
+
+    const cfgTone = (cfg?.tts_tone || "").toLowerCase();
+    const toneRaw = (options.tone || cfgTone || "swobodny").toLowerCase();
+
+    const SIMPLE =
+      engineRaw === "basic" ||
+      engineRaw === "wavenet" ||
+      engineRaw === "chirp";
+    let isGeminiTTS =
+      engineRaw === "gemini-tts" ||
+      engineRaw === "gemini_tts" ||
+      engineRaw === "gemini";
+    const isGeminiLive =
+      engineRaw === "gemini-live" ||
+      engineRaw === "gemini_live";
+    let USE_VERTEX = engineRaw === "vertex";
+    const USE_LINEAR16 = process.env.TTS_LINEAR16 === "true";
+    const isChirpHD = engineRaw === "chirp" || /Chirp3-HD/i.test(String(rawVoice));
+    const lowerVoice = String(rawVoice).toLowerCase();
+    const geminiVoiceNames = new Set(['zephyr','aoede','erinome','achernar']);
+    if (!isGeminiTTS && geminiVoiceNames.has(lowerVoice)) {
+      isGeminiTTS = true;
+      USE_VERTEX = false;
+      console.log('[TTS] Auto-switch: voice is Gemini-specific, using Gemini TTS');
+    }
+
+
+    const basePitch = toneRaw === "swobodny" ? 2 : toneRaw === "formalny" ? -1 : 0;
+    const baseRate = toneRaw === "swobodny" ? 1.1 : toneRaw === "formalny" ? 0.95 : 1.0;
+
+    const pitch =
+      typeof cfg?.tts_pitch === "number"
+        ? cfg.tts_pitch
+        : basePitch;
+    const speakingRate =
+      typeof cfg?.tts_rate === "number"
+        ? cfg.tts_rate
+        : baseRate;
+
+    console.log('[TTS]', 'Generating:', String(text || '').slice(0, 80) + '...');
+
+    if (isGeminiTTS || isGeminiLive) {
+      console.log(
+        `[TTS] Using Gemini ${isGeminiLive ? "Live" : "2.5 Pro TTS"} voice: ${voice}`
+      );
+      const cacheKeyGemini = `${String(text)}|${voice}|${toneRaw}|gemini${isGeminiLive ? ":live" : ""}`;
+      if (ttsCache.has(cacheKeyGemini)) return ttsCache.get(cacheKeyGemini);
+      try {
+        const audio = await playGeminiTTS(text, {
+          voice,
+          pitch,
+          speakingRate,
+          live: isGeminiLive,
+        });
+        if (!audio || /^</.test(String(audio).trim())) {
+          throw new Error("Gemini returned non-audio payload");
+        }
+        ttsCache.set(cacheKeyGemini, audio);
+        if (ttsCache.size > 10) ttsCache.delete(ttsCache.keys().next().value);
+        return audio;
+      } catch (err) {
+        console.warn(`⚠️ Gemini TTS failed: ${err?.message || err}. Falling back to BASIC/Wavenet.`);
+      }
+    }
+
+    const accessToken = await getVertexAccessToken();
+    if (SIMPLE || !USE_VERTEX) {
+      const original = String(text || '');
+      const hasSSML = /<\s*speak[\s>]/i.test(original);
+      const ssml = hasSSML ? original : applySSMLStyling(original);
+      const audioEnc = 'MP3';
+
+      let googleVoiceName = voice;
+      const isGoogleVoice = /^[a-z]{2}-[A-Z]{2}-/.test(googleVoiceName);
+      if (!isGoogleVoice) {
+        const geminiToGoogleFallback = {
+          zephyr: 'pl-PL-Wavenet-D',
+          aoede: 'pl-PL-Wavenet-A',
+          erinome: 'pl-PL-Wavenet-A',
+          achernar: 'pl-PL-Wavenet-D'
+        };
+        const mapped = geminiToGoogleFallback[String(googleVoiceName).toLowerCase()];
+        googleVoiceName = mapped || 'pl-PL-Wavenet-D';
+        console.log(`[TTS] Voice fallback → ${googleVoiceName}`);
+      }
+      const langMatch = googleVoiceName.match(/^([a-z]{2}-[A-Z]{2})-/);
+      const languageCode = langMatch ? langMatch[1] : 'pl-PL';
+
+      const engineLabel = engineRaw === "chirp" ? "Chirp HD" : "BASIC";
+      console.log(`🔊 Using ${engineLabel} TTS (${googleVoiceName}, ${audioEnc})`);
+
+      const cacheKey = `${ssml}|${googleVoiceName}|${toneRaw}|${engineRaw}`;
+      if (ttsCache.has(cacheKey)) return ttsCache.get(cacheKey);
+
+      const audioConfig = {
+        audioEncoding: 'MP3',
+        pitch,
+        speakingRate,
+      };
+
+      if (isChirpHD) {
+        audioConfig.effectsProfileId = ["headphone-class-device"];
+      }
+
+      const response = await fetch("https://texttospeech.googleapis.com/v1/text:synthesize", {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          input: { ssml },
+          voice: { languageCode, name: googleVoiceName },
+          audioConfig
+        })
+      });
+      if (!response.ok) {
+        const t = await response.text().catch(()=> '');
+        console.error('❌ BASIC TTS error:', response.status, t);
+        throw new Error(`TTS API failed: ${response.status}`);
+      }
+      const result = await response.json();
+      const audioContent = result.audioContent || '';
+      ttsCache.set(cacheKey, audioContent);
+      if (ttsCache.size > 10) ttsCache.delete(ttsCache.keys().next().value);
+      return audioContent;
+    }
+    console.log('✅ Google access token obtained successfully');
+
+    let endpoint = "https://europe-west1-texttospeech.googleapis.com/v1beta1/text:synthesize";
+    let reqBody = {
+      input: /<\s*speak[\s>]/i.test(text || '') ? { ssml: text } : { text },
+      voice: { languageCode: "pl-PL", name: voice },
+      audioConfig: (isChirpHD ? { audioEncoding: 'MP3' } : { audioEncoding: 'MP3', pitch, speakingRate })
+    };
+    console.log('🔊 Using Vertex: ' + voice);
+    const cacheKeyVertex = `${JSON.stringify(reqBody.input)}|${voice}|${toneRaw}`;
+    if (ttsCache.has(cacheKeyVertex)) return ttsCache.get(cacheKeyVertex);
+    let response = await fetch(
+      endpoint,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(reqBody)
+      }
+    );
+
+    if (!response.ok && (response.status === 400 || response.status === 403 || response.status === 404)) {
+      console.warn(`⚠️ Vertex failed (${response.status}), switching to Wavenet-D`);
+      endpoint = "https://texttospeech.googleapis.com/v1/text:synthesize";
+      const payload = JSON.parse(JSON.stringify(reqBody));
+      if (payload.input?.ssml) {
+        payload.input.text = String(payload.input.ssml).replace(/<[^>]+>/g, "");
+        delete payload.input.ssml;
+      }
+      payload.audioConfig = { audioEncoding: 'MP3', pitch, speakingRate };
+      payload.voice = { languageCode: "pl-PL", name: "pl-PL-Wavenet-D" };
+      console.log('🔊 Using Wavenet: ' + payload.voice.name);
+      response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    }
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ playTTS API error:', response.status, errorText);
+      throw new Error(`TTS API failed: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('✅ TTS audio generated successfully');
+    const audioContent = result.audioContent;
+    const finalKey = endpoint.includes('europe-west1') ? cacheKeyVertex : `${String(text)}|${voice}|${toneRaw}`;
+    ttsCache.set(finalKey, audioContent);
+    if (ttsCache.size > 10) ttsCache.delete(ttsCache.keys().next().value);
+    return audioContent;
+  } catch (e) {
+    console.error("🔥 playTTS Error:", e.message);
+    throw e;
+  }
+}

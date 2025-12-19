@@ -1,0 +1,8 @@
+#!/bin/sh
+echo "🧠 FreeFlow pre-commit sanity check..."
+if ! grep -q "FreeFlow Iteration Report" "$(git diff --cached --name-only | head -1)"; then
+  echo "❌ Brak checklisty w commicie!"
+  echo "Dodaj raport z sekcją FreeFlow Iteration Report przed commitem."
+  exit 1
+fi
+echo "✅ Checklist found, proceeding..."

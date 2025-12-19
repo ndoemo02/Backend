@@ -1,0 +1,17 @@
+{
+  "name": "freeflow-brain-tests",
+  "version": "1.0.0",
+  "description": "Testy jednostkowe dla FreeFlow Brain Router",
+  "type": "module",
+  "scripts": {
+    "test": "vitest \"./*.test.js\"",
+    "test:watch": "vitest --watch \"./*.test.js\"",
+    "test:coverage": "vitest --coverage \"./*.test.js\"",
+    "test:ui": "vitest --ui \"./*.test.js\""
+  },
+  "devDependencies": {
+    "vitest": "^1.0.0",
+    "@vitest/ui": "^1.0.0",
+    "@vitest/coverage-v8": "^1.0.0"
+  }
+}

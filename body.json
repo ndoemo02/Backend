@@ -1,0 +1,13 @@
+{
+  "fulfillmentInfo": {
+    "tag": "ORDER_CREATE"
+  },
+  "sessionInfo": {
+    "parameters": {
+      "food_item": "Pizza Margherita",
+      "number": 2,
+      "restaurant_id": "123"
+    }
+  },
+  "text": "Chcę zamówić 2 pizze Margherita"
+}

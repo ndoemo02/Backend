@@ -1,0 +1,79 @@
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import multer from "multer";
+import fs from "fs";
+import OpenAI from "openai";
+
+import speech from "@google-cloud/speech";
+import textToSpeech from "@google-cloud/text-to-speech";
+import testFlowRouter from "./api/test-flow.js";
+
+dotenv.config();
+const app = express();
+
+// === CORS ===
+app.use(cors({
+  origin: [
+    "https://freeflow-frontend.vercel.app",
+    "https://freeflow-frontend-seven.vercel.app",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173"
+  ],
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// === TEST ROUTE ===
+app.get("/", (req, res) => {
+  res.send("✅ FreeFlow backend działa!");
+});
+
+// === TEST API FLOW ===
+app.use("/api/test", testFlowRouter);
+
+// === TTS ENDPOINT ===
+app.post("/api/tts", async (req, res) => {
+  try {
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const { text, voice = "alloy" } = req.body;
+
+    const mp3 = await openai.audio.speech.create({
+      model: "gpt-4o-mini-tts",
+      voice,
+      input: text
+    });
+
+    const buffer = Buffer.from(await mp3.arrayBuffer());
+    res.setHeader("Content-Type", "audio/mpeg");
+    res.send(buffer);
+
+  } catch (err) {
+    console.error("💥 Błąd TTS:", err);
+    res.status(500).json({ error: "Błąd generowania audio" });
+  }
+});
+
+// === REALTIME TOKEN (dla AmberTwoWay.jsx) ===
+app.get("/api/realtime-token", async (req, res) => {
+  try {
+    res.json({ token: process.env.OPENAI_API_KEY });
+  } catch (err) {
+    console.error("Realtime token error:", err);
+    res.status(500).json({ error: "Nie udało się pobrać tokenu" });
+  }
+});
+
+// === 404 FALLBACK FIX ===
+app.use((req, res) => {
+  res.status(404).json({ error: "Not found" });
+});
+
+// === SERVER START ===
+const PORT = process.env.PORT || 3003;
+app.listen(PORT, () => {
+  console.log(🚀 FreeFlow backend running on http://localhost:${PORT});
+});

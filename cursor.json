@@ -1,0 +1,7 @@
+{
+  "buildFlowMode": true,
+  "autoFixImports": false,
+  "respectManualStructure": true,
+  "behavior": "fast_and_clean",
+  "onIdleTask": "run healthcheck && lint --fix"
+}

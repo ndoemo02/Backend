@@ -1,0 +1,8 @@
+#!/bin/sh
+echo "🚀 Running local test: parseOrderItems"
+npm run test:parse || {
+  echo "❌ Parser test failed – zatrzymano push."
+  exit 1
+}
+echo "✅ Parser test passed. Push allowed."
+
