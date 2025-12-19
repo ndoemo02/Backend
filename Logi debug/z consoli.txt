@@ -1,2493 +1,1605 @@
-request_received
-•
-02:34:29.799
-Input: "Pokaż menu Klaps Burgers"
-response_sent
-•
-02:34:35.917
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
+[brainRouter] 🚀 Handler called (Legacy Mode)
+[intent-router] 🚀 detectIntent called with: { text: 'Poproszę frytki z serem i falafel', sessionId: undefined }
+[intent-router] 🔍 Starting early dish detection for text: Poproszę frytki z serem i falafel
+[intent-router] 🔍 Normalized text: poproszę frytki z serem i falafel
+[intent-router] 🔍 Session restaurant: NONE
+[intent-router] 🔍 Restaurant indicators in text: true
+[intent-router] 🔍 Searching for restaurant in text (reason: no session restaurant)
+🧠 [DEBUG] Handler called with: {
+  sessionId: 'session-1766038236531',
+  text: 'Poproszę frytki z serem i falafel',
+  method: 'POST',
+  body: {
+    text: 'Poproszę frytki z serem i falafel',
+    sessionId: 'session-1766038236531',
+    lat: 52.2297,
+    lng: 21.0122,
+    includeTTS: false
+  },
+  hasText: true,
+  textLength: 33
+}
+🧠 [DEBUG] Current session state: {
+  sessionId: 'session-1766038236531',
+  session: {
+    expectedContext: null,
+    lastIntent: 'menu_request',
+    lastRestaurant: {
+      id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Tasty King Kebab',
+      address: 'ul. Bytomska 70',
+      city: 'Piekary Śląskie',
+      lat: 50.38587,
+      lng: 18.94712
     },
-    "restaurant_id": "569a7d29-57be-4224-bdf3-09c483415cea"
+    lastRestaurantsList: [],
+    lastRestaurants: [],
+    lastRestaurantsTimestamp: null,
+    lastMenu: [],
+    locationOverride: null,
+    history: [],
+    locationCache: { 'piekary śląskie_fast food': [Object] },
+    last_location: 'Piekary Śląskie',
+    lastUpdated: 1766154052367,
+    last_restaurants_list: [ [Object], [Object] ],
+    last_menu: [ [Object], [Object], [Object], [Object], [Object], [Object] ]
   },
-  "reply": "W Klaps Burgers dostępne są m.in.: Desperado Double za 46 zł, Desperado Standard za 36 zł, Głodzilla za 59 zł, Grzybiarz z Piekaryhill za 40 zł, Halloween Double za 49 zł oraz Halloween Standard za 39 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 5232,
-    "nluMs": 1029,
-    "ttsMs": 0,
-    "totalMs": 6777
+  hasExpectedContext: false,
+  expectedContextValue: null,
+  hasLastRestaurant: true,
+  lastRestaurantName: 'Tasty King Kebab',
+  hasLastLocation: true,
+  lastLocation: 'Piekary Śląskie',
+  hasPendingOrder: false,
+  lastIntent: 'menu_request',
+  sessionKeys: [
+    'expectedContext',
+    'lastIntent',
+    'lastRestaurant',
+    'lastRestaurantsList',
+    'lastRestaurants',
+    'lastRestaurantsTimestamp',
+    'lastMenu',
+    'locationOverride',
+    'history',
+    'locationCache',
+    'last_location',
+    'lastUpdated',
+    'last_restaurants_list',
+    'last_menu'
+  ]
+}
+🧭 GeoContext Layer activated for: "Poprosz"
+[intent-router] 🔍 Checking 9 restaurants for fuzzy match
+[loadMenuCatalog] 🔍 Session: null
+[loadMenuCatalog] 🔍 lastRestaurant: undefined
+[loadMenuCatalog] 🔍 lastId: undefined
+[loadMenuCatalog] ⚠️ Loading all menu items (no restaurant in session)
+⚙️ GeoContext: brak wyników w "Poprosz"
+⚙️ GeoContext: brak wyników w "Poprosz" — kontynuuj normalny flow
+[brainRouter] 🧠 Calling detectIntent with: {
+  text: 'Poproszę frytki z serem i falafel',
+  sessionId: 'session-1766038236531'
+}
+[brainRouter] 🧠 Current session: {
+  expectedContext: null,
+  lastIntent: 'menu_request',
+  lastRestaurant: {
+    id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+    name: 'Tasty King Kebab',
+    address: 'ul. Bytomska 70',
+    city: 'Piekary Śląskie',
+    lat: 50.38587,
+    lng: 18.94712
   },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-02:34:35.918
-{
-  "reply": "W Klaps Burgers dostępne m.in.: Desperado Double (46.00 zł), Desperado Standard (36.00 zł), Głodzilla (59.00 zł), Grzybiarz z Piekaryhill (40.00 zł), Halloween Double (49.00 zł), Halloween Standard (39.00 zł). Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 1
-}
-response_sent
-•
-02:34:36.103
-{
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T01:34:36.102Z"
-}
-request_received
-•
-02:35:18.477
-Input: "Pokaż menu Stara Kamienica"
-response_sent
-•
-02:35:26.486
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
+  lastRestaurantsList: [],
+  lastRestaurants: [],
+  lastRestaurantsTimestamp: null,
+  lastMenu: [],
+  locationOverride: null,
+  history: [],
+  locationCache: {
+    'piekary śląskie_fast food': { data: [Array], timestamp: 1766153991955 }
+  },
+  last_location: 'Piekary Śląskie',
+  lastUpdated: 1766154052367,
+  last_restaurants_list: [
+    {
+      id: '569a7d29-57be-4224-bdf3-09c483415cea',
+      name: 'Klaps Burgers',
+      address: 'ul. Piotra Skargi 15',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Amerykańska',
+      lat: 50.38643,
+      lng: 18.95422
     },
-    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
-  },
-  "reply": "W Restauracji Stara Kamienica dostępne m.in.: \n\n- Filet z kurczaka po hawajsku – 19 zł\n- Filet z kurczaka tradycyjny (panierowany) – 15 zł\n- Fondant czekoladowy z lodami i bitą śmietaną – 22 zł\n- Grillowany filet z kurczaka – 15 zł\n- Gulasz wieprzowy po węgiersku – 23 zł\n- Jajecznica z 2 szt. jaj – 11 zł\n\nCo chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 5827,
-    "nluMs": 2285,
-    "ttsMs": 0,
-    "totalMs": 8474
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-02:35:26.486
-{
-  "reply": "W Restauracja Stara Kamienica dostępne m.in.: Filet z kurczaka po hawajsku (19.00 zł), Filet z kurczaka tradycyjny (panierowany) (15.00 zł), Fondant czekoladowy z lodami i bitą śmietaną (22.00 zł), Grillowany filet z kurczaka (15.00 zł), Gulasz wieprzowy po węgiersku (23.00 zł), Jajecznica z 2 szt. jaj (11.00 zł). Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "llm",
-  "confidence": 0.9
-}
-response_sent
-•
-02:35:26.665
-{
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T01:35:26.665Z"
-}
-request_received
-•
-04:14:04.719
-Input: "co polecisz w Piekarach Śląskich"
-request_received
-•
-04:14:15.045
-Input: "Pokaż trzy restauracje najbliżej"
-intent_resolved
-•
-04:14:20.548
-{
-  "reply": "Znalazłam 9. Oto top 3 propozycje w Piekary Śląskie:\n1. Restauracja Stara Kamienica (Polska)\n2. Rezydencja Luxury Hotel (Międzynarodowa)\n3. Klaps Burgers (Amerykańska)\n\nKtórą wybierasz?",
-  "intent": "show_city_results",
-  "source": "classic",
-  "confidence": 0.9
-}
-request_received
-•
-04:14:44.615
-Input: "Pokaż klaps Burger"
-intent_resolved
-•
-04:14:52.637
-{
-  "reply": "W Klaps Burgers dostępne m.in.: \n\n- Desperado Double (46 zł)\n- Desperado Standard (36 zł)\n- Głodzilla (59 zł)\n- Grzybiarz z Piekaryhill (40 zł)\n- Halloween Double (49 zł)\n- Halloween Standard (39 zł)\n\nCo chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "llm",
-  "confidence": 0.9
-}
-response_sent
-•
-04:14:52.637
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wyraża chęć poszukiwania szczegółów dotyczących restauracji Klaps Burgers, co sugeruje, że chce zobaczyć menu tej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "restaurant_id": "569a7d29-57be-4224-bdf3-09c483415cea"
-  },
-  "reply": "W Klaps Burgers dostępne m.in.: \n\n- Desperado Double (46 zł)\n- Desperado Standard (36 zł)\n- Głodzilla (59 zł)\n- Grzybiarz z Piekaryhill (40 zł)\n- Halloween Double (49 zł)\n- Halloween Standard (39 zł)\n\nCo chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 6271,
-    "nluMs": 1893,
-    "ttsMs": 0,
-    "totalMs": 8139
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-04:14:52.788
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wyraża chęć poszukiwania szczegółów dotyczących restauracji Klaps Burgers, co sugeruje, że chce zobaczyć menu tej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": "pokaż",
-      "quantity": null,
-      "targetItems": [
-        "klaps burger"
-      ],
-      "isContextLocked": false,
-      "targetRestaurant": {
-        "id": "569a7d29-57be-4224-bdf3-09c483415cea",
-        "name": "Klaps Burgers"
-      }
+    {
+      id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Tasty King Kebab',
+      address: 'ul. Bytomska 70',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Kebab',
+      lat: 50.38587,
+      lng: 18.94712
     }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T03:14:52.788Z"
-}
-request_received
-•
-04:18:15.598
-Input: "poleć mi stan do zjedzenia w pobliżu"
-intent_resolved
-•
-04:18:21.102
-{
-  "reply": "Mam 3 miejsca w Piekary Śląskie:\n1. Restauracja Stara Kamienica - Polska\n2. Rezydencja Luxury Hotel - Międzynarodowa\n3. Klaps Burgers - Amerykańska\n\nKtóre Cię interesuje?",
-  "intent": "find_nearby",
-  "source": "classic",
-  "confidence": 0.9
-}
-request_received
-•
-04:18:41.930
-Input: "wybieram Stara Kamienica"
-response_sent
-•
-04:18:49.876
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację 'Stara Kamienica', co wskazuje na zamiar przeglądania menu tej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
+  ],
+  last_menu: [
+    {
+      id: '832e3395-cd6f-4119-acc0-68290e6ba693',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Baklava',
+      description: null,
+      category: 'Przekąski',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 6,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
     },
-    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
-  },
-  "reply": "W Restauracji Stara Kamienica dostępne są m.in. Filet z kurczaka po hawajsku za 19 zł, Filet z kurczaka tradycyjny za 15 zł, Fondant czekoladowy z lodami za 22 zł, Grillowany filet z kurczaka za 15 zł, Gulasz wieprzowy po węgiersku za 23 zł oraz Jajecznica za 11 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 7589,
-    "nluMs": 520,
-    "ttsMs": 0,
-    "totalMs": 8228
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-04:18:49.876
-{
-  "reply": "W Restauracji Stara Kamienica dostępne są m.in. Filet z kurczaka po hawajsku za 19 zł, Filet z kurczaka tradycyjny za 15 zł, Fondant czekoladowy z lodami za 22 zł, Grillowany filet z kurczaka za 15 zł, Gulasz wieprzowy po węgiersku za 23 zł oraz Jajecznica za 11 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 1
-}
-response_sent
-•
-04:18:50.000
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację 'Stara Kamienica', co wskazuje na zamiar przeglądania menu tej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
+    {
+      id: '56f5ee57-9939-41f5-93db-4d8116ac4f44',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Falafel',
+      description: null,
+      category: 'Kebab',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 13,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
     },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "Stara Kamienica"
+    {
+      id: 'ed0502fa-eb68-453c-b6e0-e6fdff88f7df',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Frytki z Indii masala',
+      description: null,
+      category: 'Przekąski',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 7,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: '6edfdf0f-71e3-478c-bceb-0a9c58d75100',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Frytki z serem',
+      description: null,
+      category: 'Przekąski',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 9,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: '3b842a08-7769-4c33-9f48-ca6f31cfaa6c',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Kebab amerykański',
+      description: null,
+      category: 'Kebab',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 20,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: 'df133e95-e52d-4bbc-971d-b8fc5fade7a2',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Nuggets box',
+      description: null,
+      category: 'Kebab',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 15,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
     }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T03:18:50.000Z"
+  ]
 }
-request_received
-•
-05:05:30.835
-Input: "Pokaż restauracje w Piekarach"
-request_received
-•
-05:07:29.488
-Input: "Tak"
-intent_resolved
-•
-05:07:34.019
-{
-  "reply": "Znalazłam 9. Oto top 3 propozycje w Piekary:\n1. Restauracja Stara Kamienica (Polska)\n2. Rezydencja Luxury Hotel (Międzynarodowa)\n3. Klaps Burgers (Amerykańska)\n\nKtórą wybierasz?",
-  "intent": "show_city_results",
-  "source": "classic",
-  "confidence": 0.9
-}
-request_received
-•
-05:08:29.553
-Input: "Otwórz City Burger Piekary Śląskie"
-response_sent
-•
-05:08:38.850
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
+🔬 Starting Smart Intent Layer...
+[intent-router] 🚀 detectIntent called with: { text: 'Poproszę frytki z serem i falafel', sessionId: undefined }
+[intent-router] 🔍 Starting early dish detection for text: Poproszę frytki z serem i falafel
+[intent-router] 🔍 Normalized text: poproszę frytki z serem i falafel
+[intent-router] 🔍 Session restaurant: NONE
+[intent-router] 🔍 Restaurant indicators in text: true
+[intent-router] 🔍 Searching for restaurant in text (reason: no session restaurant)
+[loadMenuCatalog] ✅ Loaded 245 menu items from 9 restaurants
+[loadMenuCatalog] ✅ Sample items: Pizza Šunková, Pizza Ekkluzivne, Pizza Láska Nebeská
+[intent-router] Catalog loaded: 245 items
+[intent-router] 🔍 Calling parseOrderItems...
+[intent-router] 🔍 Catalog items: Pizza Šunková, Pizza Ekkluzivne, Pizza Láska Nebeská, Rumcajsowy Burger, Golonka confit, Sałatka z halloumi, Zupa pomidorowa, Kofola klasyczna, Hawajska, Coca-Cola, Coca-Cola Zero, Fanta Pomarańczowa, Sprite, Coca-Cola, Fanta, Piwo Tyskie, Pizza Margherita 33cm, Pizza Pepperoni 33cm, Pizza Hawajska 33cm, Pizza Capricciosa 33cm, Pizza Vege 33cm, Bacon Burger, Better Than Drwal - Wołowina, Cheddar Burger, Vege Burger, Spicy Burger, Bowl Gyros-Halloumi, Bowl z Dynią, Bowl Kurczak Zapiekany z Serem, Filet Grillowany, Pulled Pork Bowl Pikantny, Zapiekaniec, Cappy Jabłko, Krem z Cebuli i Czosnku, Sałatka Cezar Callzone, Sałatka Grillowany Kurczak, Sałatka Halloumi, Sałatka z Serem Camembert, Sałatka z Serem Feta, Sałatka z Dynią, Szarlotka, Sernik z Musem Malinowym, Ciasto Marchewkowe, Pepsi 0.85L, Kawa Czarna, Kawa Biała, Flat White, Cappuccino, Latte, Sos Tzatziki, Sos Pikantny, Sos Jogurtowy, Gęsie żołądki, Camembert z żurawiną, Deska zakąsek dla dwojga, Wodzionka, Żur śląski w chlebie, Żur śląski na talerzu, Krem borowikowy, Zupa pomidorowa, Barszcz z tortellini, Flaki z indyka, Burger wołowy z frytkami i surówką, Burger wegetariański z Camembertem, frytkami oraz zestawem surówek, Gyros z frytkami i tzatziki, Żeberka wieprzowe z frytkami, Kotlety czopskie, Dzikie placki, Wątróbka drobiowa, Grillowany filet z kurczaka, Kurczak po parysku, Ćwiartka kaczki, Rolada wieprzowa, Kotlet schabowy, Polędwica wieprzowa, Kotlet po szwajcarsku, Rolada wołowa, Ozór wołowy, Miruna w panierce, Zupa z kaczki, Zupa Won Ton, Tagliatelle ze szpinakiem, suszonymi pomidorami i płatkami migdałów, Rosół z makaronem, Naleśniki z serem na słodko z bitą śmietaną, Carbonara a'la Hubertus, Filet z łososia na szpinaku, Stek z halibuta smażony na maśle, Pstrąg na ziołowo, Pierogi z mięsem, Pierogi ruskie, Kluski z sosem pieczeniowym, Sałatka Hubertusa z pieczywem czosnkowym, Sałatka grecka z pieczywem czosnkowym, Kluski śląskie, Ziemniaki z wody, Bratkartoffel, Kapusta modra, Kapusta zasmażana, Nuggetsy z frytkami oraz surówką z marchewki, Cappy Pomarańcza, Woda Mineralna, Tiramisu, Panna Cotta, Brownie, Lody waniliowe z sosem karmelowym, Kosmiczne Jaja Double, Wegetrix Double, Żwirek i Muchomorek Standard, Zupa krabowa, Sajgonki 3 szt., Sajgonki z ryżem, Sajgonki z surówką, Sajgonki z ryżem i surówką, Pierogi Ho Cao z ryżem i surówką, Grzybiarz z Piekaryhill, MrDrwal, Onionator, Hot-dog by KLAPS, Krem z dyni z białą czekoladą, Siekany tatar z polędwicy wołowej, Wędzony pstrąg, Carpaccio z kaczki marynowanej w grzańcu, BUFFAL, Kartacze z dzikiem, Sałatka z dynią marynowaną w musztardzie, Grzanka z krupniokiem, Tagliatelle z krewetkami, Makaron ryżowy z warzywami, Zupa dnia, Rosół z makaronem, Tradycyjny schabowy, Schab po beskidzku, Naleśnik z kurczakiem i warzywami, Naleśnik ze szpinakiem i serem feta, Lody z gorącymi malinami i bitą śmietaną, Fondant czekoladowy z lodami i bitą śmietaną, Coca-Cola, Fanta, Sprite, Cappy (200 ml), Woda mineralna (330 ml), Filet z kurczaka tradycyjny (panierowany), Filet z kurczaka po hawajsku, Grillowany filet z kurczaka, Kroket (z kapustą i grzybami/bądź z mięsem) 1 szt., Placki ziemniaczane 4 szt., Kluski śląskie 7 szt., Rolada wołowa (na zamówienie), Pieczeń wieprzowa, Wątróbka drobiowa, Gulasz wieprzowy po węgiersku, Pierogi (ruskie lub z mięsem) 6 szt., Jajecznica z 2 szt. jaj, Placki po węgiersku z gulaszem wieprzowym, Naleśnik z dżemem truskawkowym lub wiśniowym, Naleśnik z nutellą, bananami, bitą śmietaną, Margherita, Capricciosa, Diavola, Quattro Formaggi, Vegetariana, Prosciutto e Funghi, Salami, Pollo, Spinaci, Wegetrix Standard, Milczenie Wola Standard, Milczenie Wola Double, Halloween Standard, Halloween Double, Smak Vegas, Klaps Fiction Standard, Klaps Fiction Double, Desperado Standard, Desperado Double, Rodzina Serano Standard, Rodzina Serano Double, Głodzilla, Kosmiczne Jaja Standard, Zupa wietnamska, Zupa z kurczakiem, Zupa łajska, Pierogi SiuMai z ryżem i surówką, Kurczak z warzywami, Kurczak słodko-kwaśny, Kurczak pikantny, Kurczak po chińsku, Kurczak po tajsku, Kurczak na gorącym półmisku, Kurczak w cieście słodko-kwaśny, Kurczak w cieście pikantny, Kurczak w cieście curry, Kurczak w cieście pięciu smaków, Wieprzowina z warzywami, Wieprzowina słodko-kwaśna, Wieprzowina pikantna, Wieprzowina Curry, Wieprzowina pięciu smaków, Wieprzowina po tajsku, Wołowina z warzywami, Wołowina pikantna, Wołowina Curry, Wołowina 5 smaków, Wołowina po tajsku, Wołowina na gorącym półmisku, Kaczka z warzywami, Kaczka pikantna, Kaczka słodko-kwaśna, Kaczka po chińsku, Kaczka po tajsku, Kaczka na gorącym półmisku, Krewetki z warzywami, Krewetki pikantne, Krewetki Curry, Krewetki po tajsku, Krewetki na gorącym półmisku, Kalmary chrupiące słodko-kwaśne, Kalmary chrupiące pikantne, Kalmary chrupiące Curry, Kalmary chrupiące w pięciu smakach, Kalmary po tajsku, Kalmary na gorącym półmisku, Kebab amerykański, Nuggets box, Falafel, Frytki z serem, Frytki z Indii masala, Sałatka grecka, Sos, Baklava, Sok Cappy, Coca-Cola 0,85l, Coca-Cola 0,5l, Coca-Cola 0,3l, Pepsi / Mirinda / 7up, Monster Energy Drink, Ayran Turecki, Mango Sok, Oshee, Burn, Pita Rollo, Pita Rollo, Pita Rollo, Pita Rollo, Pita Rollo z serem, Pita Rollo z serem, Pita Rollo z serem, Pita Rollo z serem
+[parseOrderItems] 📊 Summary:
+  - requestedNames: [frytki belgijskie]
+  - availableNames: [frytki z serem, carbonara a'la hubertus, falafel]
+  - unavailableNames: []
+  - matched.length: 3
+  - clarifications.length: 0
+[intent-router] ✅ Parsed result: {
+  "any": true,
+  "groups": [
+    {
+      "restaurant_id": "fc844513-2869-4f42-b04f-c21e1e4cceb7",
+      "restaurant_name": "Tasty King Kebab",
+      "items": [
+        {
+          "menuItemId": "6edfdf0f-71e3-478c-bceb-0a9c58d75100",
+          "name": "Frytki z serem",
+          "price": 9,
+          "quantity": 1
+        },
+        {
+          "menuItemId": "56f5ee57-9939-41f5-93db-4d8116ac4f44",
+          "name": "Falafel",
+          "price": 13,
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "restaurant_id": "af8448ef-974b-46c8-a4ae-b04b8dc7c9f8",
+      "restaurant_name": "Dwór Hubertus",
+      "items": [
+        {
+          "menuItemId": "82a2ad16-e3e2-4f39-8dde-671ba334d549",
+          "name": "Carbonara a'la Hubertus",
+          "price": 38,
+          "quantity": 1
+        }
+      ]
     }
-  },
-  "reply": "Nie znalazłam \"City Burger Piekary Śląskie\", ale mogę pokazać menu z innych restauracji w Piekarach Śląskich. Oto one: Restauracja Stara Kamienica, Rezydencja Luxury Hotel, Klaps Burgers, Vien-Thien, Bar Praha, Callzone, Dwór Hubertus, Tasty King Kebab, Pizzeria Monte Carlo. Którą z nich wybierasz?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 6515,
-    "nluMs": 2773,
-    "ttsMs": 0,
-    "totalMs": 9476
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-05:08:38.852
-{
-  "reply": "Nie znalazłam \"City Burger Piekary Śląskie\", ale mogę pokazać menu z innych restauracji w Piekarach Śląskich. Oto one: Restauracja Stara Kamienica, Rezydencja Luxury Hotel, Klaps Burgers, Vien-Thien, Bar Praha, Callzone, Dwór Hubertus, Tasty King Kebab, Pizzeria Monte Carlo. Którą z nich wybierasz?",
-  "intent": "menu_request",
-  "source": "llm",
-  "confidence": 0.9
-}
-response_sent
-•
-05:08:38.995
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "City Burger Piekary Śląskie"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T04:08:38.995Z"
-}
-request_received
-•
-05:23:14.956
-Input: "co polecisz w okolicy"
-intent_resolved
-•
-05:23:20.568
-{
-  "reply": "Mam 3 miejsca w Piekary:\n1. Restauracja Stara Kamienica - Polska\n2. Rezydencja Luxury Hotel - Międzynarodowa\n3. Klaps Burgers - Amerykańska\n\nKtóre Cię interesuje?",
-  "intent": "find_nearby",
-  "source": "classic",
-  "confidence": 0.9
-}
-request_received
-•
-05:23:31.839
-Input: "Rezydencja Luxury Hotel"
-response_sent
-•
-05:23:37.114
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
-  },
-  "reply": "W Rezydencji Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki marynowanej w grzańcu za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 4755,
-    "nluMs": 755,
-    "ttsMs": 0,
-    "totalMs": 5425
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-05:23:37.115
-{
-  "reply": "W Rezydencji Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki marynowanej w grzańcu za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 1
-}
-response_sent
-•
-05:23:37.286
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "Rezydencja Luxury Hotel"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T04:23:37.286Z"
-}
-request_received
-•
-05:24:04.641
-Input: "wybieram zamka z kluczykiem"
-intent_resolved
-•
-05:24:11.945
-{
-  "reply": "Wybrałaś Rezydencję Luxury Hotel w Piekarach Śląskich. Oto kilka dań z menu: \n\n- Carpaccio z kaczki marynowanej w grzańcu za 36 zł\n- Grzanka z krupniokiem za 28 zł\n- Kartacze z dzikiem za 48 zł\n- Makaron ryżowy z warzywami za 37 zł\n\nCo chciałabyś zamówić?",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 0.9
-}
-response_sent
-•
-05:24:11.945
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
-  },
-  "reply": "Wybrałaś Rezydencję Luxury Hotel w Piekarach Śląskich. Oto kilka dań z menu: \n\n- Carpaccio z kaczki marynowanej w grzańcu za 36 zł\n- Grzanka z krupniokiem za 28 zł\n- Kartacze z dzikiem za 48 zł\n- Makaron ryżowy z warzywami za 37 zł\n\nCo chciałabyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 6880,
-    "nluMs": 423,
-    "ttsMs": 0,
-    "totalMs": 7432
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-05:24:12.111
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "Rezydencja Luxury Hotel"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T04:24:12.111Z"
-}
-request_received
-•
-05:24:36.826
-Input: "Pokaż menu"
-intent_resolved
-•
-05:24:46.879
-{
-  "reply": "W Rezydencji Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni za 35 zł oraz Makaron ryżowy za 37 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 0.9
-}
-response_sent
-•
-05:24:46.879
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik prosi o pokazanie menu, co jest zgodne z jego intencją.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
-  },
-  "reply": "W Rezydencji Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni za 35 zł oraz Makaron ryżowy za 37 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 9439,
-    "nluMs": 744,
-    "ttsMs": 0,
-    "totalMs": 10228
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-05:24:47.052
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik prosi o pokazanie menu, co jest zgodne z jego intencją.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "Rezydencja Luxury Hotel"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T04:24:47.052Z"
-}
-request_received
-•
-05:25:08.391
-Input: "co polecisz w okolicy"
-intent_resolved
-•
-05:25:12.483
-{
-  "reply": "Mam 3 miejsca w Piekary:\n1. Restauracja Stara Kamienica - Polska\n2. Rezydencja Luxury Hotel - Międzynarodowa\n3. Klaps Burgers - Amerykańska\n\nKtóre Cię interesuje?",
-  "intent": "find_nearby",
-  "source": "classic",
-  "confidence": 0.9
-}
-request_received
-•
-05:25:29.481
-Input: "wybieram klaps Burger"
-response_sent
-•
-05:25:37.117
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik chce wybrać klaps Burger, który jest dostępny w restauracji Klaps Burgers, a system oczekuje na wybór restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "restaurant_id": "569a7d29-57be-4224-bdf3-09c483415cea"
-  },
-  "reply": "W Klaps Burgers dostępne są następujące burgerowe propozycje: \n\n- Desperado Double za 46 zł\n- Desperado Standard za 36 zł\n- Głodzilla za 59 zł\n- Grzybiarz z Piekaryhill za 40 zł\n- Halloween Double za 49 zł\n- Halloween Standard za 39 zł\n\nCo chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 7183,
-    "nluMs": 557,
-    "ttsMs": 0,
-    "totalMs": 7809
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-05:25:37.118
-{
-  "reply": "W Klaps Burgers dostępne są następujące burgerowe propozycje: \n\n- Desperado Double za 46 zł\n- Desperado Standard za 36 zł\n- Głodzilla za 59 zł\n- Grzybiarz z Piekaryhill za 40 zł\n- Halloween Double za 49 zł\n- Halloween Standard za 39 zł\n\nCo chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 1
-}
-response_sent
-•
-05:25:37.290
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik chce wybrać klaps Burger, który jest dostępny w restauracji Klaps Burgers, a system oczekuje na wybór restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": [
-        "klaps burger"
-      ],
-      "isContextLocked": false,
-      "targetRestaurant": "Rezydencja Luxury Hotel"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T04:25:37.290Z"
-}
-request_received
-•
-05:26:06.500
-Input: "wybieram Halloween standard"
-intent_resolved
-•
-05:26:13.347
-{
-  "reply": "Wygląda na to, że \"Halloween Standard\" nie jest dostępne w menu Klaps Burgers. Mogę pomóc w złożeniu zamówienia na inne danie. Czy chcesz zobaczyć ich menu?",
-  "intent": "create_order",
-  "source": "classic",
-  "confidence": 0.85
-}
-response_sent
-•
-05:26:13.347
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "Wybrano complete_order ponieważ użytkownik wskazał konkretną pozycję z menu ('Halloween Standard') oraz ostatni kontekst wskazuje na zamówienie z restauracji Klaps Burgers.",
-      "searchMenu": false,
-      "completeOrder": true,
-      "askClarification": false,
-      "searchRestaurants": false
-    }
-  },
-  "reply": "Wygląda na to, że \"Halloween Standard\" nie jest dostępne w menu Klaps Burgers. Mogę pomóc w złożeniu zamówienia na inne danie. Czy chcesz zobaczyć ich menu?",
-  "intent": "create_order",
-  "timings": {
-    "dbMs": 6087,
-    "nluMs": 756,
-    "ttsMs": 0,
-    "totalMs": 6981
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-05:26:13.521
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "Wybrano complete_order ponieważ użytkownik wskazał konkretną pozycję z menu ('Halloween Standard') oraz ostatni kontekst wskazuje na zamówienie z restauracji Klaps Burgers.",
-      "searchMenu": false,
-      "completeOrder": true,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": [
-        "halloeen standard"
-      ],
-      "isContextLocked": false,
-      "targetRestaurant": "Klaps Burgers"
-    }
-  },
-  "intent": "create_order",
-  "timestamp": "2025-12-18T04:26:13.521Z"
-}
-request_received
-•
-05:26:37.464
-Input: "wybieram Stara Kamienica"
-intent_resolved
-•
-05:26:46.340
-{
-  "reply": "W Restauracji Stara Kamienica dostępne m.in. Filet z kurczaka po hawajsku za 19 zł, Filet z kurczaka tradycyjny za 15 zł, Fondant czekoladowy za 22 zł, Grillowany filet z kurczaka za 15 zł, Gulasz wieprzowy za 23 zł oraz Jajecznica za 11 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "llm",
-  "confidence": 0.9
-}
-response_sent
-•
-05:26:46.340
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację 'Stara Kamienica', więc konieczne jest wyszukiwanie menu tej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
-  },
-  "reply": "W Restauracji Stara Kamienica dostępne m.in. Filet z kurczaka po hawajsku za 19 zł, Filet z kurczaka tradycyjny za 15 zł, Fondant czekoladowy za 22 zł, Grillowany filet z kurczaka za 15 zł, Gulasz wieprzowy za 23 zł oraz Jajecznica za 11 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 7121,
-    "nluMs": 1913,
-    "ttsMs": 0,
-    "totalMs": 9045
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-05:26:46.523
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację 'Stara Kamienica', więc konieczne jest wyszukiwanie menu tej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "Stara Kamienica"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T04:26:46.523Z"
-}
-request_received
-•
-05:27:26.099
-Input: "wybieram filet z kurczaka po hawajsku"
-intent_resolved
-•
-05:27:31.360
-{
-  "reply": "Nie znalazłam \"filetu z kurczaka po hawajsku\", ale w Restauracji Stara Kamienica możesz spróbować podobnych dań, jak filet z kurczaka tradycyjny, grillowany filet z kurczaka lub gulasz wieprzowy. Chcesz zobaczyć pełne menu?",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 0.85
-}
-response_sent
-•
-05:27:31.360
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
-  },
-  "reply": "Nie znalazłam \"filetu z kurczaka po hawajsku\", ale w Restauracji Stara Kamienica możesz spróbować podobnych dań, jak filet z kurczaka tradycyjny, grillowany filet z kurczaka lub gulasz wieprzowy. Chcesz zobaczyć pełne menu?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 4661,
-    "nluMs": 598,
-    "ttsMs": 0,
-    "totalMs": 5366
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-05:27:31.600
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
+  ],
+  "clarify": [],
+  "available": [
+    {
+      "menuItemId": "6edfdf0f-71e3-478c-bceb-0a9c58d75100",
+      "name": "Frytki z serem",
+      "price": 9,
       "quantity": 1,
-      "targetItems": [
-        "filet z kurczaka po haajsk"
-      ],
-      "isContextLocked": false,
-      "targetRestaurant": "Restauracja Stara Kamienica"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T04:27:31.600Z"
-}
-request_received
-•
-05:27:50.100
-Input: "filet z kurczaka po hawajsku"
-response_sent
-•
-05:27:56.347
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
+      "restaurant_id": "fc844513-2869-4f42-b04f-c21e1e4cceb7",
+      "restaurant_name": "Tasty King Kebab",
+      "matchScore": 1
     },
-    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
-  },
-  "reply": "Nie znalazłam \"kurczaka po hawajsku\", ale w Restauracji Stara Kamienica w Piekarach Śląskich mam dla Ciebie filet z kurczaka po hawajsku. To danie główne zawiera filet, ananasa, ser, sos, ziemniaki i surówkę, w cenie 19 zł. Czy chcesz złożyć zamówienie lub potrzebujesz więcej informacji?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 5877,
-    "nluMs": 368,
-    "ttsMs": 0,
-    "totalMs": 6425
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-05:27:56.347
-{
-  "reply": "Nie znalazłam \"kurczaka po hawajsku\", ale w Restauracji Stara Kamienica w Piekarach Śląskich mam dla Ciebie filet z kurczaka po hawajsku. To danie główne zawiera filet, ananasa, ser, sos, ziemniaki i surówkę, w cenie 19 zł. Czy chcesz złożyć zamówienie lub potrzebujesz więcej informacji?",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 0.85
-}
-response_sent
-•
-05:27:56.508
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
+    {
+      "menuItemId": "82a2ad16-e3e2-4f39-8dde-671ba334d549",
+      "name": "Carbonara a'la Hubertus",
+      "price": 38,
       "quantity": 1,
-      "targetItems": [
-        "filet z kurczaka po haajsk"
-      ],
-      "isContextLocked": false,
-      "targetRestaurant": "Restauracja Stara Kamienica"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T04:27:56.508Z"
-}
-request_received
-•
-05:42:40.966
-Input: "Pokaż trzy restauracje w pobliżu"
-intent_resolved
-•
-05:42:45.081
-{
-  "reply": "",
-  "intent": "find_nearby",
-  "source": "classic",
-  "confidence": 0.9
-}
-request_received
-•
-05:42:52.443
-Input: "Pokaż trzy restauracje w Piekarach Śląskich"
-request_received
-•
-05:46:58.274
-Input: "Poleć czy restauracje w pobliżu"
-intent_resolved
-•
-05:47:02.824
-{
-  "reply": "",
-  "intent": "find_nearby",
-  "source": "classic",
-  "confidence": 0.9
-}
-request_received
-•
-05:47:08.992
-Input: "Pokaż trzy restauracje w Piekarach"
-intent_resolved
-•
-05:47:09.106
-{
-  "reply": "Znalazłam 9 restauracji w lokalizacji Piekary. Czy chcesz zobaczyć konkretne propozycje?",
-  "intent": "find_nearby",
-  "source": "geo_context",
-  "confidence": 0.95
-}
-response_sent
-•
-05:47:09.223
-{
-  "meta": {
-    "count": 9,
-    "location": "Piekary"
-  },
-  "reply": "Znalazłam 9 restauracji w lokalizacji Piekary. Czy chcesz zobaczyć konkretne propozycje?",
-  "intent": "find_nearby_confirmation",
-  "timestamp": "2025-12-18T04:47:09.222Z"
-}
-request_received
-•
-05:47:16.735
-Input: "Pokaż czym restauracje w Piekarach Śląskich"
-intent_resolved
-•
-05:47:17.068
-{
-  "reply": "Znalazłam 9 restauracji w lokalizacji Piekary Śląskie. Czy chcesz zobaczyć konkretne propozycje?",
-  "intent": "find_nearby",
-  "source": "geo_context",
-  "confidence": 0.95
-}
-response_sent
-•
-05:47:17.238
-{
-  "meta": {
-    "count": 9,
-    "location": "Piekary Śląskie"
-  },
-  "reply": "Znalazłam 9 restauracji w lokalizacji Piekary Śląskie. Czy chcesz zobaczyć konkretne propozycje?",
-  "intent": "find_nearby_confirmation",
-  "timestamp": "2025-12-18T04:47:17.238Z"
-}
-request_received
-•
-05:47:20.994
-Input: "gdzie zjem w pobliżu"
-intent_resolved
-•
-05:47:25.543
-{
-  "reply": "Mam 3 miejsca w Piekary Śląskie:\n1. Restauracja Stara Kamienica - Polska\n2. Rezydencja Luxury Hotel - Międzynarodowa\n3. Klaps Burgers - Amerykańska\n\nKtóre Cię interesuje?",
-  "intent": "find_nearby",
-  "source": "classic",
-  "confidence": 1
-}
-request_received
-•
-05:47:45.365
-Input: "wybieram klaps Burger"
-response_sent
-•
-05:47:51.830
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wyraźnie wskazuje na chęć zamówienia z restauracji Klaps Burgers, co wymaga przeszukania menu tej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
+      "restaurant_id": "af8448ef-974b-46c8-a4ae-b04b8dc7c9f8",
+      "restaurant_name": "Dwór Hubertus",
+      "matchScore": 1
     },
-    "restaurant_id": "569a7d29-57be-4224-bdf3-09c483415cea"
-  },
-  "reply": "W Klaps Burgers dostępne są m.in. takie burgery jak: Desperado Double za 46 zł, Desperado Standard za 36 zł, Głodzilla za 59 zł, Grzybiarz z Piekaryhill za 40 zł, Halloween Double za 49 zł oraz Halloween Standard za 39 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 5868,
-    "nluMs": 761,
-    "ttsMs": 0,
-    "totalMs": 6568
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-05:47:51.831
-{
-  "reply": "W Klaps Burgers dostępne są m.in. takie burgery jak: Desperado Double za 46 zł, Desperado Standard za 36 zł, Głodzilla za 59 zł, Grzybiarz z Piekaryhill za 40 zł, Halloween Double za 49 zł oraz Halloween Standard za 39 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 1
-}
-response_sent
-•
-05:47:51.993
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wyraźnie wskazuje na chęć zamówienia z restauracji Klaps Burgers, co wymaga przeszukania menu tej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "klaps Burger"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T04:47:51.993Z"
-}
-request_received
-•
-05:48:20.121
-Input: "wybieram Desperado standard"
-response_sent
-•
-05:48:25.112
-{
-  "meta": {
-    "reasoning": null
-  },
-  "reply": "Przykro mi, ale nie znalazłem dania \"Desperado Standard\" w menu restauracji Klaps Burgers. Mogę pokazać dostępne pozycje z menu. Chcesz zobaczyć, co oferują?",
-  "intent": "create_order",
-  "timings": {
-    "dbMs": 4213,
-    "nluMs": 773,
-    "ttsMs": 0,
-    "totalMs": 5168
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-05:48:25.113
-{
-  "reply": "Przykro mi, ale nie znalazłem dania \"Desperado Standard\" w menu restauracji Klaps Burgers. Mogę pokazać dostępne pozycje z menu. Chcesz zobaczyć, co oferują?",
-  "intent": "create_order",
-  "source": "classic",
-  "confidence": 0.85
-}
-response_sent
-•
-05:48:25.279
-{
-  "meta": {
-    "llm_refinement": {
-      "action": "order",
+    {
+      "menuItemId": "56f5ee57-9939-41f5-93db-4d8116ac4f44",
+      "name": "Falafel",
+      "price": 13,
       "quantity": 1,
-      "targetItems": [
-        "despera standard"
-      ],
-      "isContextLocked": false,
-      "targetRestaurant": "Klaps Burgers"
+      "restaurant_id": "fc844513-2869-4f42-b04f-c21e1e4cceb7",
+      "restaurant_name": "Tasty King Kebab",
+      "matchScore": 1
     }
-  },
-  "intent": "create_order",
-  "timestamp": "2025-12-18T04:48:25.278Z"
+  ],
+  "unavailable": [],
+  "needsClarification": false,
+  "unknownItems": []
 }
-request_received
-•
-06:36:29.471
-Input: "Poleć trzy miejsca w Piekarach Śląskich"
-intent_resolved
-•
-06:36:29.735
-{
-  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
-  "intent": "find_nearby",
-  "source": "geo_context",
-  "confidence": 0.95
-}
-response_sent
-•
-06:36:29.903
-{
-  "meta": {
-    "count": 9,
-    "location": "Piekary Śląskie"
-  },
-  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
-  "intent": "find_nearby",
-  "timestamp": "2025-12-18T05:36:29.903Z"
-}
-request_received
-•
-06:36:47.403
-Input: "wybieram Stara Kamienica"
-response_sent
-•
-06:36:49.888
-{
-  "meta": {
-    "reasoning": null,
-    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
-  },
-  "reply": "Wybrano restaurację Stara Kamienica. Chcesz zobaczyć menu?",
-  "intent": "select_restaurant",
-  "timings": {
-    "dbMs": 1322,
-    "nluMs": 1157,
-    "ttsMs": 0,
-    "totalMs": 2665
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-06:36:49.888
-{
-  "reply": "Wybrano restaurację Stara Kamienica. Chcesz zobaczyć menu?",
-  "intent": "select_restaurant",
-  "source": "classic",
-  "confidence": 1
-}
-response_sent
-•
-06:36:50.053
-{
-  "meta": {
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": true,
-      "targetRestaurant": {
-        "id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd",
-        "name": "Restauracja Stara Kamienica"
-      }
+[intent-router] 🔍 parsed.any = true
+[intent-router] 🔍 parsed.groups.length = 2
+🍽️ ✅ EARLY DISH DETECTION SUCCESS! Dish detected: Frytki z serem, Falafel | Carbonara a'la Hubertus
+🍽️ ✅ Returning create_order immediately (HIGHEST PRIORITY)
+🍽️ ✅ parsedOrder: {
+  "any": true,
+  "groups": [
+    {
+      "restaurant_id": "fc844513-2869-4f42-b04f-c21e1e4cceb7",
+      "restaurant_name": "Tasty King Kebab",
+      "items": [
+        {
+          "menuItemId": "6edfdf0f-71e3-478c-bceb-0a9c58d75100",
+          "name": "Frytki z serem",
+          "price": 9,
+          "quantity": 1
+        },
+        {
+          "menuItemId": "56f5ee57-9939-41f5-93db-4d8116ac4f44",
+          "name": "Falafel",
+          "price": 13,
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "restaurant_id": "af8448ef-974b-46c8-a4ae-b04b8dc7c9f8",
+      "restaurant_name": "Dwór Hubertus",
+      "items": [
+        {
+          "menuItemId": "82a2ad16-e3e2-4f39-8dde-671ba334d549",
+          "name": "Carbonara a'la Hubertus",
+          "price": 38,
+          "quantity": 1
+        }
+      ]
     }
-  },
-  "intent": "select_restaurant",
-  "timestamp": "2025-12-18T05:36:50.053Z"
-}
-request_received
-•
-06:37:10.377
-Input: "tak Pokaż menu stare Kamienica"
-response_sent
-•
-06:37:14.493
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
-  },
-  "reply": "Oto menu Restauracji Stara Kamienica. Wybierz danie, które Cię interesuje, a ja podam szczegóły!",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 3601,
-    "nluMs": 512,
-    "ttsMs": 0,
-    "totalMs": 4218
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-06:37:14.493
-{
-  "reply": "Oto menu Restauracji Stara Kamienica. Wybierz danie, które Cię interesuje, a ja podam szczegóły!",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 1
-}
-response_sent
-•
-06:37:14.663
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "Restauracja Stara Kamienica"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T05:37:14.663Z"
-}
-request_received
-•
-06:37:30.916
-Input: "Pokaż menu Stara Kamienica"
-intent_resolved
-•
-06:37:38.602
-{
-  "reply": "W Restauracji Stara Kamienica dostępne są m.in.: \n\n- Filet z kurczaka po hawajsku – 19 zł\n- Filet z kurczaka tradycyjny (panierowany) – 15 zł\n- Fondant czekoladowy z lodami i bitą śmietaną – 22 zł\n- Grillowany filet z kurczaka – 15 zł\n- Gulasz wieprzowy po węgiersku – 23 zł\n- Jajecznica z 2 szt. jaj – 11 zł\n\nCo chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "llm",
-  "confidence": 0.9
-}
-response_sent
-•
-06:37:38.602
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
-  },
-  "reply": "W Restauracji Stara Kamienica dostępne są m.in.: \n\n- Filet z kurczaka po hawajsku – 19 zł\n- Filet z kurczaka tradycyjny (panierowany) – 15 zł\n- Fondant czekoladowy z lodami i bitą śmietaną – 22 zł\n- Grillowany filet z kurczaka – 15 zł\n- Gulasz wieprzowy po węgiersku – 23 zł\n- Jajecznica z 2 szt. jaj – 11 zł\n\nCo chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 5545,
-    "nluMs": 2308,
-    "ttsMs": 0,
-    "totalMs": 7884
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-06:37:38.706
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "Restauracja Stara Kamienica"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T05:37:38.706Z"
-}
-request_received
-•
-06:37:54.332
-Input: "filet z kurczaka po hawajsku"
-intent_resolved
-•
-06:37:58.243
-{
-  "reply": "Wybrałaś Restaurację Starą Kamienicę. Zamówienie na filet z kurczaka po hawajsku jest możliwe. Chcesz dodać jeszcze coś z menu, czy to wystarczy?",
-  "intent": "create_order",
-  "source": "classic",
-  "confidence": 0.85
-}
-response_sent
-•
-06:37:58.243
-{
-  "meta": {
-    "reasoning": null
-  },
-  "reply": "Wybrałaś Restaurację Starą Kamienicę. Zamówienie na filet z kurczaka po hawajsku jest możliwe. Chcesz dodać jeszcze coś z menu, czy to wystarczy?",
-  "intent": "create_order",
-  "timings": {
-    "dbMs": 3391,
-    "nluMs": 517,
-    "ttsMs": 0,
-    "totalMs": 4101
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-06:37:58.369
-{
-  "meta": {
-    "llm_refinement": {
-      "action": null,
+  ],
+  "clarify": [],
+  "available": [
+    {
+      "menuItemId": "6edfdf0f-71e3-478c-bceb-0a9c58d75100",
+      "name": "Frytki z serem",
+      "price": 9,
       "quantity": 1,
-      "targetItems": [
-        "filet z kurczaka po haajsk"
-      ],
-      "isContextLocked": false,
-      "targetRestaurant": "Restauracja Stara Kamienica"
-    }
-  },
-  "intent": "create_order",
-  "timestamp": "2025-12-18T05:37:58.368Z"
-}
-request_received
-•
-06:39:05.853
-Input: "Poleć 3 najlepsze restauracje w okolicy"
-intent_resolved
-•
-06:39:11.944
-{
-  "reply": "Mam 3 miejsca w Piekary Śląskie:\n1. Restauracja Stara Kamienica - Polska\n2. Rezydencja Luxury Hotel - Międzynarodowa\n3. Klaps Burgers - Amerykańska\n\nKtóre Cię interesuje?",
-  "intent": "find_nearby",
-  "source": "classic",
-  "confidence": 0.9
-}
-request_received
-•
-06:39:32.071
-Input: "wybieram Rezydencja Luxury"
-intent_resolved
-•
-06:39:33.863
-{
-  "reply": "Wybrano restaurację Rezydencja Luxury Hotel. Chcesz zobaczyć menu?",
-  "intent": "select_restaurant",
-  "source": "classic",
-  "confidence": 1
-}
-response_sent
-•
-06:39:33.863
-{
-  "meta": {
-    "reasoning": null,
-    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
-  },
-  "reply": "Wybrano restaurację Rezydencja Luxury Hotel. Chcesz zobaczyć menu?",
-  "intent": "select_restaurant",
-  "timings": {
-    "dbMs": 1217,
-    "nluMs": 572,
-    "ttsMs": 0,
-    "totalMs": 1904
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-06:39:33.968
-{
-  "meta": {
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": true,
-      "targetRestaurant": {
-        "id": "4d27fbe3-20d0-4eb4-b003-1935be53af25",
-        "name": "Rezydencja Luxury Hotel"
-      }
-    }
-  },
-  "intent": "select_restaurant",
-  "timestamp": "2025-12-18T05:39:33.968Z"
-}
-request_received
-•
-06:39:45.084
-Input: "tak Pokaż menu Rezydencja Luxury hotel"
-response_sent
-•
-06:39:50.546
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
+      "restaurant_id": "fc844513-2869-4f42-b04f-c21e1e4cceb7",
+      "restaurant_name": "Tasty King Kebab",
+      "matchScore": 1
     },
-    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
-  },
-  "reply": "W Rezydencja Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki marynowanej w grzańcu za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 4882,
-    "nluMs": 691,
-    "ttsMs": 0,
-    "totalMs": 5626
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-06:39:50.546
-{
-  "reply": "W Rezydencja Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki marynowanej w grzańcu za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 1
-}
-response_sent
-•
-06:39:50.707
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "Rezydencja Luxury Hotel"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T05:39:50.707Z"
-}
-request_received
-•
-06:39:55.546
-Input: "prezydencja Raczyńska to jest dostępny Empik"
-intent_resolved
-•
-06:40:03.157
-{
-  "reply": "W Rezydencji Luxury Hotel dostępne m.in. BUFFAL za 54 zł, Carpaccio z kaczki marynowanej za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 0.9
-}
-response_sent
-•
-06:40:03.157
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik chce wyjaśnić szczegóły zamówienia, a ostatni kontekst wskazuje na żądanie menu dla restauracji 'Rezydencja Luxury Hotel'.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
-  },
-  "reply": "W Rezydencji Luxury Hotel dostępne m.in. BUFFAL za 54 zł, Carpaccio z kaczki marynowanej za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 7170,
-    "nluMs": 595,
-    "ttsMs": 0,
-    "totalMs": 7741
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-06:40:03.249
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik chce wyjaśnić szczegóły zamówienia, a ostatni kontekst wskazuje na żądanie menu dla restauracji 'Rezydencja Luxury Hotel'.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "Rezydencja Luxury Hotel"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T05:40:03.249Z"
-}
-request_received
-•
-06:40:31.980
-Input: "wybieram grzanka z krupniokiem"
-intent_resolved
-•
-06:40:36.213
-{
-  "reply": "W restauracji Rezydencja Luxury Hotel nie ma grzanki z krupniokiem w menu. Mogę zaproponować inne dania lub sprawdzić inne dostępne opcje. Co byś chciał zamówić?",
-  "intent": "create_order",
-  "source": "classic",
-  "confidence": 0.85
-}
-response_sent
-•
-06:40:36.213
-{
-  "meta": {
-    "reasoning": null
-  },
-  "reply": "W restauracji Rezydencja Luxury Hotel nie ma grzanki z krupniokiem w menu. Mogę zaproponować inne dania lub sprawdzić inne dostępne opcje. Co byś chciał zamówić?",
-  "intent": "create_order",
-  "timings": {
-    "dbMs": 3859,
-    "nluMs": 372,
-    "ttsMs": 0,
-    "totalMs": 4325
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-06:40:36.309
-{
-  "meta": {
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": [
-        "grzanka z krpniokiem"
-      ],
-      "isContextLocked": false,
-      "targetRestaurant": "Rezydencja Luxury Hotel"
-    }
-  },
-  "intent": "create_order",
-  "timestamp": "2025-12-18T05:40:36.309Z"
-}
-request_received
-•
-06:40:53.398
-Input: "wybieram Rezydencja Luxury hotel"
-intent_resolved
-•
-06:40:59.701
-{
-  "reply": "W Rezydencji Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki marynowanej w grzańcu za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "llm",
-  "confidence": 0.9
-}
-response_sent
-•
-06:40:59.701
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
-  },
-  "reply": "W Rezydencji Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki marynowanej w grzańcu za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 4946,
-    "nluMs": 1507,
-    "ttsMs": 0,
-    "totalMs": 6409
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-06:40:59.799
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "Rezydencja Luxury Hotel"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T05:40:59.799Z"
-}
-request_received
-•
-06:41:34.573
-Input: "carpaccio z kaczki marynowanej w grzańca"
-response_sent
-•
-06:41:38.919
-{
-  "meta": {
-    "reasoning": null
-  },
-  "reply": "W Rezydencji Luxury Hotel nie znalazłam pozycji \"Carpaccio z kaczki marynowanej w grzańcu\" w menu. Mogę jednak pokazać inne dostępne dania. Chcesz zobaczyć menu tej restauracji?",
-  "intent": "create_order",
-  "timings": {
-    "dbMs": 4022,
-    "nluMs": 322,
-    "ttsMs": 0,
-    "totalMs": 4452
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-06:41:38.920
-{
-  "reply": "W Rezydencji Luxury Hotel nie znalazłam pozycji \"Carpaccio z kaczki marynowanej w grzańcu\" w menu. Mogę jednak pokazać inne dostępne dania. Chcesz zobaczyć menu tej restauracji?",
-  "intent": "create_order",
-  "source": "classic",
-  "confidence": 0.85
-}
-response_sent
-•
-06:41:39.035
-{
-  "meta": {
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": [
-        "carpaccio z kaczki marynowanej",
-        "grzańca"
-      ],
-      "isContextLocked": false,
-      "targetRestaurant": "Rezydencja Luxury Hotel"
-    }
-  },
-  "intent": "create_order",
-  "timestamp": "2025-12-18T05:41:39.035Z"
-}
-request_received
-•
-06:47:44.124
-Input: "Poleć trzy miejsca w pobliżu"
-intent_resolved
-•
-06:47:49.250
-{
-  "reply": "",
-  "intent": "find_nearby",
-  "source": "classic",
-  "confidence": 0.85
-}
-request_received
-•
-06:47:54.621
-Input: "Podaj trzy restauracje w pobliżu"
-intent_resolved
-•
-06:47:58.651
-{
-  "reply": "",
-  "intent": "find_nearby",
-  "source": "classic",
-  "confidence": 0.9
-}
-request_received
-•
-06:48:11.441
-Input: "Poleć trzy restauracje w Piekarach Śląskich"
-intent_resolved
-•
-06:48:11.604
-{
-  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
-  "intent": "find_nearby",
-  "source": "geo_context",
-  "confidence": 0.95
-}
-response_sent
-•
-06:48:11.776
-{
-  "meta": {
-    "count": 9,
-    "location": "Piekary Śląskie"
-  },
-  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
-  "intent": "find_nearby",
-  "timestamp": "2025-12-18T05:48:11.776Z"
-}
-request_received
-•
-06:48:18.894
-Input: "Restauracja Stara Kamienica"
-response_sent
-•
-06:48:26.113
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "Użytkownik wyraził zamiar wybrania restauracji 'Restauracja Stara Kamienica', która została wymieniona w dostępnej liście restauracji. Dlatego wybrano akcję 'search_menu', aby wyszukać menu tej konkretnej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    }
-  },
-  "reply": "Niestety, nie mogę teraz pobrać menu z Restauracji Stara Kamienica. Sprawdź połączenie z serwerem lub spróbuj ponownie później.",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 6455,
-    "nluMs": 857,
-    "ttsMs": 0,
-    "totalMs": 7398
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-06:48:26.114
-{
-  "reply": "Niestety, nie mogę teraz pobrać menu z Restauracji Stara Kamienica. Sprawdź połączenie z serwerem lub spróbuj ponownie później.",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 1
-}
-response_sent
-•
-06:48:26.388
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "Użytkownik wyraził zamiar wybrania restauracji 'Restauracja Stara Kamienica', która została wymieniona w dostępnej liście restauracji. Dlatego wybrano akcję 'search_menu', aby wyszukać menu tej konkretnej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "stara kamienica"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T05:48:26.387Z"
-}
-request_received
-•
-06:49:10.502
-Input: "gdzie VIN w Piekarach Śląskich"
-intent_resolved
-•
-06:49:10.503
-{
-  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
-  "intent": "find_nearby",
-  "source": "geo_context",
-  "confidence": 0.95
-}
-response_sent
-•
-06:49:10.623
-{
-  "meta": {
-    "count": 9,
-    "location": "Piekary Śląskie"
-  },
-  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
-  "intent": "find_nearby",
-  "timestamp": "2025-12-18T05:49:10.623Z"
-}
-request_received
-•
-06:49:24.177
-Input: "wybieram Rezydencja Luxury hotel"
-intent_resolved
-•
-06:49:25.985
-{
-  "reply": "Wybrano restaurację Rezydencja Luxury Hotel. Chcesz zobaczyć menu?",
-  "intent": "select_restaurant",
-  "source": "classic",
-  "confidence": 1
-}
-response_sent
-•
-06:49:25.985
-{
-  "meta": {
-    "reasoning": null,
-    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
-  },
-  "reply": "Wybrano restaurację Rezydencja Luxury Hotel. Chcesz zobaczyć menu?",
-  "intent": "select_restaurant",
-  "timings": {
-    "dbMs": 1223,
-    "nluMs": 583,
-    "ttsMs": 0,
-    "totalMs": 1932
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-06:49:26.094
-{
-  "meta": {
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": true,
-      "targetRestaurant": {
-        "id": "4d27fbe3-20d0-4eb4-b003-1935be53af25",
-        "name": "Rezydencja Luxury Hotel"
-      }
-    }
-  },
-  "intent": "select_restaurant",
-  "timestamp": "2025-12-18T05:49:26.094Z"
-}
-request_received
-•
-06:49:34.192
-Input: "tak Pokaż menu"
-response_sent
-•
-06:49:40.792
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wykazał zamiar pokazania menu konkretniej restauracji (Rezydencja Luxury Hotel) po wcześniejszym wyborze tej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "restaurant_id": "4d27fbe3-20d0-4eb4-b003-1935be53af25"
-  },
-  "reply": "W Rezydencja Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 6412,
-    "nluMs": 348,
-    "ttsMs": 0,
-    "totalMs": 6791
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-06:49:40.792
-{
-  "reply": "W Rezydencja Luxury Hotel dostępne m.in.: BUFFAL za 54 zł, Carpaccio z kaczki za 36 zł, Grzanka z krupniokiem za 28 zł, Kartacze z dzikiem za 48 zł, Krem z dyni z białą czekoladą za 35 zł oraz Makaron ryżowy z warzywami za 37 zł. Co chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 0.9
-}
-response_sent
-•
-06:49:41.064
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wykazał zamiar pokazania menu konkretniej restauracji (Rezydencja Luxury Hotel) po wcześniejszym wyborze tej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "Rezydencja Luxury Hotel"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T05:49:41.064Z"
-}
-request_received
-•
-06:49:51.354
-Input: "grzanka z krupniokiem"
-intent_resolved
-•
-06:49:55.844
-{
-  "reply": "Nie znalazłam pozycji „Grzanka z krupniokiem” w menu Rezydencji Luxury Hotel. Chcesz, żebym pokazała inne dostępne dania w tej restauracji?",
-  "intent": "create_order",
-  "source": "classic",
-  "confidence": 0.85
-}
-response_sent
-•
-06:49:55.844
-{
-  "meta": {
-    "reasoning": null
-  },
-  "reply": "Nie znalazłam pozycji „Grzanka z krupniokiem” w menu Rezydencji Luxury Hotel. Chcesz, żebym pokazała inne dostępne dania w tej restauracji?",
-  "intent": "create_order",
-  "timings": {
-    "dbMs": 3981,
-    "nluMs": 507,
-    "ttsMs": 0,
-    "totalMs": 4668
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-06:49:55.952
-{
-  "meta": {
-    "llm_refinement": {
-      "action": "order",
+    {
+      "menuItemId": "82a2ad16-e3e2-4f39-8dde-671ba334d549",
+      "name": "Carbonara a'la Hubertus",
+      "price": 38,
       "quantity": 1,
-      "targetItems": [
-        "grzanka z krpniokiem"
-      ],
-      "isContextLocked": false,
-      "targetRestaurant": "Rezydencja Luxury Hotel"
-    }
-  },
-  "intent": "create_order",
-  "timestamp": "2025-12-18T05:49:55.952Z"
-}
-request_received
-•
-15:04:22.379
-Input: "Poleć restauracje w pobliżu"
-intent_resolved
-•
-15:04:28.675
-{
-  "reply": "",
-  "intent": "find_nearby",
-  "source": "classic",
-  "confidence": 0.85
-}
-request_received
-•
-15:04:47.801
-Input: "wybieram klaps Burger"
-intent_resolved
-•
-15:04:55.908
-{
-  "reply": "Niestety, nie mogę pobrać danych z menu Klaps Burgers. Sprawdź połączenie z serwerem. Jeśli potrzebujesz pomocy, daj mi znać!",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 1
-}
-response_sent
-•
-15:04:55.908
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał, że chce zamówić 'Klaps Burger', a system powinien teraz wyszukać menu tej konkretnej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    }
-  },
-  "reply": "Niestety, nie mogę pobrać danych z menu Klaps Burgers. Sprawdź połączenie z serwerem. Jeśli potrzebujesz pomocy, daj mi znać!",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 7985,
-    "nluMs": 633,
-    "ttsMs": 0,
-    "totalMs": 8635
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-15:04:56.010
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał, że chce zamówić 'Klaps Burger', a system powinien teraz wyszukać menu tej konkretnej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
+      "restaurant_id": "af8448ef-974b-46c8-a4ae-b04b8dc7c9f8",
+      "restaurant_name": "Dwór Hubertus",
+      "matchScore": 1
     },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "klaps burger"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T14:04:56.010Z"
-}
-request_received
-•
-15:20:06.098
-Input: "Rezydencja Luxury Hotel"
-intent_resolved
-•
-15:20:14.846
-{
-  "reply": "Przykro mi, ale nie mogę pobrać menu z restauracji Rezydencja Luxury Hotel. Sprawdź proszę połączenie z serwerem, lub spróbuj później.",
-  "intent": "menu_request",
-  "source": "llm",
-  "confidence": 0.8
-}
-response_sent
-•
-15:20:14.846
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    }
-  },
-  "reply": "Przykro mi, ale nie mogę pobrać menu z restauracji Rezydencja Luxury Hotel. Sprawdź proszę połączenie z serwerem, lub spróbuj później.",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 5077,
-    "nluMs": 4034,
-    "ttsMs": 0,
-    "totalMs": 9309
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-15:20:14.971
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "rezydencja lxry hotel"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T14:20:14.971Z"
-}
-request_received
-•
-15:20:59.157
-Input: "gdzie zjem w pobliżu"
-intent_resolved
-•
-15:21:05.262
-{
-  "reply": "",
-  "intent": "find_nearby",
-  "source": "llm",
-  "confidence": 0.9
-}
-request_received
-•
-15:21:31.983
-Input: "Poleć trzy miejsca w Piekarach Śląskich"
-intent_resolved
-•
-15:21:32.284
-{
-  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
-  "intent": "find_nearby",
-  "source": "geo_context",
-  "confidence": 0.95
-}
-response_sent
-•
-15:21:32.421
-{
-  "meta": {
-    "count": 9,
-    "location": "Piekary Śląskie"
-  },
-  "reply": "Oto 9 restauracji w lokalizacji Piekary Śląskie:",
-  "intent": "find_nearby",
-  "timestamp": "2025-12-18T14:21:32.421Z"
-}
-request_received
-•
-15:21:39.901
-Input: "Restauracja Stara Kamienica"
-intent_resolved
-•
-15:21:45.950
-{
-  "reply": "Oto menu Restauracji Stara Kamienica. Proszę chwilę poczekać, a ja postaram się je pobrać.",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 1
-}
-response_sent
-•
-15:21:45.950
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wyraził chęć wybrania restauracji Stara Kamienica, a kontekst sesji wskazuje, że chce kontynuować z menu tej konkretniej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    }
-  },
-  "reply": "Oto menu Restauracji Stara Kamienica. Proszę chwilę poczekać, a ja postaram się je pobrać.",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 5726,
-    "nluMs": 502,
-    "ttsMs": 0,
-    "totalMs": 6177
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-15:21:46.095
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wyraził chęć wybrania restauracji Stara Kamienica, a kontekst sesji wskazuje, że chce kontynuować z menu tej konkretniej restauracji.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "stara kamienica"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T14:21:46.095Z"
-}
-request_received
-•
-15:22:40.318
-Input: "Pokaż trzy restauracje w Piekarach"
-intent_resolved
-•
-15:22:40.736
-{
-  "reply": "Oto 9 restauracji w lokalizacji Piekary:",
-  "intent": "find_nearby",
-  "source": "geo_context",
-  "confidence": 0.95
-}
-response_sent
-•
-15:22:40.907
-{
-  "meta": {
-    "count": 9,
-    "location": "Piekary"
-  },
-  "reply": "Oto 9 restauracji w lokalizacji Piekary:",
-  "intent": "find_nearby",
-  "timestamp": "2025-12-18T14:22:40.907Z"
-}
-request_received
-•
-15:22:49.056
-Input: "Restauracja Stara Kamienica"
-response_sent
-•
-15:22:55.878
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację 'Restauracja Stara Kamienica', co sugeruje, że chce zobaczyć jej menu.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    }
-  },
-  "reply": "Niestety, nie mogę pobrać menu Restauracji Stara Kamienica w tej chwili. Proszę sprawdzić połączenie z serwerem. W razie potrzeby mogę pomóc w inny sposób.",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 6420,
-    "nluMs": 572,
-    "ttsMs": 0,
-    "totalMs": 6998
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-intent_resolved
-•
-15:22:55.879
-{
-  "reply": "Niestety, nie mogę pobrać menu Restauracji Stara Kamienica w tej chwili. Proszę sprawdzić połączenie z serwerem. W razie potrzeby mogę pomóc w inny sposób.",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 1
-}
-response_sent
-•
-15:22:56.029
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację 'Restauracja Stara Kamienica', co sugeruje, że chce zobaczyć jej menu.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "stara kamienica"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T14:22:56.029Z"
-}
-request_received
-•
-15:23:51.380
-Input: "Pokaż menu klaps Burger"
-intent_resolved
-•
-15:23:58.764
-{
-  "reply": "W Klaps Burgers dostępne m.in.: \n\n- Desperado Double – 46 zł\n- Desperado Standard – 36 zł\n- Głodzilla – 59 zł\n- Grzybiarz z Piekaryhill – 40 zł\n- Halloween Double – 49 zł\n- Halloween Standard – 39 zł\n\nCo chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "llm",
-  "confidence": 0.9
-}
-response_sent
-•
-15:23:58.764
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "restaurant_id": "569a7d29-57be-4224-bdf3-09c483415cea"
-  },
-  "reply": "W Klaps Burgers dostępne m.in.: \n\n- Desperado Double – 46 zł\n- Desperado Standard – 36 zł\n- Głodzilla – 59 zł\n- Grzybiarz z Piekaryhill – 40 zł\n- Halloween Double – 49 zł\n- Halloween Standard – 39 zł\n\nCo chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 4947,
-    "nluMs": 2544,
-    "ttsMs": 0,
-    "totalMs": 7499
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-15:23:58.936
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "User provided a specific restaurant name → selecting restaurant.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": [
-        "klaps brger"
-      ],
-      "isContextLocked": false,
-      "targetRestaurant": "stara kamienica"
-    }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T14:23:58.936Z"
-}
-request_received
-•
-15:24:17.915
-Input: "Poproszę Desperado Double"
-intent_resolved
-•
-15:24:22.087
-{
-  "reply": "Rozumiem: 1x Desperado Double za 46 zł. Dodać do koszyka?",
-  "intent": "create_order",
-  "source": "classic",
-  "confidence": 0.85
-}
-response_sent
-•
-15:24:22.087
-{
-  "meta": {
-    "reasoning": null
-  },
-  "reply": "Rozumiem: 1x Desperado Double za 46 zł. Dodać do koszyka?",
-  "intent": "create_order",
-  "timings": {
-    "dbMs": 3512,
-    "nluMs": 657,
-    "ttsMs": 0,
-    "totalMs": 4503
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-15:24:22.263
-{
-  "meta": {
-    "llm_refinement": {
-      "action": "order",
+    {
+      "menuItemId": "56f5ee57-9939-41f5-93db-4d8116ac4f44",
+      "name": "Falafel",
+      "price": 13,
       "quantity": 1,
-      "targetItems": [
-        "despera ble"
-      ],
-      "isContextLocked": false,
-      "targetRestaurant": "Klaps Burgers"
+      "restaurant_id": "fc844513-2869-4f42-b04f-c21e1e4cceb7",
+      "restaurant_name": "Tasty King Kebab",
+      "matchScore": 1
     }
+  ],
+  "unavailable": [],
+  "needsClarification": false,
+  "unknownItems": []
+}
+🔍 Debug session updated: {
+  intent: 'create_order',
+  restaurant: 'Tasty King Kebab',
+  sessionId: null,
+  confidence: 0.85
+}
+🚀 Dispatching create_order (Domain: food)
+🧠 OrderHandler executing...
+🛒 Parsing order items from: "Poproszę frytki z serem i falafel"
+[intent-router] 🔍 Checking 9 restaurants for fuzzy match
+[loadMenuCatalog] 🔍 Session: default
+[loadMenuCatalog] 🔍 lastRestaurant: undefined
+[loadMenuCatalog] 🔍 lastId: undefined
+[loadMenuCatalog] ⚠️ Loading all menu items (no restaurant in session)
+✅ Found dish: Falafel (qty: 1)
+✅ Found dish: Frytki z serem (qty: 1)
+🛒 Parsed 2 items: [
+  {
+    id: '56f5ee57-9939-41f5-93db-4d8116ac4f44',
+    name: 'Falafel',
+    price: 13,
+    quantity: 1
   },
-  "intent": "create_order",
-  "timestamp": "2025-12-18T14:24:22.263Z"
-}
-request_received
-•
-15:44:42.391
-Input: "Poleć trzy miejsca w okolicy"
-intent_resolved
-•
-15:44:47.243
-{
-  "reply": "Mam 3 miejsca w Piekary:\n1. Restauracja Stara Kamienica - Polska\n2. Rezydencja Luxury Hotel - Międzynarodowa\n3. Klaps Burgers - Amerykańska\n\nKtóre Cię interesuje?",
-  "intent": "find_nearby",
-  "source": "classic",
-  "confidence": 0.85
-}
-request_received
-•
-15:45:06.039
-Input: "która"
-request_received
-•
-15:45:22.452
-Input: "wybieram restauracja Stara Kamienica"
-intent_resolved
-•
-15:45:31.473
-{
-  "reply": "W Restauracji Stara Kamienica dostępne m.in.: \n\n- Filet z kurczaka po hawajsku - 19 zł\n- Filet z kurczaka tradycyjny (panierowany) - 15 zł\n- Fondant czekoladowy z lodami i bitą śmietaną - 22 zł\n- Grillowany filet z kurczaka - 15 zł\n- Gulasz wieprzowy po węgiersku - 23 zł\n- Jajecznica z 2 szt. jaj - 11 zł\n\nCo chciałbyś zamówić?",
-  "intent": "menu_request",
-  "source": "classic",
-  "confidence": 1
-}
-response_sent
-•
-15:45:31.473
-{
-  "meta": {
-    "reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację, dla której chcemy teraz wyszukać menu.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
+  {
+    id: '6edfdf0f-71e3-478c-bceb-0a9c58d75100',
+    name: 'Frytki z serem',
+    price: 9,
+    quantity: 1
+  }
+]
+[loadMenuCatalog] ✅ Loaded 245 menu items from 9 restaurants
+[loadMenuCatalog] ✅ Sample items: Pizza Šunková, Pizza Ekkluzivne, Pizza Láska Nebeská
+[intent-router] Catalog loaded: 245 items
+[intent-router] 🔍 Calling parseOrderItems...
+[intent-router] 🔍 Catalog items: Pizza Šunková, Pizza Ekkluzivne, Pizza Láska Nebeská, Rumcajsowy Burger, Golonka confit, Sałatka z halloumi, Zupa pomidorowa, Kofola klasyczna, Hawajska, Coca-Cola, Coca-Cola Zero, Fanta Pomarańczowa, Sprite, Coca-Cola, Fanta, Piwo Tyskie, Pizza Margherita 33cm, Pizza Pepperoni 33cm, Pizza Hawajska 33cm, Pizza Capricciosa 33cm, Pizza Vege 33cm, Bacon Burger, Better Than Drwal - Wołowina, Cheddar Burger, Vege Burger, Spicy Burger, Bowl Gyros-Halloumi, Bowl z Dynią, Bowl Kurczak Zapiekany z Serem, Filet Grillowany, Pulled Pork Bowl Pikantny, Zapiekaniec, Cappy Jabłko, Krem z Cebuli i Czosnku, Sałatka Cezar Callzone, Sałatka Grillowany Kurczak, Sałatka Halloumi, Sałatka z Serem Camembert, Sałatka z Serem Feta, Sałatka z Dynią, Szarlotka, Sernik z Musem Malinowym, Ciasto Marchewkowe, Pepsi 0.85L, Kawa Czarna, Kawa Biała, Flat White, Cappuccino, Latte, Sos Tzatziki, Sos Pikantny, Sos Jogurtowy, Gęsie żołądki, Camembert z żurawiną, Deska zakąsek dla dwojga, Wodzionka, Żur śląski w chlebie, Żur śląski na talerzu, Krem borowikowy, Zupa pomidorowa, Barszcz z tortellini, Flaki z indyka, Burger wołowy z frytkami i surówką, Burger wegetariański z Camembertem, frytkami oraz zestawem surówek, Gyros z frytkami i tzatziki, Żeberka wieprzowe z frytkami, Kotlety czopskie, Dzikie placki, Wątróbka drobiowa, Grillowany filet z kurczaka, Kurczak po parysku, Ćwiartka kaczki, Rolada wieprzowa, Kotlet schabowy, Polędwica wieprzowa, Kotlet po szwajcarsku, Rolada wołowa, Ozór wołowy, Miruna w panierce, Zupa z kaczki, Zupa Won Ton, Tagliatelle ze szpinakiem, suszonymi pomidorami i płatkami migdałów, Rosół z makaronem, Naleśniki z serem na słodko z bitą śmietaną, Carbonara a'la Hubertus, Filet z łososia na szpinaku, Stek z halibuta smażony na maśle, Pstrąg na ziołowo, Pierogi z mięsem, Pierogi ruskie, Kluski z sosem pieczeniowym, Sałatka Hubertusa z pieczywem czosnkowym, Sałatka grecka z pieczywem czosnkowym, Kluski śląskie, Ziemniaki z wody, Bratkartoffel, Kapusta modra, Kapusta zasmażana, Nuggetsy z frytkami oraz surówką z marchewki, Cappy Pomarańcza, Woda Mineralna, Tiramisu, Panna Cotta, Brownie, Lody waniliowe z sosem karmelowym, Kosmiczne Jaja Double, Wegetrix Double, Żwirek i Muchomorek Standard, Zupa krabowa, Sajgonki 3 szt., Sajgonki z ryżem, Sajgonki z surówką, Sajgonki z ryżem i surówką, Pierogi Ho Cao z ryżem i surówką, Grzybiarz z Piekaryhill, MrDrwal, Onionator, Hot-dog by KLAPS, Krem z dyni z białą czekoladą, Siekany tatar z polędwicy wołowej, Wędzony pstrąg, Carpaccio z kaczki marynowanej w grzańcu, BUFFAL, Kartacze z dzikiem, Sałatka z dynią marynowaną w musztardzie, Grzanka z krupniokiem, Tagliatelle z krewetkami, Makaron ryżowy z warzywami, Zupa dnia, Rosół z makaronem, Tradycyjny schabowy, Schab po beskidzku, Naleśnik z kurczakiem i warzywami, Naleśnik ze szpinakiem i serem feta, Lody z gorącymi malinami i bitą śmietaną, Fondant czekoladowy z lodami i bitą śmietaną, Coca-Cola, Fanta, Sprite, Cappy (200 ml), Woda mineralna (330 ml), Filet z kurczaka tradycyjny (panierowany), Filet z kurczaka po hawajsku, Grillowany filet z kurczaka, Kroket (z kapustą i grzybami/bądź z mięsem) 1 szt., Placki ziemniaczane 4 szt., Kluski śląskie 7 szt., Rolada wołowa (na zamówienie), Pieczeń wieprzowa, Wątróbka drobiowa, Gulasz wieprzowy po węgiersku, Pierogi (ruskie lub z mięsem) 6 szt., Jajecznica z 2 szt. jaj, Placki po węgiersku z gulaszem wieprzowym, Naleśnik z dżemem truskawkowym lub wiśniowym, Naleśnik z nutellą, bananami, bitą śmietaną, Margherita, Capricciosa, Diavola, Quattro Formaggi, Vegetariana, Prosciutto e Funghi, Salami, Pollo, Spinaci, Wegetrix Standard, Milczenie Wola Standard, Milczenie Wola Double, Halloween Standard, Halloween Double, Smak Vegas, Klaps Fiction Standard, Klaps Fiction Double, Desperado Standard, Desperado Double, Rodzina Serano Standard, Rodzina Serano Double, Głodzilla, Kosmiczne Jaja Standard, Zupa wietnamska, Zupa z kurczakiem, Zupa łajska, Pierogi SiuMai z ryżem i surówką, Kurczak z warzywami, Kurczak słodko-kwaśny, Kurczak pikantny, Kurczak po chińsku, Kurczak po tajsku, Kurczak na gorącym półmisku, Kurczak w cieście słodko-kwaśny, Kurczak w cieście pikantny, Kurczak w cieście curry, Kurczak w cieście pięciu smaków, Wieprzowina z warzywami, Wieprzowina słodko-kwaśna, Wieprzowina pikantna, Wieprzowina Curry, Wieprzowina pięciu smaków, Wieprzowina po tajsku, Wołowina z warzywami, Wołowina pikantna, Wołowina Curry, Wołowina 5 smaków, Wołowina po tajsku, Wołowina na gorącym półmisku, Kaczka z warzywami, Kaczka pikantna, Kaczka słodko-kwaśna, Kaczka po chińsku, Kaczka po tajsku, Kaczka na gorącym półmisku, Krewetki z warzywami, Krewetki pikantne, Krewetki Curry, Krewetki po tajsku, Krewetki na gorącym półmisku, Kalmary chrupiące słodko-kwaśne, Kalmary chrupiące pikantne, Kalmary chrupiące Curry, Kalmary chrupiące w pięciu smakach, Kalmary po tajsku, Kalmary na gorącym półmisku, Kebab amerykański, Nuggets box, Falafel, Frytki z serem, Frytki z Indii masala, Sałatka grecka, Sos, Baklava, Sok Cappy, Coca-Cola 0,85l, Coca-Cola 0,5l, Coca-Cola 0,3l, Pepsi / Mirinda / 7up, Monster Energy Drink, Ayran Turecki, Mango Sok, Oshee, Burn, Pita Rollo, Pita Rollo, Pita Rollo, Pita Rollo, Pita Rollo z serem, Pita Rollo z serem, Pita Rollo z serem, Pita Rollo z serem
+[parseOrderItems] 📊 Summary:
+  - requestedNames: [frytki belgijskie]
+  - availableNames: [frytki z serem, carbonara a'la hubertus, falafel]
+  - unavailableNames: []
+  - matched.length: 3
+  - clarifications.length: 0
+[intent-router] ✅ Parsed result: {
+  "any": true,
+  "groups": [
+    {
+      "restaurant_id": "fc844513-2869-4f42-b04f-c21e1e4cceb7",
+      "restaurant_name": "Tasty King Kebab",
+      "items": [
+        {
+          "menuItemId": "6edfdf0f-71e3-478c-bceb-0a9c58d75100",
+          "name": "Frytki z serem",
+          "price": 9,
+          "quantity": 1
+        },
+        {
+          "menuItemId": "56f5ee57-9939-41f5-93db-4d8116ac4f44",
+          "name": "Falafel",
+          "price": 13,
+          "quantity": 1
+        }
+      ]
     },
-    "restaurant_id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
-  },
-  "reply": "W Restauracji Stara Kamienica dostępne m.in.: \n\n- Filet z kurczaka po hawajsku - 19 zł\n- Filet z kurczaka tradycyjny (panierowany) - 15 zł\n- Fondant czekoladowy z lodami i bitą śmietaną - 22 zł\n- Grillowany filet z kurczaka - 15 zł\n- Gulasz wieprzowy po węgiersku - 23 zł\n- Jajecznica z 2 szt. jaj - 11 zł\n\nCo chciałbyś zamówić?",
-  "intent": "menu_request",
-  "timings": {
-    "dbMs": 8251,
-    "nluMs": 903,
-    "ttsMs": 0,
-    "totalMs": 9414
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-15:45:31.655
-{
-  "meta": {
-    "llm_reasoning": {
-      "reasoning": "Wybrano searchMenu ponieważ użytkownik wskazał konkretną restaurację, dla której chcemy teraz wyszukać menu.",
-      "searchMenu": true,
-      "completeOrder": false,
-      "askClarification": false,
-      "searchRestaurants": false
-    },
-    "llm_refinement": {
-      "action": null,
-      "quantity": null,
-      "targetItems": null,
-      "isContextLocked": false,
-      "targetRestaurant": "stara kamienica"
+    {
+      "restaurant_id": "af8448ef-974b-46c8-a4ae-b04b8dc7c9f8",
+      "restaurant_name": "Dwór Hubertus",
+      "items": [
+        {
+          "menuItemId": "82a2ad16-e3e2-4f39-8dde-671ba334d549",
+          "name": "Carbonara a'la Hubertus",
+          "price": 38,
+          "quantity": 1
+        }
+      ]
     }
-  },
-  "intent": "menu_request",
-  "timestamp": "2025-12-18T14:45:31.655Z"
-}
-request_received
-•
-15:46:12.593
-Input: "filet z kurczaka po hawajsku proszę"
-intent_resolved
-•
-15:46:18.147
-{
-  "reply": "Rozumiem, chcesz zamówić filet z kurczaka po hawajsku w Restauracji Stara Kamienica. Obecnie w koszyku masz 1x Hawajska za 32 zł i 1x Pollo za 34 zł, razem 66 zł. Czy dodać filet z kurczaka po hawajsku do koszyka?",
-  "intent": "create_order",
-  "source": "classic",
-  "confidence": 0.85
-}
-response_sent
-•
-15:46:18.147
-{
-  "meta": {
-    "reasoning": null
-  },
-  "reply": "Rozumiem, chcesz zamówić filet z kurczaka po hawajsku w Restauracji Stara Kamienica. Obecnie w koszyku masz 1x Hawajska za 32 zł i 1x Pollo za 34 zł, razem 66 zł. Czy dodać filet z kurczaka po hawajsku do koszyka?",
-  "intent": "create_order",
-  "timings": {
-    "dbMs": 4939,
-    "nluMs": 613,
-    "ttsMs": 0,
-    "totalMs": 5953
-  },
-  "fallback": false,
-  "confidence": 0.9
-}
-response_sent
-•
-15:46:18.317
-{
-  "meta": {
-    "llm_refinement": {
-      "action": null,
+  ],
+  "clarify": [],
+  "available": [
+    {
+      "menuItemId": "6edfdf0f-71e3-478c-bceb-0a9c58d75100",
+      "name": "Frytki z serem",
+      "price": 9,
       "quantity": 1,
-      "targetItems": [
-        "filet z kurczaka po haajsku"
-      ],
-      "isContextLocked": false,
-      "targetRestaurant": "Restauracja Stara Kamienica"
+      "restaurant_id": "fc844513-2869-4f42-b04f-c21e1e4cceb7",
+      "restaurant_name": "Tasty King Kebab",
+      "matchScore": 1
+    },
+    {
+      "menuItemId": "82a2ad16-e3e2-4f39-8dde-671ba334d549",
+      "name": "Carbonara a'la Hubertus",
+      "price": 38,
+      "quantity": 1,
+      "restaurant_id": "af8448ef-974b-46c8-a4ae-b04b8dc7c9f8",
+      "restaurant_name": "Dwór Hubertus",
+      "matchScore": 1
+    },
+    {
+      "menuItemId": "56f5ee57-9939-41f5-93db-4d8116ac4f44",
+      "name": "Falafel",
+      "price": 13,
+      "quantity": 1,
+      "restaurant_id": "fc844513-2869-4f42-b04f-c21e1e4cceb7",
+      "restaurant_name": "Tasty King Kebab",
+      "matchScore": 1
     }
-  },
-  "intent": "create_order",
-  "timestamp": "2025-12-18T14:46:18.317Z"
+  ],
+  "unavailable": [],
+  "needsClarification": false,
+  "unknownItems": []
 }
+[intent-router] 🔍 parsed.any = true
+[intent-router] 🔍 parsed.groups.length = 2
+🍽️ ✅ EARLY DISH DETECTION SUCCESS! Dish detected: Frytki z serem, Falafel | Carbonara a'la Hubertus
+🍽️ ✅ Returning create_order immediately (HIGHEST PRIORITY)
+🍽️ ✅ parsedOrder: {
+  "any": true,
+  "groups": [
+    {
+      "restaurant_id": "fc844513-2869-4f42-b04f-c21e1e4cceb7",
+      "restaurant_name": "Tasty King Kebab",
+      "items": [
+        {
+          "menuItemId": "6edfdf0f-71e3-478c-bceb-0a9c58d75100",
+          "name": "Frytki z serem",
+          "price": 9,
+          "quantity": 1
+        },
+        {
+          "menuItemId": "56f5ee57-9939-41f5-93db-4d8116ac4f44",
+          "name": "Falafel",
+          "price": 13,
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "restaurant_id": "af8448ef-974b-46c8-a4ae-b04b8dc7c9f8",
+      "restaurant_name": "Dwór Hubertus",
+      "items": [
+        {
+          "menuItemId": "82a2ad16-e3e2-4f39-8dde-671ba334d549",
+          "name": "Carbonara a'la Hubertus",
+          "price": 38,
+          "quantity": 1
+        }
+      ]
+    }
+  ],
+  "clarify": [],
+  "available": [
+    {
+      "menuItemId": "6edfdf0f-71e3-478c-bceb-0a9c58d75100",
+      "name": "Frytki z serem",
+      "price": 9,
+      "quantity": 1,
+      "restaurant_id": "fc844513-2869-4f42-b04f-c21e1e4cceb7",
+      "restaurant_name": "Tasty King Kebab",
+      "matchScore": 1
+    },
+    {
+      "menuItemId": "82a2ad16-e3e2-4f39-8dde-671ba334d549",
+      "name": "Carbonara a'la Hubertus",
+      "price": 38,
+      "quantity": 1,
+      "restaurant_id": "af8448ef-974b-46c8-a4ae-b04b8dc7c9f8",
+      "restaurant_name": "Dwór Hubertus",
+      "matchScore": 1
+    },
+    {
+      "menuItemId": "56f5ee57-9939-41f5-93db-4d8116ac4f44",
+      "name": "Falafel",
+      "price": 13,
+      "quantity": 1,
+      "restaurant_id": "fc844513-2869-4f42-b04f-c21e1e4cceb7",
+      "restaurant_name": "Tasty King Kebab",
+      "matchScore": 1
+    }
+  ],
+  "unavailable": [],
+  "needsClarification": false,
+  "unknownItems": []
+}
+🔍 Debug session updated: {
+  intent: 'create_order',
+  restaurant: 'Tasty King Kebab',
+  sessionId: null,
+  confidence: 0.85
+}
+✅ SmartIntent Resolved: create_order (0.85) via classic
+🧠 [DEBUG] Hybrid intent detection complete: {
+  ruleIntent: 'create_order',
+  ruleConfidence: 0.85,
+  llmIntent: null,
+  llmConfidence: 0,
+  finalIntent: 'create_order',
+  finalConfidence: 0.85,
+  source: 'classic',
+  hasRestaurant: false,
+  restaurantName: undefined,
+  hasParsedOrder: true,
+  parsedOrderDetails: { any: true, groupsCount: 2, groups: [ [Object], [Object] ] }
+}
+🔒 SmartContext: skipping boost (parsedOrder exists)
+GET /api/health 200 154 - 131.560 ms
+GET /api/health 200 154 - 121.862 ms
+📋 Parsed: { dish: 'frytki z serem i falafel', restaurant: null }
+🧠 create_order intent detected
+✅ Using parsedOrder from detectIntent()
+⚠️ menu validation fetch error: invalid input syntax for type uuid: "undefined"
+⚠️ [create_order] Menu cache empty or failed to load.
+🛡️ Trusting parsed item "Frytki z serem" because menu validation failed.
+🛡️ Trusting parsed item "Falafel" because menu validation failed.
+🧠 Saved/merged pending order to session: {
+  items: [
+    {
+      id: '6edfdf0f-71e3-478c-bceb-0a9c58d75100',
+      name: 'Frytki z serem',
+      price_pln: 9,
+      qty: 1
+    },
+    {
+      id: '56f5ee57-9939-41f5-93db-4d8116ac4f44',
+      name: 'Falafel',
+      price_pln: 13,
+      qty: 1
+    }
+  ],
+  restaurant: undefined,
+  restaurant_id: undefined,
+  total: '22.00'
+}
+✅ Pending order saved to session:
+   - expectedContext: confirm_order
+   - pendingOrder items count: 2
+   - pendingOrder items: 1x Frytki z serem, 1x Falafel
+   - total: 22.00 zł
+   - items details: [
+  {
+    "id": "6edfdf0f-71e3-478c-bceb-0a9c58d75100",
+    "name": "Frytki z serem",
+    "price": 9,
+    "quantity": 1
+  },
+  {
+    "id": "56f5ee57-9939-41f5-93db-4d8116ac4f44",
+    "name": "Falafel",
+    "price": 13,
+    "quantity": 1
+  }
+]
+⏳ Waiting for user confirmation (expecting "tak", "dodaj", etc.)
+💬 Generating GPT reply for intent: create_order
+✅ Final response: intent=create_order, confidence=0.9, fallback=false
+📦 Final Response Preparation: MenuItems count = 6
+[ShadowMode] ✅ Match: create_order vs create_order (V2 Latency: 880ms)
+POST /api/brain 200 7043 - 7384.882 ms
+✅ Allowed origin: http://localhost:5173
+[TTS] Generating: Rozumiem: 1x Frytki z serem (9 zł) i 1x Falafel (13 zł). Razem 22 zł. Czy dodać ...
+✅ Using GOOGLE_APPLICATION_CREDENTIALS (local)
+✅ Google access token obtained successfully
+🔊 Using Chirp HD TTS (pl-PL-Wavenet-A, MP3)
+GET /api/health 200 154 - 110.327 ms
+GET /api/health 200 154 - 125.807 ms
+POST /api/tts 200 77952 - 1716.434 ms
+GET /api/admin/system-status 404 21 - 0.268 ms
+GET /api/admin/system-status 404 21 - 0.330 ms
+GET /api/health 200 154 - 287.795 ms
+GET /api/health 200 154 - 345.493 ms
+GET /api/health 200 154 - 355.781 ms
+GET /api/health 200 154 - 159.922 ms
+✅ Allowed origin: http://localhost:5173
+[TTS] Generating: Klaps Burgers. Amerykańska....
+✅ Using GOOGLE_APPLICATION_CREDENTIALS (local)
+✅ Google access token obtained successfully
+🔊 Using Chirp HD TTS (pl-PL-Wavenet-A, MP3)
+POST /api/tts 200 19968 - 1660.739 ms
+GET /api/health 200 154 - 147.732 ms
+GET /api/health 200 154 - 157.008 ms
+✅ Allowed origin: http://localhost:5173
+[TTS] Generating: Tasty King Kebab. Kebab....
+✅ Using GOOGLE_APPLICATION_CREDENTIALS (local)
+✅ Google access token obtained successfully
+🔊 Using Chirp HD TTS (pl-PL-Wavenet-A, MP3)
+POST /api/tts 200 18048 - 898.435 ms
+[brainRouter] 🚀 Handler called (Legacy Mode)
+[intent-router] 🚀 detectIntent called with: { text: 'amerykańska gadaj', sessionId: undefined }
+[intent-router] 🔍 Starting early dish detection for text: amerykańska gadaj
+[intent-router] 🔍 Normalized text: amerykańska gadaj
+[intent-router] 🔍 Session restaurant: NONE
+[intent-router] 🔍 Restaurant indicators in text: false
+[intent-router] 🔍 Searching for restaurant in text (reason: no session restaurant)
+🧠 [DEBUG] Handler called with: {
+  sessionId: 'session-1766038236531',
+  text: 'amerykańska gadaj',
+  method: 'POST',
+  body: {
+    text: 'amerykańska gadaj',
+    sessionId: 'session-1766038236531',
+    lat: 52.2297,
+    lng: 21.0122,
+    includeTTS: false
+  },
+  hasText: true,
+  textLength: 17
+}
+🧠 [DEBUG] Current session state: {
+  sessionId: 'session-1766038236531',
+  session: {
+    expectedContext: 'confirm_order',
+    lastIntent: 'create_order',
+    lastRestaurant: 'Tasty King Kebab',
+    lastRestaurantsList: [],
+    lastRestaurants: [],
+    lastRestaurantsTimestamp: null,
+    lastMenu: [],
+    locationOverride: null,
+    history: [],
+    locationCache: { 'piekary śląskie_fast food': [Object] },
+    last_location: 'Piekary Śląskie',
+    lastUpdated: 1766154088764,
+    last_restaurants_list: [ [Object], [Object] ],
+    last_menu: [ [Object], [Object], [Object], [Object], [Object], [Object] ],
+    pendingOrder: { restaurant: [Object], items: [Array], total: 22 }
+  },
+  hasExpectedContext: true,
+  expectedContextValue: 'confirm_order',
+  hasLastRestaurant: true,
+  lastRestaurantName: undefined,
+  hasLastLocation: true,
+  lastLocation: 'Piekary Śląskie',
+  hasPendingOrder: true,
+  lastIntent: 'create_order',
+  sessionKeys: [
+    'expectedContext',
+    'lastIntent',
+    'lastRestaurant',
+    'lastRestaurantsList',
+    'lastRestaurants',
+    'lastRestaurantsTimestamp',
+    'lastMenu',
+    'locationOverride',
+    'history',
+    'locationCache',
+    'last_location',
+    'lastUpdated',
+    'last_restaurants_list',
+    'last_menu',
+    'pendingOrder'
+  ]
+}
+[brainRouter] 🧠 Calling detectIntent with: { text: 'amerykańska gadaj', sessionId: 'session-1766038236531' }
+[brainRouter] 🧠 Current session: {
+  expectedContext: 'confirm_order',
+  lastIntent: 'create_order',
+  lastRestaurant: 'Tasty King Kebab',
+  lastRestaurantsList: [],
+  lastRestaurants: [],
+  lastRestaurantsTimestamp: null,
+  lastMenu: [],
+  locationOverride: null,
+  history: [],
+  locationCache: {
+    'piekary śląskie_fast food': { data: [Array], timestamp: 1766153991955 }
+  },
+  last_location: 'Piekary Śląskie',
+  lastUpdated: 1766154088764,
+  last_restaurants_list: [
+    {
+      id: '569a7d29-57be-4224-bdf3-09c483415cea',
+      name: 'Klaps Burgers',
+      address: 'ul. Piotra Skargi 15',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Amerykańska',
+      lat: 50.38643,
+      lng: 18.95422
+    },
+    {
+      id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Tasty King Kebab',
+      address: 'ul. Bytomska 70',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Kebab',
+      lat: 50.38587,
+      lng: 18.94712
+    }
+  ],
+  last_menu: [
+    {
+      id: '832e3395-cd6f-4119-acc0-68290e6ba693',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Baklava',
+      description: null,
+      category: 'Przekąski',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 6,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: '56f5ee57-9939-41f5-93db-4d8116ac4f44',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Falafel',
+      description: null,
+      category: 'Kebab',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 13,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: 'ed0502fa-eb68-453c-b6e0-e6fdff88f7df',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Frytki z Indii masala',
+      description: null,
+      category: 'Przekąski',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 7,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: '6edfdf0f-71e3-478c-bceb-0a9c58d75100',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Frytki z serem',
+      description: null,
+      category: 'Przekąski',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 9,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: '3b842a08-7769-4c33-9f48-ca6f31cfaa6c',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Kebab amerykański',
+      description: null,
+      category: 'Kebab',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 20,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: 'df133e95-e52d-4bbc-971d-b8fc5fade7a2',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Nuggets box',
+      description: null,
+      category: 'Kebab',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 15,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    }
+  ],
+  pendingOrder: {
+    restaurant: { id: undefined, name: undefined, city: undefined },
+    items: [ [Object], [Object] ],
+    total: 22
+  }
+}
+🔬 Starting Smart Intent Layer...
+[intent-router] 🚀 detectIntent called with: { text: 'amerykańska gadaj', sessionId: undefined }
+[intent-router] 🔍 Starting early dish detection for text: amerykańska gadaj
+[intent-router] 🔍 Normalized text: amerykańska gadaj
+[intent-router] 🔍 Session restaurant: NONE
+[intent-router] 🔍 Restaurant indicators in text: false
+[intent-router] 🔍 Searching for restaurant in text (reason: no session restaurant)
+[intent-router] 🔍 Checking 9 restaurants for fuzzy match
+[loadMenuCatalog] 🔍 Session: null
+[loadMenuCatalog] 🔍 lastRestaurant: undefined
+[loadMenuCatalog] 🔍 lastId: undefined
+[loadMenuCatalog] ⚠️ Loading all menu items (no restaurant in session)
+[intent-router] 🔍 Checking 9 restaurants for fuzzy match
+[loadMenuCatalog] 🔍 Session: default
+[loadMenuCatalog] 🔍 lastRestaurant: undefined
+[loadMenuCatalog] 🔍 lastId: undefined
+[loadMenuCatalog] ⚠️ Loading all menu items (no restaurant in session)
+[loadMenuCatalog] ✅ Loaded 245 menu items from 9 restaurants
+[loadMenuCatalog] ✅ Sample items: Pizza Šunková, Pizza Ekkluzivne, Pizza Láska Nebeská
+[intent-router] Catalog loaded: 245 items
+[intent-router] 🔍 Calling parseOrderItems...
+[intent-router] 🔍 Catalog items: Pizza Šunková, Pizza Ekkluzivne, Pizza Láska Nebeská, Rumcajsowy Burger, Golonka confit, Sałatka z halloumi, Zupa pomidorowa, Kofola klasyczna, Hawajska, Coca-Cola, Coca-Cola Zero, Fanta Pomarańczowa, Sprite, Coca-Cola, Fanta, Piwo Tyskie, Pizza Margherita 33cm, Pizza Pepperoni 33cm, Pizza Hawajska 33cm, Pizza Capricciosa 33cm, Pizza Vege 33cm, Bacon Burger, Better Than Drwal - Wołowina, Cheddar Burger, Vege Burger, Spicy Burger, Bowl Gyros-Halloumi, Bowl z Dynią, Bowl Kurczak Zapiekany z Serem, Filet Grillowany, Pulled Pork Bowl Pikantny, Zapiekaniec, Cappy Jabłko, Krem z Cebuli i Czosnku, Sałatka Cezar Callzone, Sałatka Grillowany Kurczak, Sałatka Halloumi, Sałatka z Serem Camembert, Sałatka z Serem Feta, Sałatka z Dynią, Szarlotka, Sernik z Musem Malinowym, Ciasto Marchewkowe, Pepsi 0.85L, Kawa Czarna, Kawa Biała, Flat White, Cappuccino, Latte, Sos Tzatziki, Sos Pikantny, Sos Jogurtowy, Gęsie żołądki, Camembert z żurawiną, Deska zakąsek dla dwojga, Wodzionka, Żur śląski w chlebie, Żur śląski na talerzu, Krem borowikowy, Zupa pomidorowa, Barszcz z tortellini, Flaki z indyka, Burger wołowy z frytkami i surówką, Burger wegetariański z Camembertem, frytkami oraz zestawem surówek, Gyros z frytkami i tzatziki, Żeberka wieprzowe z frytkami, Kotlety czopskie, Dzikie placki, Wątróbka drobiowa, Grillowany filet z kurczaka, Kurczak po parysku, Ćwiartka kaczki, Rolada wieprzowa, Kotlet schabowy, Polędwica wieprzowa, Kotlet po szwajcarsku, Rolada wołowa, Ozór wołowy, Miruna w panierce, Zupa z kaczki, Zupa Won Ton, Tagliatelle ze szpinakiem, suszonymi pomidorami i płatkami migdałów, Rosół z makaronem, Naleśniki z serem na słodko z bitą śmietaną, Carbonara a'la Hubertus, Filet z łososia na szpinaku, Stek z halibuta smażony na maśle, Pstrąg na ziołowo, Pierogi z mięsem, Pierogi ruskie, Kluski z sosem pieczeniowym, Sałatka Hubertusa z pieczywem czosnkowym, Sałatka grecka z pieczywem czosnkowym, Kluski śląskie, Ziemniaki z wody, Bratkartoffel, Kapusta modra, Kapusta zasmażana, Nuggetsy z frytkami oraz surówką z marchewki, Cappy Pomarańcza, Woda Mineralna, Tiramisu, Panna Cotta, Brownie, Lody waniliowe z sosem karmelowym, Kosmiczne Jaja Double, Wegetrix Double, Żwirek i Muchomorek Standard, Zupa krabowa, Sajgonki 3 szt., Sajgonki z ryżem, Sajgonki z surówką, Sajgonki z ryżem i surówką, Pierogi Ho Cao z ryżem i surówką, Grzybiarz z Piekaryhill, MrDrwal, Onionator, Hot-dog by KLAPS, Krem z dyni z białą czekoladą, Siekany tatar z polędwicy wołowej, Wędzony pstrąg, Carpaccio z kaczki marynowanej w grzańcu, BUFFAL, Kartacze z dzikiem, Sałatka z dynią marynowaną w musztardzie, Grzanka z krupniokiem, Tagliatelle z krewetkami, Makaron ryżowy z warzywami, Zupa dnia, Rosół z makaronem, Tradycyjny schabowy, Schab po beskidzku, Naleśnik z kurczakiem i warzywami, Naleśnik ze szpinakiem i serem feta, Lody z gorącymi malinami i bitą śmietaną, Fondant czekoladowy z lodami i bitą śmietaną, Coca-Cola, Fanta, Sprite, Cappy (200 ml), Woda mineralna (330 ml), Filet z kurczaka tradycyjny (panierowany), Filet z kurczaka po hawajsku, Grillowany filet z kurczaka, Kroket (z kapustą i grzybami/bądź z mięsem) 1 szt., Placki ziemniaczane 4 szt., Kluski śląskie 7 szt., Rolada wołowa (na zamówienie), Pieczeń wieprzowa, Wątróbka drobiowa, Gulasz wieprzowy po węgiersku, Pierogi (ruskie lub z mięsem) 6 szt., Jajecznica z 2 szt. jaj, Placki po węgiersku z gulaszem wieprzowym, Naleśnik z dżemem truskawkowym lub wiśniowym, Naleśnik z nutellą, bananami, bitą śmietaną, Margherita, Capricciosa, Diavola, Quattro Formaggi, Vegetariana, Prosciutto e Funghi, Salami, Pollo, Spinaci, Wegetrix Standard, Milczenie Wola Standard, Milczenie Wola Double, Halloween Standard, Halloween Double, Smak Vegas, Klaps Fiction Standard, Klaps Fiction Double, Desperado Standard, Desperado Double, Rodzina Serano Standard, Rodzina Serano Double, Głodzilla, Kosmiczne Jaja Standard, Zupa wietnamska, Zupa z kurczakiem, Zupa łajska, Pierogi SiuMai z ryżem i surówką, Kurczak z warzywami, Kurczak słodko-kwaśny, Kurczak pikantny, Kurczak po chińsku, Kurczak po tajsku, Kurczak na gorącym półmisku, Kurczak w cieście słodko-kwaśny, Kurczak w cieście pikantny, Kurczak w cieście curry, Kurczak w cieście pięciu smaków, Wieprzowina z warzywami, Wieprzowina słodko-kwaśna, Wieprzowina pikantna, Wieprzowina Curry, Wieprzowina pięciu smaków, Wieprzowina po tajsku, Wołowina z warzywami, Wołowina pikantna, Wołowina Curry, Wołowina 5 smaków, Wołowina po tajsku, Wołowina na gorącym półmisku, Kaczka z warzywami, Kaczka pikantna, Kaczka słodko-kwaśna, Kaczka po chińsku, Kaczka po tajsku, Kaczka na gorącym półmisku, Krewetki z warzywami, Krewetki pikantne, Krewetki Curry, Krewetki po tajsku, Krewetki na gorącym półmisku, Kalmary chrupiące słodko-kwaśne, Kalmary chrupiące pikantne, Kalmary chrupiące Curry, Kalmary chrupiące w pięciu smakach, Kalmary po tajsku, Kalmary na gorącym półmisku, Kebab amerykański, Nuggets box, Falafel, Frytki z serem, Frytki z Indii masala, Sałatka grecka, Sos, Baklava, Sok Cappy, Coca-Cola 0,85l, Coca-Cola 0,5l, Coca-Cola 0,3l, Pepsi / Mirinda / 7up, Monster Energy Drink, Ayran Turecki, Mango Sok, Oshee, Burn, Pita Rollo, Pita Rollo, Pita Rollo, Pita Rollo, Pita Rollo z serem, Pita Rollo z serem, Pita Rollo z serem, Pita Rollo z serem
+[parseOrderItems] 📊 Summary:
+  - requestedNames: []
+  - availableNames: []
+  - unavailableNames: []
+  - matched.length: 0
+  - clarifications.length: 0
+[intent-router] ✅ Parsed result: {
+  "any": false,
+  "groups": [],
+  "clarify": [],
+  "available": [],
+  "unavailable": [
+    "amerykańska gadaj"
+  ],
+  "needsClarification": true,
+  "unknownItems": [
+    {
+      "name": "amerykańska gadaj",
+      "reason": "no_alias_match"
+    }
+  ]
+}
+[intent-router] 🔍 parsed.any = false
+[intent-router] 🔍 parsed.groups.length = 0
+⚠️ Unavailable items detected: amerykańska gadaj in tym menu
+🔍 Checking if text contains restaurant name (using cached list): "amerykańska gadaj"
+🔍 Debug session updated: {
+  intent: 'clarify_order',
+  restaurant: 'tym menu',
+  sessionId: null,
+  confidence: 0.9
+}
+✅ SmartIntent Resolved: clarify_order (0.90) via classic
+🧠 [DEBUG] Hybrid intent detection complete: {
+  ruleIntent: 'clarify_order',
+  ruleConfidence: 0.9,
+  llmIntent: null,
+  llmConfidence: 0,
+  finalIntent: 'clarify_order',
+  finalConfidence: 0.9,
+  source: 'classic',
+  hasRestaurant: false,
+  restaurantName: undefined,
+  hasParsedOrder: true,
+  parsedOrderDetails: { any: false, groupsCount: 0, groups: [] }
+}
+🧠 [DEBUG] Calling boostIntent with: {
+  text: 'amerykańska gadaj',
+  hybridIntent: 'clarify_order',
+  confidence: 0.9,
+  session: {
+    expectedContext: 'confirm_order',
+    lastRestaurant: undefined,
+    lastIntent: 'create_order'
+  }
+}
+🧠 [DEBUG] boostIntent result: {
+  originalIntent: 'clarify_order',
+  boostedIntent: 'clarify_order',
+  isContextLocked: false
+}
+[loadMenuCatalog] ✅ Loaded 245 menu items from 9 restaurants
+[loadMenuCatalog] ✅ Sample items: Pizza Šunková, Pizza Ekkluzivne, Pizza Láska Nebeská
+[intent-router] Catalog loaded: 245 items
+[intent-router] 🔍 Calling parseOrderItems...
+[intent-router] 🔍 Catalog items: Pizza Šunková, Pizza Ekkluzivne, Pizza Láska Nebeská, Rumcajsowy Burger, Golonka confit, Sałatka z halloumi, Zupa pomidorowa, Kofola klasyczna, Hawajska, Coca-Cola, Coca-Cola Zero, Fanta Pomarańczowa, Sprite, Coca-Cola, Fanta, Piwo Tyskie, Pizza Margherita 33cm, Pizza Pepperoni 33cm, Pizza Hawajska 33cm, Pizza Capricciosa 33cm, Pizza Vege 33cm, Bacon Burger, Better Than Drwal - Wołowina, Cheddar Burger, Vege Burger, Spicy Burger, Bowl Gyros-Halloumi, Bowl z Dynią, Bowl Kurczak Zapiekany z Serem, Filet Grillowany, Pulled Pork Bowl Pikantny, Zapiekaniec, Cappy Jabłko, Krem z Cebuli i Czosnku, Sałatka Cezar Callzone, Sałatka Grillowany Kurczak, Sałatka Halloumi, Sałatka z Serem Camembert, Sałatka z Serem Feta, Sałatka z Dynią, Szarlotka, Sernik z Musem Malinowym, Ciasto Marchewkowe, Pepsi 0.85L, Kawa Czarna, Kawa Biała, Flat White, Cappuccino, Latte, Sos Tzatziki, Sos Pikantny, Sos Jogurtowy, Gęsie żołądki, Camembert z żurawiną, Deska zakąsek dla dwojga, Wodzionka, Żur śląski w chlebie, Żur śląski na talerzu, Krem borowikowy, Zupa pomidorowa, Barszcz z tortellini, Flaki z indyka, Burger wołowy z frytkami i surówką, Burger wegetariański z Camembertem, frytkami oraz zestawem surówek, Gyros z frytkami i tzatziki, Żeberka wieprzowe z frytkami, Kotlety czopskie, Dzikie placki, Wątróbka drobiowa, Grillowany filet z kurczaka, Kurczak po parysku, Ćwiartka kaczki, Rolada wieprzowa, Kotlet schabowy, Polędwica wieprzowa, Kotlet po szwajcarsku, Rolada wołowa, Ozór wołowy, Miruna w panierce, Zupa z kaczki, Zupa Won Ton, Tagliatelle ze szpinakiem, suszonymi pomidorami i płatkami migdałów, Rosół z makaronem, Naleśniki z serem na słodko z bitą śmietaną, Carbonara a'la Hubertus, Filet z łososia na szpinaku, Stek z halibuta smażony na maśle, Pstrąg na ziołowo, Pierogi z mięsem, Pierogi ruskie, Kluski z sosem pieczeniowym, Sałatka Hubertusa z pieczywem czosnkowym, Sałatka grecka z pieczywem czosnkowym, Kluski śląskie, Ziemniaki z wody, Bratkartoffel, Kapusta modra, Kapusta zasmażana, Nuggetsy z frytkami oraz surówką z marchewki, Cappy Pomarańcza, Woda Mineralna, Tiramisu, Panna Cotta, Brownie, Lody waniliowe z sosem karmelowym, Kosmiczne Jaja Double, Wegetrix Double, Żwirek i Muchomorek Standard, Zupa krabowa, Sajgonki 3 szt., Sajgonki z ryżem, Sajgonki z surówką, Sajgonki z ryżem i surówką, Pierogi Ho Cao z ryżem i surówką, Grzybiarz z Piekaryhill, MrDrwal, Onionator, Hot-dog by KLAPS, Krem z dyni z białą czekoladą, Siekany tatar z polędwicy wołowej, Wędzony pstrąg, Carpaccio z kaczki marynowanej w grzańcu, BUFFAL, Kartacze z dzikiem, Sałatka z dynią marynowaną w musztardzie, Grzanka z krupniokiem, Tagliatelle z krewetkami, Makaron ryżowy z warzywami, Zupa dnia, Rosół z makaronem, Tradycyjny schabowy, Schab po beskidzku, Naleśnik z kurczakiem i warzywami, Naleśnik ze szpinakiem i serem feta, Lody z gorącymi malinami i bitą śmietaną, Fondant czekoladowy z lodami i bitą śmietaną, Coca-Cola, Fanta, Sprite, Cappy (200 ml), Woda mineralna (330 ml), Filet z kurczaka tradycyjny (panierowany), Filet z kurczaka po hawajsku, Grillowany filet z kurczaka, Kroket (z kapustą i grzybami/bądź z mięsem) 1 szt., Placki ziemniaczane 4 szt., Kluski śląskie 7 szt., Rolada wołowa (na zamówienie), Pieczeń wieprzowa, Wątróbka drobiowa, Gulasz wieprzowy po węgiersku, Pierogi (ruskie lub z mięsem) 6 szt., Jajecznica z 2 szt. jaj, Placki po węgiersku z gulaszem wieprzowym, Naleśnik z dżemem truskawkowym lub wiśniowym, Naleśnik z nutellą, bananami, bitą śmietaną, Margherita, Capricciosa, Diavola, Quattro Formaggi, Vegetariana, Prosciutto e Funghi, Salami, Pollo, Spinaci, Wegetrix Standard, Milczenie Wola Standard, Milczenie Wola Double, Halloween Standard, Halloween Double, Smak Vegas, Klaps Fiction Standard, Klaps Fiction Double, Desperado Standard, Desperado Double, Rodzina Serano Standard, Rodzina Serano Double, Głodzilla, Kosmiczne Jaja Standard, Zupa wietnamska, Zupa z kurczakiem, Zupa łajska, Pierogi SiuMai z ryżem i surówką, Kurczak z warzywami, Kurczak słodko-kwaśny, Kurczak pikantny, Kurczak po chińsku, Kurczak po tajsku, Kurczak na gorącym półmisku, Kurczak w cieście słodko-kwaśny, Kurczak w cieście pikantny, Kurczak w cieście curry, Kurczak w cieście pięciu smaków, Wieprzowina z warzywami, Wieprzowina słodko-kwaśna, Wieprzowina pikantna, Wieprzowina Curry, Wieprzowina pięciu smaków, Wieprzowina po tajsku, Wołowina z warzywami, Wołowina pikantna, Wołowina Curry, Wołowina 5 smaków, Wołowina po tajsku, Wołowina na gorącym półmisku, Kaczka z warzywami, Kaczka pikantna, Kaczka słodko-kwaśna, Kaczka po chińsku, Kaczka po tajsku, Kaczka na gorącym półmisku, Krewetki z warzywami, Krewetki pikantne, Krewetki Curry, Krewetki po tajsku, Krewetki na gorącym półmisku, Kalmary chrupiące słodko-kwaśne, Kalmary chrupiące pikantne, Kalmary chrupiące Curry, Kalmary chrupiące w pięciu smakach, Kalmary po tajsku, Kalmary na gorącym półmisku, Kebab amerykański, Nuggets box, Falafel, Frytki z serem, Frytki z Indii masala, Sałatka grecka, Sos, Baklava, Sok Cappy, Coca-Cola 0,85l, Coca-Cola 0,5l, Coca-Cola 0,3l, Pepsi / Mirinda / 7up, Monster Energy Drink, Ayran Turecki, Mango Sok, Oshee, Burn, Pita Rollo, Pita Rollo, Pita Rollo, Pita Rollo, Pita Rollo z serem, Pita Rollo z serem, Pita Rollo z serem, Pita Rollo z serem
+[parseOrderItems] 📊 Summary:
+  - requestedNames: []
+  - availableNames: []
+  - unavailableNames: []
+  - matched.length: 0
+  - clarifications.length: 0
+[intent-router] ✅ Parsed result: {
+  "any": false,
+  "groups": [],
+  "clarify": [],
+  "available": [],
+  "unavailable": [
+    "amerykańska gadaj"
+  ],
+  "needsClarification": true,
+  "unknownItems": [
+    {
+      "name": "amerykańska gadaj",
+      "reason": "no_alias_match"
+    }
+  ]
+}
+[intent-router] 🔍 parsed.any = false
+[intent-router] 🔍 parsed.groups.length = 0
+⚠️ Unavailable items detected: amerykańska gadaj in tym menu
+🔍 Checking if text contains restaurant name (using cached list): "amerykańska gadaj"
+🔍 Debug session updated: {
+  intent: 'clarify_order',
+  restaurant: 'tym menu',
+  sessionId: null,
+  confidence: 0.9
+}
+🚀 Dispatching clarify_order (Domain: food)
+GET /api/health 200 154 - 170.336 ms
+GET /api/health 200 154 - 229.258 ms
+🧠 GPT Reasoner: {
+  searchRestaurants: false,
+  searchMenu: false,
+  askClarification: true,
+  completeOrder: false,
+  reasoning: 'Wybrano askClarification, ponieważ użytkownik wyraził zamiar dopytania o szczegóły zamówienia, a system nie podał jeszcze dokładnych informacji dotyczących amerykańskiej kuchni.'
+}
+[ShadowMode] ❌ Match: clarify vs clarify_order (V2 Latency: 1522ms)
+POST /api/brain 200 4151 - 7634.148 ms
+[brainRouter] 🚀 Handler called (Legacy Mode)
+🚀 Dispatching confirm_order (Domain: food)
+🧠 ConfirmOrderHandler executing...
+✅ Order finalized: ORD-MJCYK78U for 22 PLN
+🧠 [DEBUG] Handler called with: {
+  sessionId: 'session-1766038236531',
+  text: 'tak dalej',
+  method: 'POST',
+  body: {
+    text: 'tak dalej',
+    sessionId: 'session-1766038236531',
+    lat: 52.2297,
+    lng: 21.0122,
+    includeTTS: false
+  },
+  hasText: true,
+  textLength: 9
+}
+🧠 [DEBUG] Current session state: {
+  sessionId: 'session-1766038236531',
+  session: {
+    expectedContext: null,
+    lastIntent: 'confirm_order',
+    lastRestaurant: 'Tasty King Kebab',
+    lastRestaurantsList: [],
+    lastRestaurants: [],
+    lastRestaurantsTimestamp: null,
+    lastMenu: [],
+    locationOverride: null,
+    history: [],
+    locationCache: { 'piekary śląskie_fast food': [Object] },
+    last_location: 'Piekary Śląskie',
+    lastUpdated: 1766154118061,
+    last_restaurants_list: [ [Object], [Object] ],
+    last_menu: [ [Object], [Object], [Object], [Object], [Object], [Object] ],
+    pendingOrder: null,
+    status: 'COMPLETED',
+    closedAt: 1766154118062,
+    locked: true,
+    lastOrder: { id: 'ORD-MJCYK78U', total: 22, items: [Array] },
+    context: 'neutral'
+  },
+  hasExpectedContext: false,
+  expectedContextValue: null,
+  hasLastRestaurant: true,
+  lastRestaurantName: undefined,
+  hasLastLocation: true,
+  lastLocation: 'Piekary Śląskie',
+  hasPendingOrder: false,
+  lastIntent: 'confirm_order',
+  sessionKeys: [
+    'expectedContext',
+    'lastIntent',
+    'lastRestaurant',
+    'lastRestaurantsList',
+    'lastRestaurants',
+    'lastRestaurantsTimestamp',
+    'lastMenu',
+    'locationOverride',
+    'history',
+    'locationCache',
+    'last_location',
+    'lastUpdated',
+    'last_restaurants_list',
+    'last_menu',
+    'pendingOrder',
+    'status',
+    'closedAt',
+    'locked',
+    'lastOrder',
+    'context'
+  ]
+}
+[brainRouter] 🧠 Calling detectIntent with: { text: 'tak dalej', sessionId: 'session-1766038236531' }
+[brainRouter] 🧠 Current session: {
+  expectedContext: null,
+  lastIntent: 'confirm_order',
+  lastRestaurant: 'Tasty King Kebab',
+  lastRestaurantsList: [],
+  lastRestaurants: [],
+  lastRestaurantsTimestamp: null,
+  lastMenu: [],
+  locationOverride: null,
+  history: [],
+  locationCache: {
+    'piekary śląskie_fast food': { data: [Array], timestamp: 1766153991955 }
+  },
+  last_location: 'Piekary Śląskie',
+  lastUpdated: 1766154118061,
+  last_restaurants_list: [
+    {
+      id: '569a7d29-57be-4224-bdf3-09c483415cea',
+      name: 'Klaps Burgers',
+      address: 'ul. Piotra Skargi 15',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Amerykańska',
+      lat: 50.38643,
+      lng: 18.95422
+    },
+    {
+      id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Tasty King Kebab',
+      address: 'ul. Bytomska 70',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Kebab',
+      lat: 50.38587,
+      lng: 18.94712
+    }
+  ],
+  last_menu: [
+    {
+      id: '832e3395-cd6f-4119-acc0-68290e6ba693',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Baklava',
+      description: null,
+      category: 'Przekąski',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 6,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: '56f5ee57-9939-41f5-93db-4d8116ac4f44',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Falafel',
+      description: null,
+      category: 'Kebab',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 13,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: 'ed0502fa-eb68-453c-b6e0-e6fdff88f7df',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Frytki z Indii masala',
+      description: null,
+      category: 'Przekąski',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 7,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: '6edfdf0f-71e3-478c-bceb-0a9c58d75100',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Frytki z serem',
+      description: null,
+      category: 'Przekąski',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 9,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: '3b842a08-7769-4c33-9f48-ca6f31cfaa6c',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Kebab amerykański',
+      description: null,
+      category: 'Kebab',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 20,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: 'df133e95-e52d-4bbc-971d-b8fc5fade7a2',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Nuggets box',
+      description: null,
+      category: 'Kebab',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 15,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    }
+  ],
+  pendingOrder: null,
+  status: 'COMPLETED',
+  closedAt: 1766154118062,
+  locked: true,
+  lastOrder: { id: 'ORD-MJCYK78U', total: 22, items: [ [Object], [Object] ] },
+  context: 'neutral'
+}
+🔬 Starting Smart Intent Layer...
+[intent-router] 🚀 detectIntent called with: { text: 'tak dalej', sessionId: undefined }
+[intent-router] 🔍 Starting early dish detection for text: tak dalej
+[intent-router] 🔍 Normalized text: tak dalej
+[intent-router] 🔍 Session restaurant: NONE
+[intent-router] 🔍 Restaurant indicators in text: false
+[intent-router] 🔍 Searching for restaurant in text (reason: no session restaurant)
+GET /api/health 200 154 - 431.205 ms
+[intent-router] 🔍 Checking 9 restaurants for fuzzy match
+[loadMenuCatalog] 🔍 Session: default
+[loadMenuCatalog] 🔍 lastRestaurant: undefined
+[loadMenuCatalog] 🔍 lastId: undefined
+[loadMenuCatalog] ⚠️ Loading all menu items (no restaurant in session)
+GET /api/health 200 154 - 222.938 ms
+[loadMenuCatalog] ✅ Loaded 245 menu items from 9 restaurants
+[loadMenuCatalog] ✅ Sample items: Pizza Šunková, Pizza Ekkluzivne, Pizza Láska Nebeská
+[intent-router] Catalog loaded: 245 items
+[intent-router] 🔍 Calling parseOrderItems...
+[intent-router] 🔍 Catalog items: Pizza Šunková, Pizza Ekkluzivne, Pizza Láska Nebeská, Rumcajsowy Burger, Golonka confit, Sałatka z halloumi, Zupa pomidorowa, Kofola klasyczna, Hawajska, Coca-Cola, Coca-Cola Zero, Fanta Pomarańczowa, Sprite, Coca-Cola, Fanta, Piwo Tyskie, Pizza Margherita 33cm, Pizza Pepperoni 33cm, Pizza Hawajska 33cm, Pizza Capricciosa 33cm, Pizza Vege 33cm, Bacon Burger, Better Than Drwal - Wołowina, Cheddar Burger, Vege Burger, Spicy Burger, Bowl Gyros-Halloumi, Bowl z Dynią, Bowl Kurczak Zapiekany z Serem, Filet Grillowany, Pulled Pork Bowl Pikantny, Zapiekaniec, Cappy Jabłko, Krem z Cebuli i Czosnku, Sałatka Cezar Callzone, Sałatka Grillowany Kurczak, Sałatka Halloumi, Sałatka z Serem Camembert, Sałatka z Serem Feta, Sałatka z Dynią, Szarlotka, Sernik z Musem Malinowym, Ciasto Marchewkowe, Pepsi 0.85L, Kawa Czarna, Kawa Biała, Flat White, Cappuccino, Latte, Sos Tzatziki, Sos Pikantny, Sos Jogurtowy, Gęsie żołądki, Camembert z żurawiną, Deska zakąsek dla dwojga, Wodzionka, Żur śląski w chlebie, Żur śląski na talerzu, Krem borowikowy, Zupa pomidorowa, Barszcz z tortellini, Flaki z indyka, Burger wołowy z frytkami i surówką, Burger wegetariański z Camembertem, frytkami oraz zestawem surówek, Gyros z frytkami i tzatziki, Żeberka wieprzowe z frytkami, Kotlety czopskie, Dzikie placki, Wątróbka drobiowa, Grillowany filet z kurczaka, Kurczak po parysku, Ćwiartka kaczki, Rolada wieprzowa, Kotlet schabowy, Polędwica wieprzowa, Kotlet po szwajcarsku, Rolada wołowa, Ozór wołowy, Miruna w panierce, Zupa z kaczki, Zupa Won Ton, Tagliatelle ze szpinakiem, suszonymi pomidorami i płatkami migdałów, Rosół z makaronem, Naleśniki z serem na słodko z bitą śmietaną, Carbonara a'la Hubertus, Filet z łososia na szpinaku, Stek z halibuta smażony na maśle, Pstrąg na ziołowo, Pierogi z mięsem, Pierogi ruskie, Kluski z sosem pieczeniowym, Sałatka Hubertusa z pieczywem czosnkowym, Sałatka grecka z pieczywem czosnkowym, Kluski śląskie, Ziemniaki z wody, Bratkartoffel, Kapusta modra, Kapusta zasmażana, Nuggetsy z frytkami oraz surówką z marchewki, Cappy Pomarańcza, Woda Mineralna, Tiramisu, Panna Cotta, Brownie, Lody waniliowe z sosem karmelowym, Kosmiczne Jaja Double, Wegetrix Double, Żwirek i Muchomorek Standard, Zupa krabowa, Sajgonki 3 szt., Sajgonki z ryżem, Sajgonki z surówką, Sajgonki z ryżem i surówką, Pierogi Ho Cao z ryżem i surówką, Grzybiarz z Piekaryhill, MrDrwal, Onionator, Hot-dog by KLAPS, Krem z dyni z białą czekoladą, Siekany tatar z polędwicy wołowej, Wędzony pstrąg, Carpaccio z kaczki marynowanej w grzańcu, BUFFAL, Kartacze z dzikiem, Sałatka z dynią marynowaną w musztardzie, Grzanka z krupniokiem, Tagliatelle z krewetkami, Makaron ryżowy z warzywami, Zupa dnia, Rosół z makaronem, Tradycyjny schabowy, Schab po beskidzku, Naleśnik z kurczakiem i warzywami, Naleśnik ze szpinakiem i serem feta, Lody z gorącymi malinami i bitą śmietaną, Fondant czekoladowy z lodami i bitą śmietaną, Coca-Cola, Fanta, Sprite, Cappy (200 ml), Woda mineralna (330 ml), Filet z kurczaka tradycyjny (panierowany), Filet z kurczaka po hawajsku, Grillowany filet z kurczaka, Kroket (z kapustą i grzybami/bądź z mięsem) 1 szt., Placki ziemniaczane 4 szt., Kluski śląskie 7 szt., Rolada wołowa (na zamówienie), Pieczeń wieprzowa, Wątróbka drobiowa, Gulasz wieprzowy po węgiersku, Pierogi (ruskie lub z mięsem) 6 szt., Jajecznica z 2 szt. jaj, Placki po węgiersku z gulaszem wieprzowym, Naleśnik z dżemem truskawkowym lub wiśniowym, Naleśnik z nutellą, bananami, bitą śmietaną, Margherita, Capricciosa, Diavola, Quattro Formaggi, Vegetariana, Prosciutto e Funghi, Salami, Pollo, Spinaci, Wegetrix Standard, Milczenie Wola Standard, Milczenie Wola Double, Halloween Standard, Halloween Double, Smak Vegas, Klaps Fiction Standard, Klaps Fiction Double, Desperado Standard, Desperado Double, Rodzina Serano Standard, Rodzina Serano Double, Głodzilla, Kosmiczne Jaja Standard, Zupa wietnamska, Zupa z kurczakiem, Zupa łajska, Pierogi SiuMai z ryżem i surówką, Kurczak z warzywami, Kurczak słodko-kwaśny, Kurczak pikantny, Kurczak po chińsku, Kurczak po tajsku, Kurczak na gorącym półmisku, Kurczak w cieście słodko-kwaśny, Kurczak w cieście pikantny, Kurczak w cieście curry, Kurczak w cieście pięciu smaków, Wieprzowina z warzywami, Wieprzowina słodko-kwaśna, Wieprzowina pikantna, Wieprzowina Curry, Wieprzowina pięciu smaków, Wieprzowina po tajsku, Wołowina z warzywami, Wołowina pikantna, Wołowina Curry, Wołowina 5 smaków, Wołowina po tajsku, Wołowina na gorącym półmisku, Kaczka z warzywami, Kaczka pikantna, Kaczka słodko-kwaśna, Kaczka po chińsku, Kaczka po tajsku, Kaczka na gorącym półmisku, Krewetki z warzywami, Krewetki pikantne, Krewetki Curry, Krewetki po tajsku, Krewetki na gorącym półmisku, Kalmary chrupiące słodko-kwaśne, Kalmary chrupiące pikantne, Kalmary chrupiące Curry, Kalmary chrupiące w pięciu smakach, Kalmary po tajsku, Kalmary na gorącym półmisku, Kebab amerykański, Nuggets box, Falafel, Frytki z serem, Frytki z Indii masala, Sałatka grecka, Sos, Baklava, Sok Cappy, Coca-Cola 0,85l, Coca-Cola 0,5l, Coca-Cola 0,3l, Pepsi / Mirinda / 7up, Monster Energy Drink, Ayran Turecki, Mango Sok, Oshee, Burn, Pita Rollo, Pita Rollo, Pita Rollo, Pita Rollo, Pita Rollo z serem, Pita Rollo z serem, Pita Rollo z serem, Pita Rollo z serem
+[parseOrderItems] 📊 Summary:
+  - requestedNames: []
+  - availableNames: []
+  - unavailableNames: []
+  - matched.length: 0
+  - clarifications.length: 0
+[intent-router] ✅ Parsed result: {
+  "any": false,
+  "groups": [],
+  "clarify": [],
+  "available": [],
+  "unavailable": [
+    "tak dalej"
+  ],
+  "needsClarification": true,
+  "unknownItems": [
+    {
+      "name": "tak dalej",
+      "reason": "no_alias_match"
+    }
+  ]
+}
+[intent-router] 🔍 parsed.any = false
+[intent-router] 🔍 parsed.groups.length = 0
+⚠️ Unavailable items detected: tak dalej in tym menu
+🔍 Checking if text contains restaurant name (using cached list): "tak dalej"
+🔍 Debug session updated: {
+  intent: 'clarify_order',
+  restaurant: 'tym menu',
+  sessionId: null,
+  confidence: 0.9
+}
+✅ SmartIntent Resolved: clarify_order (0.90) via classic
+🧠 [DEBUG] Hybrid intent detection complete: {
+  ruleIntent: 'clarify_order',
+  ruleConfidence: 0.9,
+  llmIntent: null,
+  llmConfidence: 0,
+  finalIntent: 'clarify_order',
+  finalConfidence: 0.9,
+  source: 'classic',
+  hasRestaurant: false,
+  restaurantName: undefined,
+  hasParsedOrder: true,
+  parsedOrderDetails: { any: false, groupsCount: 0, groups: [] }
+}
+🧠 [DEBUG] Calling boostIntent with: {
+  text: 'tak dalej',
+  hybridIntent: 'clarify_order',
+  confidence: 0.9,
+  session: {
+    expectedContext: null,
+    lastRestaurant: undefined,
+    lastIntent: 'confirm_order'
+  }
+}
+🧠 [DEBUG] boostIntent result: {
+  originalIntent: 'clarify_order',
+  boostedIntent: 'clarify_order',
+  isContextLocked: false
+}
+🧠 GPT Reasoner: {
+  searchRestaurants: false,
+  searchMenu: false,
+  askClarification: true,
+  completeOrder: false,
+  reasoning: 'Wybrano askClarification ponieważ użytkownik wyraził potrzebę wyjaśnienia lub dopytania o zamówienie, a system zamknął poprzednie zamówienie.'
+}
+GET /api/health 200 154 - 263.525 ms
+GET /api/health 200 154 - 127.734 ms
+[ShadowMode] ❌ Match: clarify vs confirm_order (V2 Latency: 1ms)
+POST /api/brain 200 4180 - 6128.094 ms
+GET /api/admin/system-status 404 21 - 0.340 ms
+GET /api/admin/system-status 404 21 - 0.445 ms
+GET /api/health 200 154 - 140.852 ms
+GET /api/health 200 154 - 124.725 ms
+GET /api/health 200 154 - 195.732 ms
+GET /api/health 200 154 - 171.890 ms
+GET /api/health 200 154 - 117.984 ms
+GET /api/health 200 154 - 127.419 ms
+[brainRouter] 🚀 Handler called (Legacy Mode)
+🧠 [DEBUG] Handler called with: {
+  sessionId: 'session-1766038236531',
+  text: 'Dodaj do koszyka',
+  method: 'POST',
+  body: {
+    text: 'Dodaj do koszyka',
+    sessionId: 'session-1766038236531',
+    lat: 52.2297,
+    lng: 21.0122,
+    includeTTS: false
+  },
+  hasText: true,
+  textLength: 16
+}
+🧠 [DEBUG] Current session state: {
+  sessionId: 'session-1766038236531',
+  session: {
+    expectedContext: null,
+    lastIntent: 'confirm_order',
+    lastRestaurant: 'Tasty King Kebab',
+    lastRestaurantsList: [],
+    lastRestaurants: [],
+    lastRestaurantsTimestamp: null,
+    lastMenu: [],
+    locationOverride: null,
+    history: [],
+    locationCache: { 'piekary śląskie_fast food': [Object] },
+    last_location: 'Piekary Śląskie',
+    lastUpdated: 1766154118061,
+    last_restaurants_list: [ [Object], [Object] ],
+    last_menu: [ [Object], [Object], [Object], [Object], [Object], [Object] ],
+    pendingOrder: null,
+    status: 'COMPLETED',
+    closedAt: 1766154118062,
+    locked: true,
+    lastOrder: { id: 'ORD-MJCYK78U', total: 22, items: [Array] },
+    context: 'neutral'
+  },
+  hasExpectedContext: false,
+  expectedContextValue: null,
+  hasLastRestaurant: true,
+  lastRestaurantName: undefined,
+  hasLastLocation: true,
+  lastLocation: 'Piekary Śląskie',
+  hasPendingOrder: false,
+  lastIntent: 'confirm_order',
+  sessionKeys: [
+    'expectedContext',
+    'lastIntent',
+    'lastRestaurant',
+    'lastRestaurantsList',
+    'lastRestaurants',
+    'lastRestaurantsTimestamp',
+    'lastMenu',
+    'locationOverride',
+    'history',
+    'locationCache',
+    'last_location',
+    'lastUpdated',
+    'last_restaurants_list',
+    'last_menu',
+    'pendingOrder',
+    'status',
+    'closedAt',
+    'locked',
+    'lastOrder',
+    'context'
+  ]
+}
+🧭 GeoContext Layer activated for: "Dodaj"
+⚙️ GeoContext: brak wyników w "Dodaj"
+⚙️ GeoContext: brak wyników w "Dodaj" — kontynuuj normalny flow
+[brainRouter] 🧠 Calling detectIntent with: { text: 'Dodaj do koszyka', sessionId: 'session-1766038236531' }
+[brainRouter] 🧠 Current session: {
+  expectedContext: null,
+  lastIntent: 'confirm_order',
+  lastRestaurant: 'Tasty King Kebab',
+  lastRestaurantsList: [],
+  lastRestaurants: [],
+  lastRestaurantsTimestamp: null,
+  lastMenu: [],
+  locationOverride: null,
+  history: [],
+  locationCache: {
+    'piekary śląskie_fast food': { data: [Array], timestamp: 1766153991955 }
+  },
+  last_location: 'Piekary Śląskie',
+  lastUpdated: 1766154118061,
+  last_restaurants_list: [
+    {
+      id: '569a7d29-57be-4224-bdf3-09c483415cea',
+      name: 'Klaps Burgers',
+      address: 'ul. Piotra Skargi 15',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Amerykańska',
+      lat: 50.38643,
+      lng: 18.95422
+    },
+    {
+      id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Tasty King Kebab',
+      address: 'ul. Bytomska 70',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Kebab',
+      lat: 50.38587,
+      lng: 18.94712
+    }
+  ],
+  last_menu: [
+    {
+      id: '832e3395-cd6f-4119-acc0-68290e6ba693',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Baklava',
+      description: null,
+      category: 'Przekąski',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 6,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: '56f5ee57-9939-41f5-93db-4d8116ac4f44',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Falafel',
+      description: null,
+      category: 'Kebab',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 13,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: 'ed0502fa-eb68-453c-b6e0-e6fdff88f7df',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Frytki z Indii masala',
+      description: null,
+      category: 'Przekąski',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 7,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: '6edfdf0f-71e3-478c-bceb-0a9c58d75100',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Frytki z serem',
+      description: null,
+      category: 'Przekąski',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 9,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: '3b842a08-7769-4c33-9f48-ca6f31cfaa6c',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Kebab amerykański',
+      description: null,
+      category: 'Kebab',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 20,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    },
+    {
+      id: 'df133e95-e52d-4bbc-971d-b8fc5fade7a2',
+      restaurant_id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Nuggets box',
+      description: null,
+      category: 'Kebab',
+      base_type: null,
+      meat_type: null,
+      size_or_variant: null,
+      price_pln: 15,
+      spicy: false,
+      is_vege: false,
+      image_url: null,
+      available: true,
+      created_at: '2025-10-29T22:45:07.983357+00:00'
+    }
+  ],
+  pendingOrder: null,
+  status: 'COMPLETED',
+  closedAt: 1766154118062,
+  locked: true,
+  lastOrder: { id: 'ORD-MJCYK78U', total: 22, items: [ [Object], [Object] ] },
+  context: 'neutral'
+}
+🔬 Starting Smart Intent Layer...
+[intent-router] 🚀 detectIntent called with: { text: 'Dodaj do koszyka', sessionId: undefined }
+[intent-router] ✅ Functional intent detected: ADD_ITEM (confidence: 0.85)
+🔍 Debug session updated: {
+  intent: 'create_order',
+  restaurant: null,
+  sessionId: null,
+  confidence: 0.85
+}
+✅ SmartIntent Resolved: create_order (0.85) via classic
+🧠 [DEBUG] Hybrid intent detection complete: {
+  ruleIntent: 'create_order',
+  ruleConfidence: 0.85,
+  llmIntent: null,
+  llmConfidence: 0,
+  finalIntent: 'create_order',
+  finalConfidence: 0.85,
+  source: 'classic',
+  hasRestaurant: false,
+  restaurantName: undefined,
+  hasParsedOrder: false,
+  parsedOrderDetails: null
+}
+🧠 [DEBUG] Calling boostIntent with: {
+  text: 'Dodaj do koszyka',
+  hybridIntent: 'create_order',
+  confidence: 0.85,
+  session: {
+    expectedContext: null,
+    lastRestaurant: undefined,
+    lastIntent: 'confirm_order'
+  }
+}
+🧠 [DEBUG] boostIntent result: {
+  originalIntent: 'create_order',
+  boostedIntent: 'create_order',
+  isContextLocked: false
+}
+GET /api/health 200 154 - 139.130 ms
+GET /api/health 200 154 - 153.061 ms
+🧠 GPT Reasoner: {
+  searchRestaurants: false,
+  searchMenu: false,
+  askClarification: true,
+  completeOrder: true,
+  reasoning: "Wybrano 'askClarification' ponieważ użytkownik prosi o dodanie do koszyka, ale potrzebne są dodatkowe informacje na temat zamówienia. 'completeOrder' jest także dostępna, ponieważ wcześniejsze zamówienie zostało zakończone, więc użytkownik może chcieć sfinalizować zamówienie."
+}
+GET /api/health 200 154 - 176.121 ms
+GET /api/health 200 154 - 260.176 ms
+[ShadowMode] ❌ Match: clarify vs session_locked (V2 Latency: 0ms)
+POST /api/brain 200 4442 - 7598.319 ms
+GET /api/health 200 154 - 248.994 ms
+GET /api/health 200 154 - 150.176 ms
+GET /api/admin/system-status 404 21 - 0.223 ms
+GET /api/health 200 154 - 134.860 ms
+GET /api/admin/system-status 404 21 - 0.413 ms
+GET /api/health 200 154 - 141.767 ms
+GET /api/health 200 154 - 231.567 ms
+GET /api/admin/amber/restaurants-activity?days=7 304 - - 364.810 ms
+GET /api/admin/performance/trends?from=2025-12-12T00%3A00%3A00.000Z&to=2025-12-19T22%3A59%3A59.999Z 200 69 - 377.728 ms
+GET /api/admin/performance/top-intents?from=2025-12-12T00%3A00%3A00.000Z&to=2025-12-19T22%3A59%3A59.999Z 200 69 - 374.162 ms
+GET /api/admin/trends/alerts 304 - - 369.357 ms
+GET /api/admin/system-status 404 21 - 0.160 ms
+GET /api/health 200 154 - 288.311 ms
+[ADMIN] /api/admin/intents { returned: 0 }
+GET /api/admin/intents?from=2025-12-12T00%3A00%3A00.000Z&to=2025-12-19T22%3A59%3A59.999Z 200 70 - 291.358 ms
+GET /api/health 200 154 - 121.364 ms
+GET /api/admin/business/stats 304 - - 574.255 ms
+GET /api/admin/amber/learning-stats?limit=20 304 - - 428.210 ms
+GET /api/health 200 154 - 124.809 ms
+GET /api/admin/conversations?limit=50 200 8350 - 333.184 ms
+[ADMIN] /api/admin/restaurants { returned: 9 }
+GET /api/admin/restaurants 304 - - 2484.029 ms
+GET /api/admin/conversations?limit=50 200 8350 - 307.644 ms
+GET /api/admin/conversation?id=session-1766038236531 200 122074 - 446.252 ms

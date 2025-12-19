@@ -33,7 +33,7 @@ export async function getMenuItems(restaurantId, { includeUnavailable = false, l
   }
 
   const execPromise = query;
-  const { data, error } = await (withDb ? withDb(execPromise) : execPromise);
+  const { data, error } = await execPromise;
 
   if (error || !data) {
     console.warn(`⚠️ getMenuItems: failed for restaurant ${restaurantId}`, error?.message);
@@ -49,12 +49,12 @@ export function buildMenuPreview(menu = [], { limit = 6, filterBanned = true } =
   if (!Array.isArray(menu) || !menu.length) return [];
   const filtered = filterBanned
     ? menu.filter((item) => {
-        const c = String(item.category || "").toLowerCase();
-        const n = String(item.name || "").toLowerCase();
-        if (BANNED_CATEGORIES.some((b) => c.includes(b))) return false;
-        if (BANNED_NAMES.some((b) => n.includes(b))) return false;
-        return true;
-      })
+      const c = String(item.category || "").toLowerCase();
+      const n = String(item.name || "").toLowerCase();
+      if (BANNED_CATEGORIES.some((b) => c.includes(b))) return false;
+      if (BANNED_NAMES.some((b) => n.includes(b))) return false;
+      return true;
+    })
     : menu;
   const source = filtered.length ? filtered : menu;
   return source.slice(0, limit);

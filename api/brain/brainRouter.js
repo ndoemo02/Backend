@@ -24,6 +24,7 @@ import { logBrainEvent } from "./stats/logger.js";
 import { logIssue } from "./utils/intentLogger.js";
 import { smartResolveIntent } from "./ai/smartIntent.js";
 import { resolveRestaurantSelectionHybrid } from "./restaurant/restaurantSelectionSmart.js";
+import { handleConfirmOrder } from "./handlers/confirmOrderHandler.js";
 import { normalizeSize, normalizeExtras } from "./order/variantNormalizer.js";
 import { validateOrderItem } from "./order/orderValidator.js";
 import { EventLogger } from "./services/EventLogger.js";
@@ -196,13 +197,62 @@ async function getLocationFallback(sessionId, prevLocation, messageTemplate) {
  * 2) kieruje do intencji / bazy
  * 3) generuje naturalną odpowiedź Amber
  */
+import shadowHandler, { pipeline as v2Pipeline } from "./brainV2.js";
+import { logShadowComparison } from "./core/shadowLogger.js";
+
+const USE_BRAIN_V2 = process.env.BRAIN_V2 === 'true';
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ ok: false, error: "Method not allowed" });
   }
 
+  // ——— FEATURE FLAG: BRAIN V2 ———
+  if (USE_BRAIN_V2) {
+    return shadowHandler(req, res);
+  }
+
   try {
-    console.log('[brainRouter] 🚀 Handler called');
+    console.log('[brainRouter] 🚀 Handler called (Legacy Mode)');
+
+    // ——— SHADOW MODE START ———
+    // Capture request data for shadow execution
+    const shadowBody = await req.json?.() || req.body || {};
+    const { sessionId: shadowId = "default", text: shadowText } = shadowBody;
+
+    let v2Promise = null;
+    if (shadowText && v2Pipeline) {
+      v2Promise = v2Pipeline.process(shadowId, shadowText)
+        .catch(err => {
+          console.error('[ShadowMode] V2 failed', err);
+          return { intent: 'error', meta: { latency_ms: 0 } };
+        });
+    }
+
+    // Proxy res.json to capture legacy result
+    const originalJson = res.json.bind(res);
+    res.json = (legacyBody) => {
+      // Send response first (Latency Priority)
+      const result = originalJson(legacyBody);
+
+      // Log comparison in background
+      if (v2Promise && legacyBody && legacyBody.intent) {
+        v2Promise.then(v2Result => {
+          logShadowComparison({
+            sessionId: shadowId,
+            text: shadowText,
+            legacy: {
+              intent: legacyBody.intent,
+              confidence: legacyBody.confidence,
+              meta: { latency_ms: perf.durationMs || (Date.now() - __tStart) }
+            },
+            v2: v2Result
+          });
+        });
+      }
+      return result;
+    };
+    // ——— SHADOW MODE END ———
     const perf = { start: Date.now(), nluMs: 0, dbMs: 0, ttsMs: 0, durationMs: 0 };
     const withDb = async (promise) => { const t = Date.now(); const out = await promise; perf.dbMs += (Date.now() - t); return out; };
     const __tStart = Date.now();
@@ -2056,30 +2106,21 @@ Spróbuj wybrać inną restaurację (np. numer lub nazwę).`;
       // 🌟 SmartContext v3.1: Confirm (follow-up "tak")
       case "confirm": {
         console.log('🌟 confirm intent detected');
-        // Wyczyść expectedContext (nowy kontekst rozmowy)
-        updateSession(sessionId, { expectedContext: null });
-        // preferuj confirm_order jeśli czekamy na potwierdzenie (dla testu recovery)
+        // Retrieve session BEFORE clearing context
         const s = getSession(sessionId) || {};
+
+        // preferuj confirm_order jeśli czekamy na potwierdzenie (dla testu recovery)
         if (s?.expectedContext === 'confirm_order' || s?.pendingOrder) {
-          console.log('✅ confirm -> processing confirm_order logic');
-          const commitResult = commitPendingOrder(s);
-          console.log(commitResult.committed ? '✅ Order committed to cart' : '⚠️ No pending order to commit');
-
-          updateSession(sessionId, s);
-
-          replyCore = commitResult.committed ? "Dodaję do koszyka." : "Nic do potwierdzenia.";
-          meta = { ...(meta || {}), addedToCart: !!commitResult.committed, cart: commitResult.cart };
-          intent = 'confirm_order';
-
-          if (commitResult.committed) {
-            const lastOrder = s.lastOrder || {};
-            const orderTotal = typeof lastOrder.total === 'number' ? lastOrder.total : Number(sum(lastOrder.items || []));
-            // Parsed order for meta response
-            meta.parsed_order = { items: lastOrder.items || [], total: orderTotal };
-          }
+          const result = await handleConfirmOrder({ sessionId, text });
+          replyCore = result.reply;
+          // Merge meta
+          meta = { ...(meta || {}), ...result.meta };
+          intent = result.intent;
         } else if (prevRestaurant) {
+          updateSession(sessionId, { expectedContext: null });
           replyCore = `Super! Przechodzę do menu ${prevRestaurant.name}. Co chcesz zamówić?`;
         } else {
+          updateSession(sessionId, { expectedContext: null });
           replyCore = "Okej! Co robimy dalej?";
         }
         break;
@@ -2087,25 +2128,10 @@ Spróbuj wybrać inną restaurację (np. numer lub nazwę).`;
 
       // 🛒 Confirm Order (potwierdzenie dodania do koszyka)
       case "confirm_order": {
-        console.log('✅ confirm_order intent detected');
-        const session = getSession(sessionId) || {};
-        const commitResult = commitPendingOrder(session);
-        console.log(commitResult.committed ? '✅ Order committed to cart' : '⚠️ No pending order to commit');
-        updateSession(sessionId, session);
-        // przygotuj odpowiedź
-        replyCore = commitResult.committed ? "Dodaję do koszyka." : "Nic do potwierdzenia.";
-        // zapisz meta do dalszego etapu odpowiedzi
-        meta = { ...(meta || {}), addedToCart: !!commitResult.committed, cart: commitResult.cart };
-        // Zwróć parsed_order w odpowiedzi (na potrzeby testów i frontu)
-        let parsedOrderForResponse = null;
-        if (commitResult.committed) {
-          const lastOrder = session.lastOrder || {};
-          const orderTotal = typeof lastOrder.total === 'number' ? lastOrder.total : Number(sum(lastOrder.items || []));
-          parsedOrderForResponse = { items: lastOrder.items || [], total: orderTotal };
-          meta.parsed_order = parsedOrderForResponse;
-        }
-        // Przechowaj parsed order w pamięci lokalnej odpowiedzi
-        meta = { ...meta };
+        const result = await handleConfirmOrder({ sessionId, text });
+        replyCore = result.reply;
+        meta = { ...(meta || {}), ...result.meta };
+        // intent is already confirm_order
         break;
       }
 
