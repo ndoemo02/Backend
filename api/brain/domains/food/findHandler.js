@@ -6,7 +6,7 @@
 import { supabase } from '../../../_supabase.js';
 import { expandCuisineType, extractCuisineType } from '../../restaurant/cuisine.js'; // Reusing legacy helpers
 import { extractLocation } from '../../helpers.js';
-import { pluralPl } from '../../utils/formatter.js'; // Need to create this or inline
+import { pluralPl } from '../../utils/formatter.js';
 
 export class FindRestaurantHandler {
 
@@ -14,8 +14,19 @@ export class FindRestaurantHandler {
         const { text, session, entities } = ctx;
 
         // 1. Parameter Extraction (Domain Specific)
-        // Router might have given us entities.raw, but we double check or use domain logic
-        const location = extractLocation(text) || session?.last_location;
+        // Router entities take precedence if extracted
+        let location = extractLocation(text);
+
+        console.log(`🔎 FindHandler Debug: Text="${text}", NLU_Loc="${entities?.location}", Extract_Loc="${location}"`);
+        console.log("DEBUG REGEX MATCH:", text.match(/w\s+([A-Z][a-z]+)/));
+
+        if (entities?.location) {
+            location = entities.location;
+        }
+        // Fallback to session
+        if (!location) {
+            location = session?.last_location;
+        }
         const cuisineType = extractCuisineType(text); // or from entities
 
         if (!location) {
@@ -40,6 +51,8 @@ export class FindRestaurantHandler {
         }
 
         const { data: restaurants, error } = await query.limit(10);
+
+        console.log(`🔎 FindHandler DB Result: ${restaurants?.length} rows. Error: ${error?.message}`);
 
         if (error) {
             console.error('DB Error:', error);

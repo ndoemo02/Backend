@@ -16,12 +16,29 @@ export default async function handler(req, res) {
 
     try {
         const body = req.body || {};
-        const { sessionId = 'default', text } = body;
 
-        console.log(`[BrainV2] Request: ${sessionId} -> "${text}"`);
+        // ETAP 4 Contract: { session_id, input, meta }
+        const { session_id, input, meta = {} } = body;
 
-        const result = await pipeline.process(sessionId, text);
+        const text = input || body.text;
+        const sessionId = session_id || body.sessionId || 'default';
 
+        if (!text && !body.text) {
+            return res.status(400).json({ ok: false, error: 'missing_input' });
+        }
+
+        console.log(`[BrainV2] Request: ${sessionId} -> "${text}" (Channel: ${meta.channel || 'unknown'})`);
+
+        // Options from request, will be guarded by EXPERT_MODE in pipeline
+        const options = {
+            includeTTS: body.includeTTS || false,
+            stylize: body.stylize || false,
+            ttsOptions: body.ttsOptions || {}
+        };
+
+        const result = await pipeline.process(sessionId, text, options);
+
+        // ETAP 4 Response contract: result already contains session_id, reply, should_reply, actions
         return res.status(200).json(result);
 
     } catch (error) {

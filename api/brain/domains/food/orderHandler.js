@@ -24,8 +24,6 @@ export class OrderHandler {
         }
 
         // 2. Parsowanie Zamówienia (NLP -> Items)
-        // This relies on complex regex/fuzzy logic from "Brain V1"
-        // We reuse it but encapsulate the detailed result
         const items = await parseOrderItems(text, restaurant.id);
 
         if (!items || items.length === 0) {

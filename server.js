@@ -123,6 +123,16 @@ app.post("/api/brain", async (req, res) => {
   }
 });
 
+app.post("/api/brain/v2", async (req, res) => {
+  try {
+    const brainV2 = await import("./api/brain/brainV2.js");
+    return brainV2.default(req, res);
+  } catch (error) {
+    console.error("❌ Brain V2 error:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
 app.post("/api/brain/router", async (req, res) => {
   try {
     const brainRouter = await import("./api/brain/brainRouter.js");

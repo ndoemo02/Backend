@@ -4,9 +4,9 @@
  * NIE dotyka bazy danych. Służy do tego warstwa domenowa.
  */
 
-import { detectIntent as regexGlueDetect } from '../intents/intentRouterGlue.js'; // Reuse existing logic for now
 import { normalizeTxt } from '../intents/intentRouterGlue.js';
 import { BrainLogger } from '../../../utils/logger.js';
+import { smartResolveIntent } from '../ai/smartIntent.js';
 
 export class NLURouter {
     constructor() {
@@ -92,9 +92,9 @@ export class NLURouter {
 
         // 1.5 Explicit Regex NLU (Standardized)
 
-        // A. Menu Request
-        if (/(poka[zż]|masz|macie|da[ij]|zobacz[ęe]).*(menu|kart[ęea]|ofert[ęe]|list[ęe])/i.test(normalized) ||
-            /^menu\b/i.test(normalized)) {
+        // A. Menu Request (Simple only)
+        // Only match bare "menu" or "pokaż menu" to avoid overriding "menu w [Restaurant]" which legacy handles better
+        if (/^(poka[zż]\s+)?(menu|karta|oferta|list[ae])(\s+da[ńn])?$/i.test(normalized)) {
             return {
                 intent: 'menu_request',
                 confidence: 0.95,
@@ -105,12 +105,15 @@ export class NLURouter {
 
         // B. Find Nearby / Discovery
         // "co polecisz w Piekarach", "szukam fast food", "chcę coś zjeść"
-        const findRegex = /(co|gdzie).*(zje[sś][ćc]|poleca|poleci)|(szukam|znajd[źz]).*|(chc[ęe]|głodny|glodny).*(co[śs]|zje[sś][ćc])|(lokale|restauracje|knajpy)/i;
+        const findRegex = /(co|gdzie).*(zje[sś][ćc]|poleca|poleci)|(szukam|znajd[źz]).*|(chc[ęe]|głodny|glodny).*(co[śs]|zje[sś][ćc])|(lokale|restauracje|knajpy|pizzeri[ae]|kebaby|bary)/i;
+
+        BrainLogger.nlu(`FindRegex check on "${normalized}": ${findRegex.test(normalized)}`);
+
         if (findRegex.test(normalized)) {
             const entities = {};
 
-            // Location extraction (naive "w [X]")
-            const locMatch = normalized.match(/\bw\s+([A-ZŁŚŻŹĆ][a-złęśżźćń]+)/);
+            // Location extraction (naive "w [X]") - Use RAW TEXT for case sensitivity
+            const locMatch = text.match(/\bw\s+([A-ZŁŚŻŹĆ][a-złęśżźćń]+)/);
             if (locMatch) {
                 entities.location = locMatch[1];
             }
@@ -133,61 +136,45 @@ export class NLURouter {
             };
         }
 
-
-        // 2. Direct Logic (Regex/Keyword)
+        // 2. Smart Intent Layer (Hybrid: Regex Glue + LLM Fallback)
         try {
-            // Helper wrapper not needed here, call imported directly
-            const result = await regexGlueDetect(text);
+            const EXPERT_MODE = process.env.EXPERT_MODE === 'true';
 
-            if (result && result.intent && result.intent !== 'UNKNOWN_INTENT' && result.intent !== 'unknown') {
+            if (EXPERT_MODE) {
+                const smartResult = await smartResolveIntent({
+                    text,
+                    session,
+                    previousIntent: session?.lastIntent
+                });
 
-                // GUARD: Ambiguity check for testy king etc.
-                const hasCtx = /\b(w|z|u|do|od|restauracja|knajpa|pizzeria|lokal)\b/i.test(text);
-                if (result.intent === 'select_restaurant' && !hasCtx && (result.confidence || 0) < 0.98) {
+                if (smartResult && smartResult.intent && smartResult.intent !== 'unknown') {
                     return {
-                        intent: 'find_nearby',
-                        confidence: 0.85,
-                        source: 'ambiguity_fallback',
-                        entities: { query: text }
+                        intent: smartResult.intent,
+                        confidence: smartResult.confidence || 0.8,
+                        source: smartResult.source || 'smart_hybrid',
+                        entities: smartResult.slots || {}
                     };
                 }
-
-                // RECOVERY: clarify_order -> find_nearby if food keywords present
-                const foodKeywords = /\b(pizz[ai]|burger|kebab|sushi|kfc|mcdonald|jedzeni[ea]|obiad|lunch|kolacj[ai]|zje[sś][ćc])\b/i;
-                if (result.intent === 'clarify_order' && foodKeywords.test(text)) {
+            } else {
+                // ETAP 4: Strictly classic/rule-based. 
+                // Since our rules above already covered most, we can do a final legacy check or just fallback.
+                // We'll use the classic detectIntent for robustness.
+                const { detectIntent } = await import('../intents/intentRouterGlue.js');
+                const result = await detectIntent(text);
+                if (result && result.intent && result.intent !== 'unknown') {
                     return {
-                        intent: 'find_nearby',
-                        confidence: 0.85,
-                        source: 'term_recovery_inner',
-                        entities: { query: text }
+                        intent: result.intent,
+                        confidence: result.confidence || 0.8,
+                        source: 'classic_legacy',
+                        entities: { restaurant: result.restaurant }
                     };
                 }
-
-                return {
-                    intent: result.intent,
-                    confidence: result.confidence || 0.8,
-                    source: 'classic_regex',
-                    entities: {
-                        restaurant: result.restaurant
-                    }
-                };
             }
         } catch (e) {
-            console.warn('Legacy detectIntent failed', e);
+            console.warn('SmartIntent/Legacy failed', e);
         }
 
-        // 3. Fallback / Recovery for Food keywords (if legacy returned unknown/fail)
-        const foodKeywordsOuter = /\b(pizz[ai]|burger|kebab|sushi|kfc|mcdonald|jedzeni[ea]|obiad|lunch|kolacj[ai]|zje[sś][ćc])\b/i;
-        if (foodKeywordsOuter.test(normalized)) {
-            return {
-                intent: 'find_nearby',
-                confidence: 0.8,
-                source: 'term_recovery_outer',
-                entities: { query: text }
-            };
-        }
-
-        // 4. Default Fallback
+        // 3. Last Resort Fallback
         return {
             intent: 'unknown',
             confidence: 0.0,
