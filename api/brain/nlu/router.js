@@ -6,6 +6,7 @@
 
 import { detectIntent as regexGlueDetect } from '../intents/intentRouterGlue.js'; // Reuse existing logic for now
 import { normalizeTxt } from '../intents/intentRouterGlue.js';
+import { BrainLogger } from '../../../utils/logger.js';
 
 export class NLURouter {
     constructor() {
@@ -13,49 +14,55 @@ export class NLURouter {
     }
 
     /**
+     * Mapuje intent -> domain
+     */
+    _mapDomain(intent) {
+        if (!intent) return 'unknown';
+        if (['find_nearby', 'select_restaurant', 'menu_request', 'show_city_results'].includes(intent)) return 'food';
+        if (['create_order', 'confirm_order', 'cancel_order', 'add_item'].includes(intent)) return 'ordering';
+        return 'system';
+    }
+
+    /**
      * Wykrywa intencję z tekstu i kontekstu
      * @param {Object} ctx - Pipeline context (text, session, etc.)
-     * @returns {Promise<{intent: string, confidence: number, entities: Object, source: string}>}
+     * @returns {Promise<{intent: string, confidence: number, entities: Object, source: string, domain: string}>}
      */
     async detect(ctx) {
+        const result = await this._detectInternal(ctx);
+        // Enrich with domain
+        result.domain = this._mapDomain(result.intent);
+
+        BrainLogger.nlu('Result:', result);
+        return result;
+    }
+
+    async _detectInternal(ctx) {
         const { text, session } = ctx;
         const normalized = normalizeTxt(text);
+
+        BrainLogger.nlu('Detecting intent for:', text);
 
         // --- RULE: New Order / Reset ---
         if (/(nowe\s+zam[óo]wienie|od\s+nowa|start|resetuj|zacznij)/i.test(normalized)) {
             return {
                 intent: 'new_order',
                 confidence: 1.0,
-                source: 'rule_guard'
+                source: 'rule_guard',
+                entities: {}
             };
         }
 
-
-
         // --- OPTIMIZATION: Task 1 - Restaurant Lock ---
-        // If locked in restaurant, prevent re-extraction unless escape phrase used
         if (session?.context === 'IN_RESTAURANT' && session?.lockedRestaurantId) {
             // Escape phrases
             if (/(zmień|wróć|inn[ea]|powrót)/i.test(normalized)) {
-                // Leave the lock (Intent: unknown or show_more_options allows system to handle unlock context)
-                // But wait, user wants to change restaurant.
-                // We can return 'find_nearby' or 'select_restaurant' (to pick another)
-                return { intent: 'find_nearby', confidence: 0.9, source: 'lock_escape' };
+                return { intent: 'find_nearby', confidence: 0.9, source: 'lock_escape', entities: {} };
             }
-
-            // Check if it looks like menu request, otherwise default to create_order context
-            // or let legacy regex decide but ignore 'find_nearby' or 'select_restaurant' if it seems ambiguous
-            // For now, allow flow to proceed but we will block restaurant extraction in dispatcher if needed.
-            // Actually, if we are in 'IN_RESTAURANT', regexGlueDetect might still return 'find_nearby'
-            // We can protect against it?
-            // Simplest is: if Locked, dont run discovery rules for find_nearby, proceed to existing logic.
         }
 
         // 1. Context-Based Decision (Priority High)
-        // Jeśli czekamy na wybór restauracji, traktuj input jako selekcję
         if (session?.expectedContext === 'select_restaurant' || session?.expectedContext === 'show_more_options') {
-            // Jeśli user mówi "pizzę", a context jest select_restaurant, to znaczy że szuka "pizzy" w liście
-            // Ale tutaj zwracamy select_restaurant aby handler to obsłużył.
             return {
                 intent: 'select_restaurant',
                 confidence: 0.95,
@@ -66,16 +73,15 @@ export class NLURouter {
 
         if (session?.expectedContext === 'confirm_order') {
             if (/^nie\b/i.test(normalized)) {
-                return { intent: 'cancel_order', confidence: 1.0, source: 'rule_guard' };
+                return { intent: 'cancel_order', confidence: 1.0, source: 'rule_guard', entities: {} };
             }
             if (/(tak|potwierdzam|zamawiam)/i.test(normalized)) {
-                return { intent: 'confirm_order', confidence: 1.0, source: 'rule_guard' };
+                return { intent: 'confirm_order', confidence: 1.0, source: 'rule_guard', entities: {} };
             }
         }
 
         // --- OPTIMIZATION: Task 3 - Lexical Override ---
-        // Force 'create_order' if specific keywords are present, BUT only if context didn't claim it
-        if (/(wybieram|poproszę|wezmę|dodaj)/i.test(normalized)) {
+        if (/(wybieram|poproszę|wezmę|dodaj|zamawiam|chc[ęe]\s+(?!co[śs]|zje[sś][ćc]|gdzie))/i.test(normalized)) {
             return {
                 intent: 'create_order',
                 confidence: 1.0,
@@ -84,41 +90,77 @@ export class NLURouter {
             };
         }
 
-        // 1.5 Explicit Discovery Rules (Correction for Legacy)
-        if (/\b(znajdz|znajdź|szukam|chcę zjeść|gdzie zjem|lokale|restauracje|głodny|glodny)\b/i.test(normalized)) {
-            // Guard: If locked, ignore discovery?
-            if (session?.context === 'IN_RESTAURANT' && session?.lockedRestaurantId) {
-                // Ignore standard discovery, user might say "Szukam frytek" which is an order item
-                // Do nothing here, let regexGlueDetect handle order parsing or fallback
-            } else {
-                return {
-                    intent: 'find_nearby',
-                    confidence: 0.9,
-                    source: 'regex_override',
-                    entities: {}
-                };
-            }
+        // 1.5 Explicit Regex NLU (Standardized)
+
+        // A. Menu Request
+        if (/(poka[zż]|masz|macie|da[ij]|zobacz[ęe]).*(menu|kart[ęea]|ofert[ęe]|list[ęe])/i.test(normalized) ||
+            /^menu\b/i.test(normalized)) {
+            return {
+                intent: 'menu_request',
+                confidence: 0.95,
+                source: 'regex_v2',
+                entities: {}
+            };
         }
 
-        // 2. Direct Logic (Regex/Keyword)
-        // Wykorzystujemy istniejący mechanizm "intentRouterGlue"
-        try {
-            const result = await detectIntent(text);
+        // B. Find Nearby / Discovery
+        // "co polecisz w Piekarach", "szukam fast food", "chcę coś zjeść"
+        const findRegex = /(co|gdzie).*(zje[sś][ćc]|poleca|poleci)|(szukam|znajd[źz]).*|(chc[ęe]|głodny|glodny).*(co[śs]|zje[sś][ćc])|(lokale|restauracje|knajpy)/i;
+        if (findRegex.test(normalized)) {
+            const entities = {};
 
-            // Temporary adapter until we rewrite intentRouterGlue fully
+            // Location extraction (naive "w [X]")
+            const locMatch = normalized.match(/\bw\s+([A-ZŁŚŻŹĆ][a-złęśżźćń]+)/);
+            if (locMatch) {
+                entities.location = locMatch[1];
+            }
+
+            // Cuisine extraction (naive "szukam [X]")
+            const searchMatch = normalized.match(/szukam\s+(.+)/i);
+            if (searchMatch) {
+                // exclude "restauracji" etc.
+                const raw = searchMatch[1].trim();
+                if (!['restauracji', 'lokalu', 'czegoś'].includes(raw)) {
+                    entities.cuisine = raw;
+                }
+            }
+
+            return {
+                intent: 'find_nearby',
+                confidence: 0.95,
+                source: 'regex_v2',
+                entities
+            };
+        }
+
+
+        // 2. Direct Logic (Regex/Keyword)
+        try {
+            // Helper wrapper not needed here, call imported directly
+            const result = await regexGlueDetect(text);
+
             if (result && result.intent && result.intent !== 'UNKNOWN_INTENT' && result.intent !== 'unknown') {
 
-                // --- Task 1: Lock Protection ---
-                // If locked, and intent implies changing restaurant context (like find_nearby), downgrade or verify
-                if (session?.context === 'IN_RESTAURANT' && session?.lockedRestaurantId) {
-                    if (['find_nearby', 'select_restaurant'].includes(result.intent)) {
-                        // Double check escape phrases, otherwise interpret as order/menu query
-                        // "Chcę pizzę" -> find_nearby in legacy?
-                        // If locked, "Chcę pizzę" should be "menu_request" (looking for pizza in this restaurant)
-                        // For now, let's override to menu_request if we think it's food.
-                        // But unsafe to override bluntly.
-                        // Let's just trust router if not ambiguous.
-                    }
+                // GUARD: Ambiguity check for testy king etc.
+                const hasCtx = /\b(w|z|u|do|od|restauracja|knajpa|pizzeria|lokal)\b/i.test(text);
+                if (result.intent === 'select_restaurant' && !hasCtx && (result.confidence || 0) < 0.98) {
+                    return {
+                        intent: 'find_nearby',
+                        confidence: 0.85,
+                        source: 'ambiguity_fallback',
+                        entities: { query: text }
+                    };
+                }
+
+                // RECOVERY: clarify_order -> find_nearby if food keywords present
+                const foodKeywords = /\b(pizz[ai]|burger|kebab|sushi|kfc|mcdonald|jedzeni[ea]|obiad|lunch|kolacj[ai]|zje[sś][ćc])\b/i;
+                if (result.intent === 'clarify_order' && foodKeywords.test(text)) {
+                    return {
+                        intent: 'find_nearby',
+                        confidence: 0.85,
+                        source: 'term_recovery_inner',
+                        entities: { query: text }
+                    };
                 }
 
                 return {
@@ -134,17 +176,23 @@ export class NLURouter {
             console.warn('Legacy detectIntent failed', e);
         }
 
-        // 3. Fallback / LLM (To be implemented properly)
-        // Na razie zwracamy fallback lub unknown
+        // 3. Fallback / Recovery for Food keywords (if legacy returned unknown/fail)
+        const foodKeywordsOuter = /\b(pizz[ai]|burger|kebab|sushi|kfc|mcdonald|jedzeni[ea]|obiad|lunch|kolacj[ai]|zje[sś][ćc])\b/i;
+        if (foodKeywordsOuter.test(normalized)) {
+            return {
+                intent: 'find_nearby',
+                confidence: 0.8,
+                source: 'term_recovery_outer',
+                entities: { query: text }
+            };
+        }
+
+        // 4. Default Fallback
         return {
             intent: 'unknown',
             confidence: 0.0,
-            source: 'fallback'
+            source: 'fallback',
+            entities: {}
         };
     }
-}
-
-// Wrapper for legacy glue
-function detectIntent(text) {
-    return regexGlueDetect(text);
 }

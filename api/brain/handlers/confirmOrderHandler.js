@@ -1,6 +1,7 @@
 
 import { getSession, updateSession } from "../session/sessionStore.js";
 import { commitPendingOrder, sum } from "../session/sessionCart.js";
+import { BrainLogger } from "../../../utils/logger.js";
 
 /**
  * ConfirmOrderHandler
@@ -9,7 +10,7 @@ import { commitPendingOrder, sum } from "../session/sessionCart.js";
  * Provides transactional logging.
  */
 export async function handleConfirmOrder({ sessionId, text }) {
-    console.log('🧠 ConfirmOrderHandler triggered');
+    BrainLogger.handler('confirm_order', 'Triggered');
 
     // 1. Retrieve session
     const session = getSession(sessionId) || {};
@@ -23,7 +24,7 @@ export async function handleConfirmOrder({ sessionId, text }) {
     const canConfirm = initialContext === 'confirm_order' || !!session.pendingOrder;
 
     if (!canConfirm) {
-        console.log('⚠️ ConfirmHandler: Nothing to confirm (no pendingOrder/expectedContext)');
+        BrainLogger.handler('confirm_order', '⚠️ Nothing to confirm (no pendingOrder/expectedContext)');
         // Not updating session as nothing changed
         return {
             intent: 'confirm_order',
@@ -60,7 +61,7 @@ export async function handleConfirmOrder({ sessionId, text }) {
     }
 
     // 5. Log Transakcyjny (Verification)
-    console.log('[CONFIRM]', {
+    BrainLogger.handler('confirm_order', 'Transaction Log:', {
         sessionId,
         committed: commitResult.committed,
         pendingOrderSnapshot: pendingOrder,

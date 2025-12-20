@@ -8,30 +8,33 @@ import { FindRestaurantHandler } from '../domains/food/findHandler.js';
 import { MenuHandler } from '../domains/food/menuHandler.js';
 import { OrderHandler } from '../domains/food/orderHandler.js';
 import { ConfirmOrderHandler } from '../domains/food/confirmHandler.js';
+import { BrainLogger } from '../../../utils/logger.js';
 
 // Mapa handlerów domenowych (Bezpośrednie mapowanie)
 // Kluczem jest "domain", a wewnątrz "intent"
-const handlers = {
+
+// Default Handlers Map
+const defaultHandlers = {
     food: {
         find_nearby: new FindRestaurantHandler(),
         show_menu: new MenuHandler(),
         create_order: new OrderHandler(),
-        confirm_order: new ConfirmOrderHandler(), // New handler for finalization
-        select_restaurant: new FindRestaurantHandler(), // Use find handler logic or context logic
-        // Add aliases/fallbacks
+        confirm_order: new ConfirmOrderHandler(),
+        select_restaurant: new FindRestaurantHandler(),
         find_nearby_confirmation: new FindRestaurantHandler(),
     },
     system: {
         health_check: { execute: async () => ({ reply: 'System działa', meta: {} }) },
         fallback: { execute: async () => ({ reply: 'Nie rozumiem tego polecenia.', fallback: true }) }
     },
-}
+};
 
 export class BrainPipeline {
     constructor(deps = {}) {
         this.nlu = deps.nlu;
-        // Dispatcher usunięty na rzecz mapy handlers
+        this.handlers = deps.handlers || defaultHandlers;
     }
+
 
     /**
      * Główny punkt wejścia dla każdego zapytania
@@ -98,13 +101,13 @@ export class BrainPipeline {
             });
 
             // 3. Domain Dispatching (Orchestration)
-            if (!handlers[context.domain]) {
-                console.warn(`Unknown domain: ${context.domain} (intent: ${intent})`);
+            if (!this.handlers[context.domain]) {
+                BrainLogger.pipeline(`Unknown domain: ${context.domain} (intent: ${intent})`);
                 // Fallback to system domain or generic error
                 return this.createErrorResponse('unknown_domain', 'Nie wiem jak to obsłużyć (błąd domeny).');
             }
 
-            const handler = handlers[context.domain][intent] || handlers.system.fallback;
+            const handler = this.handlers[context.domain][intent] || this.handlers.system.fallback;
 
             if (!handler) {
                 console.warn(`No handler for ${context.domain}/${intent}`);
@@ -112,7 +115,7 @@ export class BrainPipeline {
             }
 
             // 4. Execution
-            console.log(`🚀 Dispatching ${intent} (Domain: ${context.domain})`);
+            BrainLogger.pipeline(`Dispatcher: ${intent} [${context.domain}] -> Handler`);
             const domainResponse = await handler.execute(context);
 
             // Apply state changes from handler
@@ -144,7 +147,7 @@ export class BrainPipeline {
             return response;
 
         } catch (error) {
-            console.error('Pipeline Error:', error);
+            BrainLogger.pipeline('Error:', error.message);
             return this.createErrorResponse('internal_error', 'Coś poszło nie tak w moich obwodach. Spróbujmy jeszcze raz.');
         }
     }

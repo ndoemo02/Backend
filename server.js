@@ -3,6 +3,9 @@ import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
 
+// 🧠 ETAP 0: Enable Brain Debug Mode
+global.BRAIN_DEBUG = true;
+
 const envPath = path.resolve(process.cwd(), ".env");
 const envLocalPath = path.resolve(process.cwd(), ".env.local");
 

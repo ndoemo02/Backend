@@ -22,6 +22,7 @@ import { llmReasoner } from "./ai/llmReasoner.js";
 import { llmGenerateReply } from "./ai/llmResponse.js";
 import { logBrainEvent } from "./stats/logger.js";
 import { logIssue } from "./utils/intentLogger.js";
+import { BrainLogger } from "./utils/logger.js";
 import { smartResolveIntent } from "./ai/smartIntent.js";
 import { resolveRestaurantSelectionHybrid } from "./restaurant/restaurantSelectionSmart.js";
 import { handleConfirmOrder } from "./handlers/confirmOrderHandler.js";
@@ -306,7 +307,7 @@ export default async function handler(req, res) {
     }
 
     // 🧠 [DEBUG] 2A: Handler entry logging
-    console.log('🧠 [DEBUG] Handler called with:', {
+    BrainLogger.pipeline('Handler called with:', {
       sessionId,
       text,
       method: req.method,
@@ -350,7 +351,7 @@ export default async function handler(req, res) {
     const prevLocation = session?.last_location;
 
     // 🧠 [DEBUG] 2B: Session state logging
-    console.log('🧠 [DEBUG] Current session state:', {
+    BrainLogger.session('Current session state:', {
       sessionId,
       session: session,
       hasExpectedContext: !!session?.expectedContext,
@@ -473,7 +474,7 @@ export default async function handler(req, res) {
     }
 
     // 🔹 Krok 1: detekcja intencji i ewentualne dopasowanie restauracji
-    console.log('[brainRouter] 🧠 Calling detectIntent with:', { text, sessionId });
+    BrainLogger.nlu('Calling detectIntent with:', { text, sessionId });
     const currentSession = getSession(sessionId);
     const sessionContext = currentSession ?? {}; // Secure context for helpers
     console.log('[brainRouter] 🧠 Current session:', currentSession);
@@ -530,7 +531,7 @@ export default async function handler(req, res) {
     __tAfterNlu = Date.now();
 
     // 🧠 [DEBUG] 2C: Intent flow logging - detectIntent result
-    console.log('🧠 [DEBUG] Hybrid intent detection complete:', {
+    BrainLogger.nlu('Hybrid intent detection complete:', {
       ruleIntent: rawIntent,
       ruleConfidence,
       llmIntent,
@@ -615,7 +616,7 @@ export default async function handler(req, res) {
       // Note: original logging line removed/adapted since local variable name changed
 
       // 🧠 [DEBUG] 2C: Intent flow logging - boostIntent result
-      console.log('🧠 [DEBUG] boostIntent result:', {
+      BrainLogger.nlu('boostIntent result:', {
         originalIntent: hybridIntent,
         boostedIntent: intent,
         isContextLocked
