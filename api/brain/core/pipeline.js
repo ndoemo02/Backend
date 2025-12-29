@@ -9,6 +9,7 @@ import { MenuHandler } from '../domains/food/menuHandler.js';
 import { OrderHandler } from '../domains/food/orderHandler.js';
 import { ConfirmOrderHandler } from '../domains/food/confirmHandler.js';
 import { SelectRestaurantHandler } from '../domains/food/selectHandler.js';
+import { OptionHandler } from '../domains/food/optionHandler.js';
 import { BrainLogger } from '../../../utils/logger.js';
 import { playTTS, stylizeWithGPT4o } from '../tts/ttsClient.js';
 import { EventLogger } from '../services/EventLogger.js';
@@ -24,9 +25,26 @@ const defaultHandlers = {
         menu_request: new MenuHandler(), // Correct NLU mapping
         show_menu: new MenuHandler(),    // Alias
         create_order: new OrderHandler(),
+        choose_restaurant: new OrderHandler(), // Handle ambiguous restaurant choice in OrderHandler
         confirm_order: new ConfirmOrderHandler(),
         select_restaurant: new SelectRestaurantHandler(),
+        show_more_options: new OptionHandler(),
         find_nearby_confirmation: new FindRestaurantHandler(),
+        recommend: {
+            execute: async (ctx) => ({
+                reply: 'Co polecam? W okolicy masz świetne opcje! Powiedz gdzie szukać.',
+                intent: 'recommend',
+                contextUpdates: { expectedContext: 'find_nearby' }
+            })
+        },
+        cancel_order: {
+            execute: async (ctx) => ({
+                reply: 'Zamówienie anulowałam.',
+                intent: 'cancel_order',
+                contextUpdates: { pendingOrder: null, expectedContext: null }
+            })
+        },
+        confirm: new FindRestaurantHandler(),
     },
     ordering: {
         create_order: new OrderHandler(),
@@ -44,18 +62,14 @@ export class BrainPipeline {
         this.handlers = deps.handlers || defaultHandlers;
     }
 
-
     /**
      * Główny punkt wejścia dla każdego zapytania
-     * @param {string} sessionId
-     * @param {string} text
-     * @param {Object} options - { includeTTS: boolean, stylize: boolean, ttsOptions: Object }
-     * @returns {Promise<Object>} Finalna odpowiedź dla API
      */
     async process(sessionId, text, options = {}) {
         const startTime = Date.now();
+        const IS_SHADOW = options.shadow === true;
 
-        // 1. Hydration & Validation (Core)
+        // 1. Hydration & Validation
         if (!text || !text.trim()) {
             return this.createErrorResponse('brak_tekstu', 'Nie usłyszałam, możesz powtórzyć?');
         }
@@ -63,83 +77,146 @@ export class BrainPipeline {
         const EXPERT_MODE = process.env.EXPERT_MODE === 'true';
 
         // --- Event Logging: Received ---
-        if (EXPERT_MODE) {
+        if (EXPERT_MODE && !IS_SHADOW) {
             const initialWorkflowStep = this._mapWorkflowStep('request_received');
             EventLogger.logConversation(sessionId).catch(() => { });
             EventLogger.logEvent(sessionId, 'request_received', { text }, null, initialWorkflowStep).catch(() => { });
         }
 
         const session = getSession(sessionId);
+        // Deep copy session for shadow mode simulation
+        const sessionContext = IS_SHADOW ? JSON.parse(JSON.stringify(session || {})) : session;
+
         const context = {
             sessionId,
             text,
-            session,
+            session: sessionContext,
             startTime,
             meta: {}
         };
 
         try {
-            // 2. NLU Decision (Brain Layer)
-            // "Co użytkownik chce zrobić?"
+            // 2. NLU Decision
             const intentResult = await this.nlu.detect(context);
 
             const { intent, domain, confidence, source, entities } = intentResult;
 
             context.intent = intent;
-            context.domain = domain || 'food'; // Default domain fallback
+            context.domain = domain || 'food';
             context.entities = entities || {};
             context.confidence = confidence;
             context.source = source;
 
-            // --- ZOMBIE KILL SWITCH ---
-            // Jeśli sesja jest zamknięta (zamówienie złożone), blokuj wszystko oprócz nowego startu
-            if (session?.status === 'COMPLETED') {
-                if (['new_order', 'start_over', 'help'].includes(intent)) {
-                    // Reset session for new order
-                    updateSession(sessionId, {
-                        status: 'active',
-                        pendingOrder: null,
-                        lockedRestaurantId: null,
-                        context: 'neutral'
-                    });
-                    // Proceed to handler (new_order logic needs to be handled or we just reply "OK")
-                } else {
+            // --- GUARDS ---
+
+            // Rule 4: Auto Menu
+            if (intent === 'select_restaurant') {
+                const normalized = (text || "").toLowerCase();
+                const wantsToSee = /\b(pokaz|pokaż|zobacz|jakie|co)\b/i.test(normalized);
+                const wantsChange = /\b(inn[ea]|zmień|wybierz\s+inne)\b/i.test(normalized);
+
+                if (wantsToSee && !wantsChange) {
+                    BrainLogger.pipeline('🛡️ Guard Rule 4: "Show" verb detected. Upgrading select_restaurant -> menu_request');
+                    context.intent = 'menu_request';
+                }
+            }
+
+            // Rule 2: Early Dish Detection
+            if (intent === 'create_order') {
+                const ent = context.entities || {};
+                const normalized = (text || "").toLowerCase();
+                const strictOrderVerbs = /\b(zamawiam|wezm[ęe]|dodaj|poprosz[ęe]|chc[ęe])\b/i;
+                const hasOrderVerb = strictOrderVerbs.test(normalized);
+
+                if (!hasOrderVerb && !session?.pendingOrder && !session?.expectedContext) {
+                    BrainLogger.pipeline('🛡️ Guard Rule 2: Implicit order without verb. Downgrading to find_nearby/menu_request.');
+                    if (ent?.dish || ent?.items?.length) {
+                        context.intent = 'menu_request';
+                    } else {
+                        return {
+                            session_id: sessionId,
+                            reply: "Co chciałbyś zamówić?",
+                            should_reply: true,
+                            intent: 'create_order',
+                            meta: { source: 'guard_rule_2_explicit_prompt' }
+                        };
+                    }
+                }
+
+                // --- RULE 6: Empty Order / Adjective Guard ---
+                if (intent === 'create_order') {
+                    // Check if we have items or dish
+                    // Re-read items directly from parser if needed, but entity should have it
+                    // Simple check: if ent.items is empty and ent.dish is empty -> Problem
+                    const hasItems = ent?.items && ent.items.length > 0;
+                    const hasExplicitDish = ent?.dish || (hasItems && ent.items[0]?.name !== 'Unknown');
+
+                    if (!hasExplicitDish && !hasItems && hasOrderVerb) {
+                        // Opcja B: Exception for longer text (potential dish name not yet parsed)
+                        const stripped = normalized.replace(strictOrderVerbs, '').trim();
+                        if (stripped.length > 2) {
+                            BrainLogger.pipeline('🛡️ Guard Rule 6: Passing potential dish "${stripped}" to handlers despite missing entities.');
+                            // Do NOT return here. Let it pass to OrderHandler which will call parseOrderItems
+                        } else {
+                            BrainLogger.pipeline('🛡️ Guard Rule 6: Order intent with no explicit dish. Asking for details.');
+                            return {
+                                session_id: sessionId,
+                                reply: "Co dokładnie chciałbyś zamówić?",
+                                should_reply: true,
+                                intent: 'create_order',
+                                meta: { source: 'guard_rule_6_no_dish' }
+                            };
+                        }
+                    }
+                }
+            }
+
+            // Zombie Kill Switch
+            if (session?.status === 'COMPLETED' && !IS_SHADOW) {
+                if (!['new_order', 'start_over', 'help'].includes(intent)) {
                     return {
                         ok: true,
                         intent: 'session_locked',
                         reply: "Twoje zamówienie zostało już zakończone. Powiedz 'nowe zamówienie', aby zacząć od początku.",
-                        meta: { latency_ms: Date.now() - startTime, source: 'guard_lock' }
+                        meta: { source: 'guard_lock' }
                     };
                 }
+                // Reset session if intent is allowed
+                updateSession(sessionId, { status: 'active', pendingOrder: null, lockedRestaurantId: null, context: 'neutral' });
             }
 
-            // Update session with last intent info (Short-term memory)
-            updateSession(sessionId, {
-                lastIntent: intent,
-                lastUpdated: Date.now()
-            });
+            // Update session (Short-term memory)
+            if (!IS_SHADOW) {
+                updateSession(sessionId, { lastIntent: intent, lastUpdated: Date.now() });
+            }
 
-            // 3. Domain Dispatching (Orchestration)
+            // 3. Domain Dispatching
             if (!this.handlers[context.domain]) {
-                BrainLogger.pipeline(`Unknown domain: ${context.domain} (intent: ${intent})`);
-                // Fallback to system domain or generic error
                 return this.createErrorResponse('unknown_domain', 'Nie wiem jak to obsłużyć (błąd domeny).');
             }
 
             const handler = this.handlers[context.domain][intent] || this.handlers.system.fallback;
-
-            if (!handler) {
-                console.warn(`No handler for ${context.domain}/${intent}`);
-                return this.createErrorResponse('missing_handler', 'Przepraszam, jeszcze nie umiem tego zrobić.');
-            }
-
-            // 4. Execution
-            BrainLogger.pipeline(`Dispatcher: ${intent} [${context.domain}] -> Handler`);
             const domainResponse = await handler.execute(context);
 
             // Apply state changes from handler
-            if (domainResponse.contextUpdates) {
+            if (domainResponse.contextUpdates && !IS_SHADOW) {
                 updateSession(sessionId, domainResponse.contextUpdates);
+            }
+
+            // --- SHADOW MODE EXIT ---
+            if (IS_SHADOW) {
+                return {
+                    intent: context.intent,
+                    domain: context.domain,
+                    reply: domainResponse.reply,
+                    meta: {
+                        latency_ms: Date.now() - startTime,
+                        source,
+                        confidence
+                    },
+                    mockContextUpdates: domainResponse.contextUpdates,
+                    rawResponse: domainResponse
+                };
             }
 
             // 4.5 Synthesis (Expert Layer)
@@ -148,74 +225,93 @@ export class BrainPipeline {
             let stylingMs = 0;
             let ttsMs = 0;
 
-            if (EXPERT_MODE && options.stylize && domainResponse.reply) {
+            if ((EXPERT_MODE || options.stylize) && domainResponse.reply) {
                 const t0 = Date.now();
                 speechText = await stylizeWithGPT4o(domainResponse.reply, intent);
                 stylingMs = Date.now() - t0;
-                BrainLogger.pipeline(`Stylization took ${stylingMs}ms`);
             }
 
-            if (EXPERT_MODE && options.includeTTS && speechText) {
-                try {
-                    const t0 = Date.now();
-                    audioContent = await playTTS(speechText, options.ttsOptions || {});
-                    ttsMs = Date.now() - t0;
-                    BrainLogger.pipeline(`TTS generation took ${ttsMs}ms`);
-                } catch (err) {
-                    BrainLogger.pipeline(`TTS failed: ${err.message}`);
+            // Optimization for Voice Presentations:
+            // If we have items to present, only TTS the intro part to avoid double reading on frontend
+            let speechPartForTTS = speechText;
+            const hasItemsToPresent = (domainResponse.restaurants?.length > 0) || (domainResponse.menuItems?.length > 0);
+
+            if (hasItemsToPresent && speechText && speechText.includes('\n')) {
+                const lines = speechText.split('\n');
+                let intro = lines[0].trim();
+                // If first line is too short (e.g. "Ok:"), take more
+                if (intro.length < 10 && lines.length > 1) {
+                    intro = lines.slice(0, 2).join(' ').trim();
+                }
+                speechPartForTTS = intro;
+                BrainLogger.pipeline(`✂️ Truncating TTS for presentation: "${speechPartForTTS.substring(0, 30)}..."`);
+            }
+
+            // Respect options or default to false
+            const wantsTTS = options.includeTTS === true;
+            const hasReply = domainResponse.should_reply !== false; // Default true
+
+            if (hasReply && (wantsTTS || EXPERT_MODE)) {
+                if (speechPartForTTS) {
+                    try {
+                        const t0 = Date.now();
+                        audioContent = await playTTS(speechPartForTTS, options.ttsOptions || {});
+                        ttsMs = Date.now() - t0;
+                        BrainLogger.pipeline(`🔊 TTS Generated in ${ttsMs}ms (Length: ${speechPartForTTS.length})`);
+                    } catch (err) {
+                        BrainLogger.pipeline(`❌ TTS failed: ${err.message}`);
+                    }
                 }
             }
 
             const totalLatency = Date.now() - startTime;
 
-            // 5. Response Synthesis
-            // Budowanie finalnego formatu (ETAP 4 Contract)
-            const turnId = `turn_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+            // 5. Response Synthesis (Legacy Parity)
+            const { contextUpdates, meta: domainMeta, reply: _r, ...cleanDomainResponse } = domainResponse;
 
-            // Clean domain response for public consumption
-            const { contextUpdates, meta: domainMeta, ...cleanDomainResponse } = domainResponse;
+            const restaurants = cleanDomainResponse.restaurants || [];
+            const menuItems = cleanDomainResponse.menuItems || [];
 
             const response = {
+                ...cleanDomainResponse,
+                ok: true,
                 session_id: sessionId,
-                reply: speechText,
+                text: speechText, // Legacy Text
+                reply: speechText, // Legacy Reply
+                tts_text: speechPartForTTS, // Explicitly return what was used for TTS
+                audioContent: audioContent,
+                intent: intent,
                 should_reply: domainResponse.should_reply ?? true,
                 actions: domainResponse.actions || [],
-                // Data payload (restaurants list or menu)
-                ...cleanDomainResponse,
-                reply: speechText, // Safety overwrite
-            };
-
-            // Expert metadata added ONLY if explicitly enabled
-            if (EXPERT_MODE) {
-                response.turn_id = turnId;
-                response.audioContent = audioContent;
-                response.intent = intent;
-                response.context = getSession(sessionId);
-                response.timestamp = new Date().toISOString();
-                response.meta = {
+                restaurants: restaurants,
+                menuItems: menuItems,
+                meta: {
                     latency_total_ms: totalLatency,
                     source: domainMeta?.source || source || 'llm',
                     styling_ms: stylingMs,
                     tts_ms: ttsMs,
                     ...(domainMeta || {})
-                };
+                },
+                context: getSession(sessionId),
+                timestamp: new Date().toISOString()
+            };
 
-                // --- Background Analytics ---
+            // Legacy alias for discovery
+            if (restaurants.length > 0) {
+                response.locationRestaurants = restaurants;
+            }
+
+            if (EXPERT_MODE) {
+                const turnId = `turn_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+                response.turn_id = turnId;
+                // Expert mode allows background analytics
                 const wStep = this._mapWorkflowStep(intent);
                 EventLogger.logEvent(sessionId, 'intent_resolved', {
-                    intent,
-                    reply: speechText,
-                    confidence,
-                    source,
-                    domain: context.domain
+                    intent, reply: speechText, confidence, source, domain: context.domain
                 }, confidence, wStep).catch(() => { });
 
                 this.persistAnalytics({
-                    intent,
-                    reply: speechText,
-                    durationMs: totalLatency,
-                    confidence,
-                    ttsMs: ttsMs
+                    intent, reply: speechText, durationMs: totalLatency, confidence, ttsMs
                 }).catch(() => { });
             }
 
@@ -223,15 +319,11 @@ export class BrainPipeline {
 
         } catch (error) {
             BrainLogger.pipeline('Error:', error.message);
-            return this.createErrorResponse('internal_error', 'Coś poszło nie tak w moich obwodach. Spróbujmy jeszcze raz.');
+            return this.createErrorResponse('internal_error', 'Coś poszło nie tak w moich obwodach.');
         }
     }
 
     _mapWorkflowStep(intentName) {
-        if (!intentName) return 'unknown';
-        if (['find_nearby', 'show_city_results'].includes(intentName)) return 'find_nearby';
-        if (intentName === 'menu_request' || intentName === 'show_menu') return 'show_menu';
-        if (intentName === 'create_order') return 'create_order';
         if (intentName === 'confirm_order') return 'confirm_order';
         return intentName;
     }
@@ -244,13 +336,10 @@ export class BrainPipeline {
                 reply: typeof p.reply === 'string' ? p.reply.slice(0, 1000) : JSON.stringify(p.reply).slice(0, 1000),
                 duration_ms: p.durationMs,
                 confidence: p.confidence || 1.0,
-                // breakdowns
                 tts_ms: p.ttsMs || 0
             });
         } catch (e) {
-            if (!e.message?.includes("relation \"amber_intents\" does not exist")) {
-                console.warn('⚠️ Analytics Log Error:', e.message);
-            }
+            // Ignore missing table
         }
     }
 

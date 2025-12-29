@@ -437,33 +437,37 @@ export function parseOrderItems(text, catalog) {
     };
   }
 
-  // Bezpieczne zastosowanie aliasów (nie throw)
+  // 1. Strip courtesy/order prefixes EARLY to prevent "Poproszę X" becoming an unknown item
+  const PREFIXES = /^(poproszę|zamawiam|wezmę|dodaj|chciałbym|chciałabym|proszę|biorę|dla\s+mnie)\s+/i;
+  let cleanText = text.replace(PREFIXES, '').trim();
+
+  // Use cleanText for alias application and further processing
   let textAliased;
   let unknownItems = [];
 
   try {
-    textAliased = applyAliases(text);
+    textAliased = applyAliases(cleanText);
     // Jeśli applyAliases zwróciło oryginał i nie znalazło aliasu,
     // sprawdź czy to może być unknown_item
-    if (textAliased === text) {
+    if (textAliased === cleanText) {
       // Sprawdź czy tekst nie pasuje do żadnego aliasu
-      const normalized = normalizeTxt(text);
+      const normalized = normalizeTxt(cleanText);
       const hasKnownAlias = Object.keys(DETERMINISTIC_ALIAS_MAP).some(alias =>
         normalized.includes(normalizeTxt(alias))
       );
-      if (!hasKnownAlias && text.trim().length > 0) {
+      if (!hasKnownAlias && cleanText.trim().length > 0) {
         // Może być unknown_item - zapisz do późniejszej weryfikacji
-        unknownItems.push({ name: text, reason: 'no_alias_match' });
+        unknownItems.push({ name: cleanText, reason: 'no_alias_match' });
       }
     }
   } catch (err) {
     console.warn('[parseOrderItems] applyAliases error:', err.message);
-    textAliased = text; // Fallback do oryginału
-    unknownItems.push({ name: text, reason: 'alias_error' });
+    textAliased = cleanText; // Fallback do oryginału
+    unknownItems.push({ name: cleanText, reason: 'alias_error' });
   }
 
   const preferredSize = extractSize(textAliased);
-  const requestedItems = extractRequestedItems(text);
+  const requestedItems = extractRequestedItems(cleanText);
 
   // Obsługa pustego menu lub braku katalogu
   if (!catalog || !Array.isArray(catalog) || catalog.length === 0) {
@@ -685,7 +689,16 @@ function safeFallbackIntent(text, reason = 'unknown_error') {
   };
 }
 
-export async function detectIntent(text, session = null) {
+// Helper do wykrywania intencji eksploracyjnej (pytania o menu/ofertę)
+function isExploratory(text) {
+  const t = normalizeTxt(text);
+  if (/^(co|jakie)\s+(jest|s[aą]|macie|oferujecie|polecasz)/.test(t)) return true;
+  if (/\b(menu|karta|oferta|cennik)\b/.test(t)) return true;
+  if (/^poka[zż]/.test(t) && !/\b(zamawiam|bior[ęe]|poprosz[ęe])\b/.test(t)) return true;
+  return false;
+}
+
+export async function detectIntent(text, session = null, entities = {}) {
   console.log('[intent-router] 🚀 detectIntent called with:', { text, sessionId: session?.id });
 
   // Bezpieczny fallback dla pustego inputu
@@ -842,17 +855,24 @@ export async function detectIntent(text, session = null) {
                   continue;
                 }
 
-                // 🔹 Levenshtein tylko jeśli exact match nie zadziałał
-                for (const textWord of textWords) {
-                  const dist = levenshteinHelper(textWord, nameWord);
-                  if (dist <= 1) {
-                    matchedWords++;
-                    break; // 🔹 Early exit z inner loop
+                // 🔹 Levenshtein alleen voor woorden >= 7 znaków (krótkie słowa → exact match)
+                // Dit voorkomt "testy"→"tasty" false positive
+                if (nameWord.length >= 7) {
+                  for (const textWord of textWords) {
+                    // Only compare if lengths are similar (±2 chars)
+                    if (Math.abs(textWord.length - nameWord.length) <= 2 && textWord.length >= 7) {
+                      const dist = levenshteinHelper(textWord, nameWord);
+                      if (dist <= 1) {
+                        matchedWords++;
+                        break; // 🔹 Early exit z inner loop
+                      }
+                    }
                   }
                 }
               }
 
-              const threshold = Math.ceil(nameWords.length / 2);
+              // 🔹 Stricter threshold: require 3/4 of words to match (było 1/2)
+              const threshold = Math.ceil(nameWords.length * 0.75);
               if (matchedWords >= threshold) {
                 targetRestaurant = r;
                 console.log(`[intent-router] 🏪 Restaurant detected in text (fuzzy): ${r.name} (matched: ${matchedWords}/${nameWords.length})`);
@@ -886,7 +906,7 @@ export async function detectIntent(text, session = null) {
       );
       console.log(`[intent-router] Catalog loaded: ${catalog.length} items`);
 
-      if (catalog.length) {
+      if (catalog.length && !isExploratory(normalizedText)) {
         console.log('[intent-router] 🔍 Calling parseOrderItems...');
         console.log('[intent-router] 🔍 Catalog items:', catalog.map(c => c.name).join(', '));
         const parsed = parseOrderItems(normalizedText, catalog);
@@ -1002,6 +1022,35 @@ export async function detectIntent(text, session = null) {
         }
 
         if (parsed.any) {
+          const uniqueRestaurants = parsed.groups.length;
+          // Check for restaurant ambiguity (multiple restaurant matches and no locked context)
+          const isRestaurantAmbiguous = uniqueRestaurants > 1 && !targetRestaurant && !session?.lastRestaurant?.id;
+
+          if (isRestaurantAmbiguous) {
+            console.log(`[intent-router] ⚠️ Ambiguous order! Found matches in ${uniqueRestaurants} restaurants.`);
+            console.log(`[intent-router] ⚠️ Returning choose_restaurant intent.`);
+
+            const options = parsed.groups.map(g => ({
+              restaurant_id: g.restaurant_id,
+              restaurant_name: g.restaurant_name,
+              items: g.items
+            }));
+
+            updateDebugSession({
+              intent: 'choose_restaurant',
+              restaurant: null,
+              sessionId: session?.id || null,
+              confidence: 0.95
+            });
+
+            return {
+              intent: 'choose_restaurant',
+              entities: { ...entities, parsedOrder: parsed, options, ambiguous: true },
+              reply: `Tę pozycję serwuje kilka restauracji: ${parsed.groups.map(g => g.restaurant_name).join(', ')}. Z której mam zamówić?`,
+              confidence: 0.95
+            };
+          }
+
           console.log(`🍽️ ✅ EARLY DISH DETECTION SUCCESS! Dish detected: ${parsed.groups.map(g => g.items.map(i => i.name).join(', ')).join(' | ')}`);
           console.log(`🍽️ ✅ Returning create_order immediately (HIGHEST PRIORITY)`);
           console.log(`🍽️ ✅ parsedOrder:`, JSON.stringify(parsed, null, 2));
@@ -1014,7 +1063,8 @@ export async function detectIntent(text, session = null) {
           });
           return {
             intent: 'create_order',
-            parsedOrder: parsed,   // brainRouter użyje tego bez fallbacków
+            entities: { ...entities, parsedOrder: parsed }, // Pass parsedOrder in entities
+            parsedOrder: parsed,   // Keep root for backward compat if needed
             confidence: 0.85
           };
         } else {
@@ -1202,20 +1252,34 @@ export async function detectIntent(text, session = null) {
         console.log('🔍 Fuzzy match - name words:', nameWords, 'text words:', textWords);
 
         for (const nameWord of nameWords) {
-          for (const textWord of textWords) {
-            const dist = levenshteinHelper(textWord, nameWord);
-            console.log('🔍 Comparing:', textWord, 'vs', nameWord, 'distance:', dist);
-            if (textWord === nameWord || dist <= 1) {
-              matchedWords++;
-              console.log('✅ Word match!');
-              break;
+          // 🔹 Exact match first: check if word is exactly in text
+          if (textWords.includes(nameWord)) {
+            matchedWords++;
+            console.log('✅ Exact word match:', nameWord);
+            continue;
+          }
+
+          // 🔹 Fuzzy tylko dla słów >= 7 znaków (zapobiega "testy"→"tasty")
+          if (nameWord.length >= 7) {
+            for (const textWord of textWords) {
+              if (textWord.length >= 7 && Math.abs(textWord.length - nameWord.length) <= 2) {
+                const dist = levenshteinHelper(textWord, nameWord);
+                console.log('🔍 Comparing:', textWord, 'vs', nameWord, 'distance:', dist);
+                if (dist <= 1) {
+                  matchedWords++;
+                  console.log('✅ Fuzzy match!');
+                  break;
+                }
+              }
             }
           }
         }
 
-        console.log('🔍 Matched words:', matchedWords, 'out of', nameWords.length, 'threshold:', Math.ceil(nameWords.length / 2));
-        // Jeśli ≥50% słów z nazwy restauracji pasuje → uznaj za match
-        if (matchedWords >= Math.ceil(nameWords.length / 2)) {
+        // 🔹 Stricter threshold: require 75% of words to match (było 50%)
+        const threshold = Math.ceil(nameWords.length * 0.75);
+        console.log('🔍 Matched words:', matchedWords, 'out of', nameWords.length, 'threshold:', threshold);
+        // Jeśli ≥75% słów z nazwy restauracji pasuje → uznaj za match
+        if (matchedWords >= threshold) {
           console.log('✅ Fuzzy match found:', r.name);
           // Jeśli jest "menu" → menu_request
           if (allMenuKeywords.some(k => lower.includes(k))) {

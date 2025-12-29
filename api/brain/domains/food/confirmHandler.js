@@ -6,7 +6,7 @@
 export class ConfirmOrderHandler {
 
     async execute(ctx) {
-        const { session } = ctx;
+        const { session, sessionId } = ctx;
         console.log("🧠 ConfirmOrderHandler executing...");
 
         // 1. Walidacja: Czy mamy co potwierdzać?
@@ -19,35 +19,45 @@ export class ConfirmOrderHandler {
             };
         }
 
-        // 2. Finalizacja (Mock: Zapis do bazy / integracja POS)
-        // W produkcji tutaj byłoby: await createOrderInDb(pendingOrder);
-        const orderId = `ORD-${Date.now().toString(36).toUpperCase()}`;
-        console.log(`✅ Order finalized: ${orderId} for ${pendingOrder.total} PLN`);
+        // 2. Wykonaj akcję - Commit items to session cart
+        // We need to import commitPendingOrder or implement similar logic.
+        // For V2 consistency, we'll implement it here using session utilities.
+        const { commitPendingOrder } = await import('../../session/sessionCart.js');
+        const commitResult = commitPendingOrder(session);
 
-        // 3. Budowanie odpowiedzi
-        const reply = `Przyjęłam zamówienie nr ${orderId}. Do zapłaty ${pendingOrder.total} zł. Dziękujemy i smacznego!`;
+        if (!commitResult.committed) {
+            return {
+                reply: "Wystąpił problem przy dodawaniu do koszyka. Spróbuj raz jeszcze.",
+            };
+        }
 
-        // 4. ZAMKNIĘCIE SESJI (Kill Switch)
+        // 3. Budowanie odpowiedzi (Cascading Contract: SHOW_CART)
+        const intro = `Dodano do koszyka: ${itemsList}.`;
+        const closing = `Razem mamy ${session.cart?.total ?? 0} zł. Coś jeszcze?`;
+        const reply = `${intro}\n${closing}`;
+
         return {
             reply,
-            contextUpdates: {
-                status: 'COMPLETED',       // Flaga dla guarda
-                closedAt: Date.now(),
-                locked: true,              // Dodatkowe, jeśli guard używa 'locked'
-                pendingOrder: null,        // Wyczyść koszyk
-                lastOrder: {               // Historia (opcjonalnie)
-                    id: orderId,
-                    total: pendingOrder.total,
-                    items: pendingOrder.items
-                },
-                // Czyścimy kontekst operacyjny
-                expectedContext: null,
-                context: 'neutral'
-            },
+            closing_question: "Coś jeszcze?",
+            should_reply: true,
+            intent: 'confirm_order',
+            // Actions for Frontend (Task 2)
+            actions: [
+                {
+                    type: "SHOW_CART",
+                    payload: { mode: "summary" }
+                }
+            ],
+            // Data for items visibility
             meta: {
-                order_id: orderId,
-                transaction_status: 'success',
-                source: 'logic'
+                addedToCart: true,
+                cart: session.cart,
+                source: 'confirm_handler'
+            },
+            contextUpdates: {
+                pendingOrder: null,        // Wyczyść tymczasowy bufor
+                expectedContext: null,     // Koniec flow potwierdzania
+                lastIntent: 'order_complete'
             }
         };
     }

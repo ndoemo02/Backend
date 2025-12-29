@@ -5,12 +5,15 @@
 
 import { loadMenuPreview } from '../../menuService.js';
 import { findRestaurantByName, getLocationFallback } from '../../locationService.js';
+import { RESTAURANT_CATALOG } from '../../data/restaurantCatalog.js';
 
 export class MenuHandler {
 
     async execute(ctx) {
         const { text, session, entities } = ctx;
-        console.log("🧠 MenuHandler executing...");
+        console.log(`🧠 MenuHandler executing for session ${session?.id}. Text: "${text}"`);
+        console.log(`🧠 MenuHandler: session lastRestaurant: ${session?.lastRestaurant?.name} (${session?.lastRestaurant?.id})`);
+        console.log(`🧠 MenuHandler: entities:`, JSON.stringify(entities));
 
         // --- OPTIMIZATION: Task 2 - Menu Cache Shortcut ---
         // If we have a locked/known restaurant and cached menu, return immediately
@@ -37,16 +40,20 @@ export class MenuHandler {
                 // Anti-Loop for Cache
                 if (session.lastIntent === 'show_menu' || session.lastIntent === 'menu_request') {
                     return {
+                        intent: 'menu_request', // Standard V2
                         reply: "Listę dań masz na ekranie. Czy coś wpadło Ci w oko?",
-                        menu: items,
+                        menuItems: items,
+                        restaurants: [],
                         meta: { source: 'cache_anti_loop', latency_total_ms: 0 },
                         contextUpdates: { expectedContext: 'menu_or_order' }
                     };
                 }
 
                 return {
-                    reply: `W ${lastRestaurant.name} polecam: ${items.map(m => m.name).join(', ')}. Co podać?`,
-                    menu: items,
+                    intent: 'menu_request', // Standard V2
+                    reply: `Wybrano restaurację ${lastRestaurant.name}. Polecam: ${items.map(m => m.name).join(', ')}. Co podać?`,
+                    menuItems: items,
+                    restaurants: [],
                     meta: { source: 'cache', latency_total_ms: 0 }, // Latency calc elsewhere, source is key
                     contextUpdates: { expectedContext: 'menu_or_order' }
                 };
@@ -56,14 +63,18 @@ export class MenuHandler {
         // 1. Zidentyfikuj restaurację
         let restaurant = null;
 
-        // A) Jawnie w tekście
-        if (entities?.restaurant) { // Z entity extraction
-            restaurant = await findRestaurantByName(entities.restaurant);
-        } else if (entities?.raw && session?.expectedContext === 'select_restaurant') {
-            // Context-lock handled differently
+        // A) Jawnie w tekście (ID z katalogu ma priorytet)
+        if (entities?.restaurantId) {
+            const catalogMatch = RESTAURANT_CATALOG.find(r => r.id === entities.restaurantId);
+            if (catalogMatch) restaurant = catalogMatch;
         }
 
-        // B) Z sesji (Context)
+        // B) Jawnie w tekście (nazwa jeśli ID brak - np. spoza katalogu)
+        if (!restaurant && entities?.restaurant) {
+            restaurant = await findRestaurantByName(entities.restaurant);
+        }
+
+        // C) Z sesji (Context)
         if (!restaurant) {
             restaurant = session?.lastRestaurant;
         }
@@ -97,38 +108,47 @@ export class MenuHandler {
 
         // 4. Formatowanie odpowiedzi
 
-        // --- ANTI-LOOP: Short Mode ---
-        // Jeśli user pyta o menu drugi raz z rzędu (lub system źle usłyszał szum), nie czytaj całej listy od nowa.
-        if (session.lastIntent === 'show_menu' || session.lastIntent === 'menu_request') {
-            console.log(`⚡ Anti-Loop: Sending short menu reply for ${restaurant.name}`);
-            return {
-                reply: "Listę dań masz na ekranie. Czy coś wpadło Ci w oko?",
-                menu: preview.shortlist,
-                contextUpdates: {
-                    expectedContext: 'menu_or_order',
-                    lastRestaurant: restaurant,
-                    context: 'IN_RESTAURANT', // Ensure lock persists
-                    lockedRestaurantId: restaurant.id
-                },
-                meta: { source: 'anti_loop' }
-            };
-        }
+        // --- Anti-Loop Protection (DISABLED for Frontend Safety) ---
+        // if (session.lastIntent === 'show_menu' || session.lastIntent === 'menu_request') {
+        //     console.log(`⚡ Anti-Loop: Sending short menu reply for ${restaurant.name}`);
+        //     return {
+        //         intent: 'show_menu', // FORCE LEGACY INTENT NAME
+        //         reply: "Listę dań masz na ekranie. Czy coś wpadło Ci w oko?",
+        //         menu: preview.shortlist,
+        //         restaurant: restaurant, // Ensure restaurant is passed
+        //         contextUpdates: {
+        //             last_menu: preview.shortlist,
+        //             lastRestaurant: restaurant,
+        //             lastIntent: 'show_menu', // Consistency
+        //             expectedContext: 'create_order',
+        //             context: 'IN_RESTAURANT', // Ensure lock persists
+        //             lockedRestaurantId: restaurant.id
+        //         },
+        //         meta: { source: 'anti_loop' }
+        //     };
+        // }
 
         const count = preview.menu.length;
         const shown = preview.shortlist.length;
         const listText = preview.shortlist.map(m => `${m.name} (${Number(m.price_pln).toFixed(2)} zł)`).join(", ");
-
-        const reply = `W ${restaurant.name} mamy ${count} pozycji. Polecam np.: ${listText}. Co zamawiasz?`;
+        const intro = `Wybrano restaurację ${restaurant.name}. W menu m.in.:`;
+        const closing = "Co podać?";
+        const reply = `${intro}\n${listText}\n\n${closing}`;
 
         console.log(`✅ MenuHandler: showing ${shown}/${count} items for ${restaurant.name}`);
 
         return {
+            intent: 'menu_request', // Standard V2 intent name
             reply,
-            menu: preview.shortlist,
+            closing_question: closing,
+            menuItems: preview.shortlist,
+            restaurants: [],
+            restaurant: restaurant, // CRITICAL: Frontend needs restaurant details (name, etc.)
             contextUpdates: {
                 last_menu: preview.shortlist,
                 lastRestaurant: restaurant,
-                expectedContext: 'menu_or_order',
+                expectedContext: 'create_order',
+                lastIntent: 'menu_request', // Consistency
                 // --- Task 1: Implicit Lock on successful menu load ---
                 // "Skoro user prosi o menu tej restauracji, blokujemy kontekst"
                 context: 'IN_RESTAURANT',
