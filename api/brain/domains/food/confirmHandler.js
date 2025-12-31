@@ -19,9 +19,10 @@ export class ConfirmOrderHandler {
             };
         }
 
-        // 2. Wykonaj akcję - Commit items to session cart
-        // We need to import commitPendingOrder or implement similar logic.
-        // For V2 consistency, we'll implement it here using session utilities.
+        // 2. Capture items descriptions BEFORE commit (which deletes pendingOrder)
+        const itemsList = pendingOrder.items.map(i => `${i.quantity}x ${i.name}`).join(", ");
+
+        // 3. Wykonaj akcję - Commit items to session cart
         const { commitPendingOrder } = await import('../../session/sessionCart.js');
         const commitResult = commitPendingOrder(session);
 
@@ -31,10 +32,10 @@ export class ConfirmOrderHandler {
             };
         }
 
-        // 3. Budowanie odpowiedzi (Cascading Contract: SHOW_CART)
-        const intro = `Dodano do koszyka: ${itemsList}.`;
-        const closing = `Razem mamy ${session.cart?.total ?? 0} zł. Coś jeszcze?`;
-        const reply = `${intro}\n${closing}`;
+        // 4. Budowanie odpowiedzi
+        const intro = `Super, dodano: ${itemsList}.`;
+        const closing = `W sumie ${session.cart?.total ?? 0} zł. Coś jeszcze zamawiasz, czy finalizujemy?`;
+        const reply = `${intro} ${closing}`;
 
         return {
             reply,

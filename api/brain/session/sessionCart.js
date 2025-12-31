@@ -17,7 +17,7 @@ export function commitPendingOrder(session) {
     id: it.id || crypto.randomUUID?.() || String(Date.now()),
     name: it.name || it.item_name || 'pozycja',
     price_pln: Number(it.price_pln ?? it.price ?? 0),
-    qty: Number(it.qty || 1),
+    qty: Number(it.quantity || it.qty || 1),
     restaurant_id: session.pendingOrder.restaurant_id,
     restaurant_name: session.pendingOrder.restaurant,
   }));

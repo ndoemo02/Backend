@@ -109,8 +109,18 @@ export class BrainPipeline {
 
             // --- GUARDS ---
 
+            // Rule: Confirm Guard
+            if (session?.expectedContext === 'confirm_order') {
+                const normalized = (text || "").toLowerCase();
+                const confirmWords = /\b(tak|potwierdzam|ok|dobra|może być|dawaj|pewnie|jasne|super|świetnie)\b/i;
+                if (confirmWords.test(normalized)) {
+                    BrainLogger.pipeline('🛡️ Guard: Context is confirm_order and confirmation word detected. Forcing confirm_order.');
+                    context.intent = 'confirm_order';
+                }
+            }
+
             // Rule 4: Auto Menu
-            if (intent === 'select_restaurant') {
+            if (context.intent === 'select_restaurant') {
                 const normalized = (text || "").toLowerCase();
                 const wantsToSee = /\b(pokaz|pokaż|zobacz|jakie|co)\b/i.test(normalized);
                 const wantsChange = /\b(inn[ea]|zmień|wybierz\s+inne)\b/i.test(normalized);
@@ -122,7 +132,7 @@ export class BrainPipeline {
             }
 
             // Rule 2: Early Dish Detection
-            if (intent === 'create_order') {
+            if (context.intent === 'create_order') {
                 const ent = context.entities || {};
                 const normalized = (text || "").toLowerCase();
                 const strictOrderVerbs = /\b(zamawiam|wezm[ęe]|dodaj|poprosz[ęe]|chc[ęe])\b/i;
@@ -144,7 +154,7 @@ export class BrainPipeline {
                 }
 
                 // --- RULE 6: Empty Order / Adjective Guard ---
-                if (intent === 'create_order') {
+                if (context.intent === 'create_order') {
                     // Check if we have items or dish
                     // Re-read items directly from parser if needed, but entity should have it
                     // Simple check: if ent.items is empty and ent.dish is empty -> Problem
@@ -155,7 +165,7 @@ export class BrainPipeline {
                         // Opcja B: Exception for longer text (potential dish name not yet parsed)
                         const stripped = normalized.replace(strictOrderVerbs, '').trim();
                         if (stripped.length > 2) {
-                            BrainLogger.pipeline('🛡️ Guard Rule 6: Passing potential dish "${stripped}" to handlers despite missing entities.');
+                            BrainLogger.pipeline(`🛡️ Guard Rule 6: Passing potential dish "${stripped}" to handlers despite missing entities.`);
                             // Do NOT return here. Let it pass to OrderHandler which will call parseOrderItems
                         } else {
                             BrainLogger.pipeline('🛡️ Guard Rule 6: Order intent with no explicit dish. Asking for details.');
@@ -173,7 +183,7 @@ export class BrainPipeline {
 
             // Zombie Kill Switch
             if (session?.status === 'COMPLETED' && !IS_SHADOW) {
-                if (!['new_order', 'start_over', 'help'].includes(intent)) {
+                if (!['new_order', 'start_over', 'help'].includes(context.intent)) {
                     return {
                         ok: true,
                         intent: 'session_locked',
@@ -187,7 +197,7 @@ export class BrainPipeline {
 
             // Update session (Short-term memory)
             if (!IS_SHADOW) {
-                updateSession(sessionId, { lastIntent: intent, lastUpdated: Date.now() });
+                updateSession(sessionId, { lastIntent: context.intent, lastUpdated: Date.now() });
             }
 
             // 3. Domain Dispatching
@@ -195,7 +205,7 @@ export class BrainPipeline {
                 return this.createErrorResponse('unknown_domain', 'Nie wiem jak to obsłużyć (błąd domeny).');
             }
 
-            const handler = this.handlers[context.domain][intent] || this.handlers.system.fallback;
+            const handler = this.handlers[context.domain][context.intent] || this.handlers.system.fallback;
             const domainResponse = await handler.execute(context);
 
             // Apply state changes from handler
