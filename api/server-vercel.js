@@ -19,7 +19,8 @@ const CORS_ORIGINS_PROD = [
 const CORS_ORIGINS_DEV = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
-  'http://localhost:3000'
+  'http://localhost:3000',
+  'https://backend-one-gilt-89.vercel.app'
 ];
 const ALLOWED_ORIGINS = process.env.NODE_ENV === 'production'
   ? CORS_ORIGINS_PROD
