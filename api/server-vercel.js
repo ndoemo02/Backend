@@ -12,7 +12,9 @@ app.use(express.json());
 // CORS (tuż po dotenv.config): prod = Vercel, dev = localhost:5173
 const CORS_ORIGINS_PROD = [
   'https://freeflow-frontend-seven.vercel.app',
-  'https://freeflow-frontend.vercel.app'
+  'https://freeflow-frontend.vercel.app',
+  'https://freeflow-final.vercel.app',
+  'https://backend-one-gilt-89.vercel.app'
 ];
 const CORS_ORIGINS_DEV = [
   'http://localhost:5173',
