@@ -1,0 +1,3414 @@
+
+[7m[1m[36m RUN [39m[22m[27m [36mv1.6.1[39m [90mC:/Firerfox Portable/Freeflow brain/backend[39m
+
+[90mstdout[2m | tests\brain-cascade.test.js:602:9[22m[39m
+✅ Brain API cascade tests completed
+
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 1: Health & Basic Validation[2m > [22mshould respond to health check
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 1: Health & Basic Validation[2m > [22mshould reject empty text
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 1: Health & Basic Validation[2m > [22mshould reject non-POST methods
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 2: Intent Detection[2m > [22mshould detect find_nearby intent
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 2: Intent Detection[2m > [22mshould detect menu_request intent
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 2: Intent Detection[2m > [22mshould detect select_restaurant intent
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 2: Intent Detection[2m > [22mshould detect create_order intent
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 3: Geo Context Layer[2m > [22mshould extract location from text
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 3: Geo Context Layer[2m > [22mshould handle cuisine type filtering
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 3: Geo Context Layer[2m > [22mshould handle azjatyckie cuisine alias
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 4: Session Context & Memory[2m > [22mshould remember last restaurant
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 4: Session Context & Memory[2m > [22mshould remember last location
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 5: Fuzzy Matching & Aliases[2m > [22mshould handle typos in restaurant names
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 5: Fuzzy Matching & Aliases[2m > [22mshould handle dish aliases
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 5: Fuzzy Matching & Aliases[2m > [22mshould normalize Polish characters
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 6: Quantity & Size Detection[2m > [22mshould detect quantity from numbers
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 6: Quantity & Size Detection[2m > [22mshould detect quantity from words
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 6: Quantity & Size Detection[2m > [22mshould detect pizza size
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 7: Smart Context Boost[2m > [22mshould boost "nie/inne" to change_restaurant
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 7: Smart Context Boost[2m > [22mshould boost "polecisz" to recommend
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 7: Smart Context Boost[2m > [22mshould boost "tak" to confirm
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 8: Error Handling & Edge Cases[2m > [22mshould handle non-existent restaurant
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 8: Error Handling & Edge Cases[2m > [22mshould handle empty restaurant list
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 8: Error Handling & Edge Cases[2m > [22mshould handle ambiguous input
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 8: Error Handling & Edge Cases[2m > [22mshould handle very long input
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 9: Multi-Item Ordering[2m > [22mshould parse multiple items
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 9: Multi-Item Ordering[2m > [22mshould handle mixed quantities
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 10: Full User Flow[2m > [22mshould complete full ordering flow
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 11: Expected Context & Follow-up[2m > [22mshould handle "show more options" follow-up
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 11: Expected Context & Follow-up[2m > [22mshould handle restaurant selection by number
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 11: Expected Context & Follow-up[2m > [22mshould handle restaurant selection by ordinal
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 11: Expected Context & Follow-up[2m > [22mshould clear expectedContext after handling follow-up
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 11: Expected Context & Follow-up[2m > [22mshould ignore expectedContext when user says something unrelated
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 12: Session Context Priority[2m > [22mshould prioritize session restaurant over text detection
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 12: Session Context Priority[2m > [22mshould detect new restaurant when indicators present
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 12: Session Context Priority[2m > [22mshould skip restaurant search when session context exists
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 13: Order Confirmation Flow[2m > [22mshould NOT add to cart immediately, but wait for confirmation
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 13: Order Confirmation Flow[2m > [22mshould add to cart after user confirms with "tak"
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 13: Order Confirmation Flow[2m > [22mshould cancel order when user says "nie"
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 13: Order Confirmation Flow[2m > [22mshould confirm order with "proszę dodać"
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 13: Order Confirmation Flow[2m > [22mshould confirm order with "zamawiam"
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 14: Performance[2m > [22mshould respond within 5 seconds
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 14: Performance[2m > [22mshould handle concurrent requests
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 15: UI Contract & Actions[2m > [22mshould return SHOW_CART action on order creation
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 15: UI Contract & Actions[2m > [22mshould return correct structure for Menu Presentation
+[31m   → fetch failed[39m
+ [31m×[39m tests/brain-cascade.test.js[2m > [22m🔧 Brain Stats API[2m > [22mshould return brain statistics
+[31m   → fetch failed[39m
+
+[31m⎯⎯⎯⎯⎯⎯[1m[7m Failed Tests 46 [27m[22m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 1: Health & Basic Validation[2m > [22mshould respond to health check
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m tests/brain-cascade.test.js:[2m30:24[22m[39m
+    [90m 28| [39m  [34mdescribe[39m([32m'Tier 1: Health & Basic Validation'[39m[33m,[39m () [33m=>[39m {
+    [90m 29| [39m    [34mit[39m([32m'should respond to health check'[39m[33m,[39m [35masync[39m () [33m=>[39m {
+    [90m 30| [39m      [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/health`[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m 31| [39m      [34mexpect[39m(response[33m.[39mok)[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m 32| [39m      [35mconst[39m data [33m=[39m [35mawait[39m response[33m.[39m[34mjson[39m()[33m;[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 1: Health & Basic Validation[2m > [22mshould reject empty text
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m tests/brain-cascade.test.js:[2m38:24[22m[39m
+    [90m 36| [39m
+    [90m 37| [39m    [34mit[39m([32m'should reject empty text'[39m[33m,[39m [35masync[39m () [33m=>[39m {
+    [90m 38| [39m      [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                       [31m^[39m
+    [90m 39| [39m        method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 40| [39m        headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 1: Health & Basic Validation[2m > [22mshould reject non-POST methods
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m tests/brain-cascade.test.js:[2m47:24[22m[39m
+    [90m 45| [39m
+    [90m 46| [39m    [34mit[39m([32m'should reject non-POST methods'[39m[33m,[39m [35masync[39m () [33m=>[39m {
+    [90m 47| [39m      [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                       [31m^[39m
+    [90m 48| [39m        method[33m:[39m [32m'GET'[39m
+    [90m 49| [39m      })[33m;[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 2: Intent Detection[2m > [22mshould detect find_nearby intent
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m60:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 2: Intent Detection[2m > [22mshould detect menu_request intent
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m67:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 2: Intent Detection[2m > [22mshould detect select_restaurant intent
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m73:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 2: Intent Detection[2m > [22mshould detect create_order intent
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m79:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 3: Geo Context Layer[2m > [22mshould extract location from text
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m91:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 3: Geo Context Layer[2m > [22mshould handle cuisine type filtering
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m97:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 3: Geo Context Layer[2m > [22mshould handle azjatyckie cuisine alias
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m103:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 4: Session Context & Memory[2m > [22mshould remember last restaurant
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m117:7[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 4: Session Context & Memory[2m > [22mshould remember last location
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m126:7[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 5: Fuzzy Matching & Aliases[2m > [22mshould handle typos in restaurant names
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m139:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 5: Fuzzy Matching & Aliases[2m > [22mshould handle dish aliases
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m145:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 5: Fuzzy Matching & Aliases[2m > [22mshould normalize Polish characters
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m151:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 6: Quantity & Size Detection[2m > [22mshould detect quantity from numbers
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m163:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 6: Quantity & Size Detection[2m > [22mshould detect quantity from words
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m169:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 6: Quantity & Size Detection[2m > [22mshould detect pizza size
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m175:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 7: Smart Context Boost[2m > [22mshould boost "nie/inne" to change_restaurant
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m187:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 7: Smart Context Boost[2m > [22mshould boost "polecisz" to recommend
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m193:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 7: Smart Context Boost[2m > [22mshould boost "tak" to confirm
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m200:7[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 8: Error Handling & Edge Cases[2m > [22mshould handle non-existent restaurant
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m213:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 8: Error Handling & Edge Cases[2m > [22mshould handle empty restaurant list
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m219:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 8: Error Handling & Edge Cases[2m > [22mshould handle ambiguous input
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m225:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 8: Error Handling & Edge Cases[2m > [22mshould handle very long input
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m232:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 9: Multi-Item Ordering[2m > [22mshould parse multiple items
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m243:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 9: Multi-Item Ordering[2m > [22mshould handle mixed quantities
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m249:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 10: Full User Flow[2m > [22mshould complete full ordering flow
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m264:21[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 11: Expected Context & Follow-up[2m > [22mshould handle "show more options" follow-up
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m294:21[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 11: Expected Context & Follow-up[2m > [22mshould handle restaurant selection by number
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m318:21[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 11: Expected Context & Follow-up[2m > [22mshould handle restaurant selection by ordinal
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m331:21[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 11: Expected Context & Follow-up[2m > [22mshould clear expectedContext after handling follow-up
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m344:21[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 11: Expected Context & Follow-up[2m > [22mshould ignore expectedContext when user says something unrelated
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m360:21[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 12: Session Context Priority[2m > [22mshould prioritize session restaurant over text detection
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m379:21[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 12: Session Context Priority[2m > [22mshould detect new restaurant when indicators present
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m393:21[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 12: Session Context Priority[2m > [22mshould skip restaurant search when session context exists
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m407:21[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 13: Order Confirmation Flow[2m > [22mshould NOT add to cart immediately, but wait for confirmation
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m427:21[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 13: Order Confirmation Flow[2m > [22mshould add to cart after user confirms with "tak"
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m444:21[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 13: Order Confirmation Flow[2m > [22mshould cancel order when user says "nie"
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m466:21[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 13: Order Confirmation Flow[2m > [22mshould confirm order with "proszę dodać"
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m488:21[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 13: Order Confirmation Flow[2m > [22mshould confirm order with "zamawiam"
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m507:21[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 14: Performance[2m > [22mshould respond within 5 seconds
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m532:7[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 14: Performance[2m > [22mshould handle concurrent requests
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m541:23[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 15: UI Contract & Actions[2m > [22mshould return SHOW_CART action on order creation
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m555:7[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🧠 Brain API - Cascade Tests[2m > [22mTier 15: UI Contract & Actions[2m > [22mshould return correct structure for Menu Presentation
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m callBrain tests/brain-cascade.test.js:[2m9:20[22m[39m
+    [90m  7| [39m[90m// Helper function for API calls[39m
+    [90m  8| [39m[35masync[39m [35mfunction[39m [34mcallBrain[39m(text[33m,[39m sessionId [33m=[39m [33mSESSION_ID[39m) {
+    [90m  9| [39m  [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain`[39m[33m,[39m {
+    [90m   | [39m                   [31m^[39m
+    [90m 10| [39m    method[33m:[39m [32m'POST'[39m[33m,[39m
+    [90m 11| [39m    headers[33m:[39m { [32m'Content-Type'[39m[33m:[39m [32m'application/json'[39m }[33m,[39m
+[90m [2m❯[22m tests/brain-cascade.test.js:[2m577:22[22m[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/46]⎯[22m[39m
+
+[31m[1m[7m FAIL [27m[22m[39m tests/brain-cascade.test.js[2m > [22m🔧 Brain Stats API[2m > [22mshould return brain statistics
+[31m[1mTypeError[22m: fetch failed[39m
+[36m [2m❯[22m tests/brain-cascade.test.js:[2m595:22[22m[39m
+    [90m593| [39m[34mdescribe[39m([32m'🔧 Brain Stats API'[39m[33m,[39m () [33m=>[39m {
+    [90m594| [39m  [34mit[39m([32m'should return brain statistics'[39m[33m,[39m [35masync[39m () [33m=>[39m {
+    [90m595| [39m    [35mconst[39m response [33m=[39m [35mawait[39m [34mfetch[39m([32m`[39m[36m${[39m[33mAPI_URL[39m[36m}[39m[32m/api/brain/stats`[39m)[33m;[39m
+    [90m   | [39m                     [31m^[39m
+    [90m596| [39m    [34mexpect[39m(response[33m.[39mok)[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m597| [39m    [35mconst[39m data [33m=[39m [35mawait[39m response[33m.[39m[34mjson[39m()[33m;[39m
+
+{
+  stack: 'AggregateError: \n' +
+    '    at internalConnectMultiple (node:net:1134:18)\n' +
+    '    at afterConnectMultiple (node:net:1715:7)',
+  errors: [
+    {
+      stack: 'Error: connect ECONNREFUSED ::1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED ::1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    },
+    {
+      stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n' +
+        '    at createConnectionError (node:net:1678:14)\n' +
+        '    at afterConnectMultiple (node:net:1708:16)',
+      message: 'connect ECONNREFUSED 127.0.0.1:3100',
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 3100,
+      constructor: 'Function<Error>',
+      name: 'Error',
+      toString: 'Function<toString>'
+    }
+  ],
+  code: 'ECONNREFUSED',
+  message: '',
+  constructor: 'Function<AggregateError>',
+  name: 'Caused by: AggregateError',
+  toString: 'Function<toString>',
+  stacks: [
+    {
+      method: 'internalConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1134,
+      column: 18
+    },
+    {
+      method: 'afterConnectMultiple',
+      file: 'C:/Firerfox Portable/Freeflow brain/backend/node:net',
+      line: 1715,
+      column: 7
+    }
+  ]
+}
+[90m [2m❯[22m internalConnectMultiple node:net:[2m1134:18[22m[39m
+[90m [2m❯[22m afterConnectMultiple node:net:[2m1715:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22m[39m
+[31m[1mSerialized Error:[22m[39m [90m{ errors: [ { stack: 'Error: connect ECONNREFUSED ::1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED ::1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '::1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' }, { stack: 'Error: connect ECONNREFUSED 127.0.0.1:3100\n    at createConnectionError (node:net:1678:14)\n    at afterConnectMultiple (node:net:1708:16)', message: 'connect ECONNREFUSED 127.0.0.1:3100', errno: -4078, code: 'ECONNREFUSED', syscall: 'connect', address: '127.0.0.1', port: 3100, constructor: 'Function<Error>', name: 'Error', toString: 'Function<toString>' } ], code: 'ECONNREFUSED' }[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/46]⎯[22m[39m
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m46 failed[39m[22m[90m (46)[39m
+[2m   Start at [22m 21:25:36
+[2m   Duration [22m 870ms[2m (transform 48ms, setup 0ms, collect 53ms, tests 178ms, environment 0ms, prepare 207ms)[22m
+

@@ -1,0 +1,223 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\frees> cd "C:\Firerfox Portable\Freeflow brain\backend"
+PS C:\Firerfox Portable\Freeflow brain\backend> npm run dev
+
+> freeflow-backend@1.5.0 dev
+> node api/server-vercel.js
+
+🚀 Booting FreeFlow Serverless...
+🧠 ENV OK
+🔑 SUPABASE_URL: ✅
+🔑 OPENAI_API_KEY: ✅
+🧠 FreeFlow Brain running locally on http://localhost:3000
+✅ Supabase client initialized (singleton mode)
+[brainRouter] 🚀 Handler called (Legacy Mode)
+[Supabase] Creating client with URL: https://ezemaacyyvbpjlagchds.supabase.co
+🔎 Searching for any in Piekary Śląskie (Original: Piekary)...
+[brainRouter] 🧠 Current session: {
+  expectedContext: 'select_restaurant',
+  lastIntent: 'find_nearby',
+  lastRestaurant: null,
+  lastRestaurantsList: [],
+  lastRestaurants: [
+    {
+      id: '1fc1e782-bac6-47b2-978a-f6f2b38000cd',
+      name: 'Restauracja Stara Kamienica',
+      index: 1,
+      city: 'Piekary Śląskie'
+    },
+    {
+      id: '4d27fbe3-20d0-4eb4-b003-1935be53af25',
+      name: 'Rezydencja Luxury Hotel',
+      index: 2,
+      city: 'Piekary Śląskie'
+    },
+    {
+      id: '569a7d29-57be-4224-bdf3-09c483415cea',
+      name: 'Klaps Burgers',
+      index: 3,
+      city: 'Piekary Śląskie'
+    },
+    {
+      id: '70842598-1632-43f6-8015-706d5adf182f',
+      name: 'Vien-Thien',
+      index: 4,
+      city: 'Piekary Śląskie'
+    },
+    {
+      id: '8b00b05e-72f7-4a5f-b50c-5630a75d6312',
+      name: 'Bar Praha',
+      index: 5,
+      city: 'Piekary Śląskie'
+    },
+    {
+      id: 'bd9f2244-7618-4071-aa96-52616a7b4c70',
+      name: 'Callzone',
+      index: 6,
+      city: 'Piekary Śląskie'
+    },
+    {
+      id: 'af8448ef-974b-46c8-a4ae-b04b8dc7c9f8',
+      name: 'Dwór Hubertus',
+      index: 7,
+      city: 'Piekary Śląskie'
+    },
+    {
+      id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Tasty King Kebab',
+      index: 8,
+      city: 'Piekary Śląskie'
+    },
+    {
+      id: '83566974-1017-4408-90ee-2571ccc06978',
+      name: 'Pizzeria Monte Carlo',
+      index: 9,
+      city: 'Piekary Śląskie'
+    }
+  ],
+  lastRestaurantsTimestamp: null,
+  lastMenu: [],
+  locationOverride: null,
+  history: [],
+  lastUpdated: 1766898916981,
+  last_location: 'Piekary Śląskie',
+  last_restaurants_list: [
+    {
+      id: '1fc1e782-bac6-47b2-978a-f6f2b38000cd',
+      name: 'Restauracja Stara Kamienica',
+      address: 'ul. Bytomska 61',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Polska',
+      lat: 50.3856,
+      lng: 18.94886
+    },
+    {
+      id: '4d27fbe3-20d0-4eb4-b003-1935be53af25',
+      name: 'Rezydencja Luxury Hotel',
+      address: 'ul. Stara 1',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Międzynarodowa',
+      lat: 50.39352,
+      lng: 18.94742
+    },
+    {
+      id: '569a7d29-57be-4224-bdf3-09c483415cea',
+      name: 'Klaps Burgers',
+      address: 'ul. Piotra Skargi 15',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Amerykańska',
+      lat: 50.38643,
+      lng: 18.95422
+    },
+    {
+      id: '70842598-1632-43f6-8015-706d5adf182f',
+      name: 'Vien-Thien',
+      address: 'ul. Diamentowa 4',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Wietnamska',
+      lat: 50.39883,
+      lng: 18.95574
+    },
+    {
+      id: '8b00b05e-72f7-4a5f-b50c-5630a75d6312',
+      name: 'Bar Praha',
+      address: 'ul. Bytomska 139',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Czeska / Polska',
+      lat: 50.38807,
+      lng: 18.93657
+    },
+    {
+      id: 'bd9f2244-7618-4071-aa96-52616a7b4c70',
+      name: 'Callzone',
+      address: 'ul. Księdza Piotra Skargi 3',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Pizzeria',
+      lat: 50.38594,
+      lng: 18.95647
+    },
+    {
+      id: 'af8448ef-974b-46c8-a4ae-b04b8dc7c9f8',
+      name: 'Dwór Hubertus',
+      address: 'ul. Inwalidów Wojennych 72',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Śląska / Europejska',
+      lat: 50.39233,
+      lng: 18.94243
+    },
+    {
+      id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
+      name: 'Tasty King Kebab',
+      address: 'ul. Bytomska 70',
+      city: 'Piekary Śląskie',
+      cuisine_type: 'Kebab',
+      lat: 50.38587,
+      lng: 18.94712
+    },
+    {
+      id: '83566974-1017-4408-90ee-2571ccc06978',
+      name: 'Pizzeria Monte Carlo',
+      address: 'Ul. Stanisława Maczka 22',
+      city: 'Piekary Śląskie',
+      cuisine_type: null,
+      lat: null,
+      lng: null
+    }
+  ]
+}
+🔬 Starting Smart Intent Layer...
+[intent-router] 🚀 detectIntent called with: { text: 'gdzie zamówię w Piekarach', sessionId: undefined }
+🔍 Debug session updated: {
+  intent: 'find_nearby',
+  restaurant: null,
+  sessionId: null,
+  confidence: 0.85
+}
+✅ SmartIntent Resolved: find_nearby (0.00) via classic
+🧠 [DEBUG] Calling boostIntent with: {
+  text: 'gdzie zamówię w Piekarach',
+  hybridIntent: 'find_nearby',
+  confidence: 0,
+  session: {
+    expectedContext: 'select_restaurant',
+    lastRestaurant: undefined,
+    lastIntent: 'find_nearby'
+  }
+}
+🧠 GPT Reasoner: {
+  searchRestaurants: false,
+  searchMenu: true,
+  askClarification: false,
+  completeOrder: false,
+  reasoning: 'User provided a specific restaurant name → selecting restaurant.'
+}
+📋 Parsed: { dish: null, restaurant: 'Piekarach' }
+🧠 menu_request intent detected
+🔍 SmartSelection Debug: "gdzie zamówię w Piekarach" -> Best: 0 (Restauracja Stara Kamienica) vs Second: 0
+⚠️ No match for restaurant: "Piekarach"
+⚠️ No match for restaurant: "Piekarach"
+⚠️ Restaurant "Piekarach" not found
+🧭 Semantic fallback: using last_location = Piekary Śląskie
+🗺️ Found 9 restaurants in "Piekary Śląskie"
+💾 Cache SAVED for location: "Piekary Śląskie"
+💬 Generating GPT reply for intent: menu_request
+✅ Final response: intent=menu_request, confidence=0.9, fallback=false
+📦 Final Response Preparation: MenuItems count = 0
+[ShadowMode] ❌ Match: menu_request vs undefined (V2 Latency: undefinedms)
+POST /api/brain 200 9596 - 7325.478 ms
+✅ Allowed origin: http://localhost:5173
+[TTS] Generating: W Piekary Śląskie możesz zamówić z następujących restauracji:...
+✅ Using GOOGLE_APPLICATION_CREDENTIALS (local)
+✅ Google access token obtained successfully
+🔊 Using Chirp HD TTS (pl-PL-Wavenet-A, MP3)
+POST /api/tts 200 28800 - 1251.082 ms
+✅ Allowed origin: http://localhost:5173
+[TTS] Generating: Restauracja Stara Kamienica. Polska....
+✅ Using GOOGLE_APPLICATION_CREDENTIALS (local)
+✅ Google access token obtained successfully
+🔊 Using Chirp HD TTS (pl-PL-Wavenet-A, MP3)
+POST /api/tts 200 21888 - 1204.773 ms

@@ -1,0 +1,13 @@
+{
+  "summary": "8 PASS, 0 FAIL",
+  "results": [
+    "PASS: \"szukam fast food\" -> find_nearby (expected: find_nearby)",
+    "PASS: \"chcę coś zjeść\" -> find_nearby (expected: find_nearby)",
+    "PASS: \"pokaż menu\" -> menu_request (expected: menu_request)",
+    "PASS: \"testy king\" -> find_nearby (expected: find_nearby)",
+    "PASS: \"casting kebab\" -> find_nearby (expected: find_nearby)",
+    "PASS: \"kfc chyba\" -> find_nearby (expected: find_nearby)",
+    "PASS: \"ten burger koło mnie\" -> find_nearby (expected: find_nearby)",
+    "PASS: \"chcę zamówić ale najpierw pokaż menu\" -> menu_request (expected: menu_request)"
+  ]
+}

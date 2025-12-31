@@ -1,0 +1,744 @@
+{
+  "restaurants": [
+    {
+      "id": "8b00b05e-72f7-4a5f-b50c-5630a75d6312",
+      "name": "Bar Praha",
+      "city": "Piekary Śląskie",
+      "cuisine_type": "Czeska / Polska",
+      "address": "ul. Bytomska 139"
+    },
+    {
+      "id": "bd9f2244-7618-4071-aa96-52616a7b4c70",
+      "name": "Callzone",
+      "city": "Piekary Śląskie",
+      "cuisine_type": "Pizzeria",
+      "address": "ul. Księdza Piotra Skargi 3"
+    },
+    {
+      "id": "af8448ef-974b-46c8-a4ae-b04b8dc7c9f8",
+      "name": "Dwór Hubertus",
+      "city": "Piekary Śląskie",
+      "cuisine_type": "Śląska / Europejska",
+      "address": "ul. Inwalidów Wojennych 72"
+    },
+    {
+      "id": "569a7d29-57be-4224-bdf3-09c483415cea",
+      "name": "Klaps Burgers",
+      "city": "Piekary Śląskie",
+      "cuisine_type": "Amerykańska",
+      "address": "ul. Piotra Skargi 15"
+    },
+    {
+      "id": "83566974-1017-4408-90ee-2571ccc06978",
+      "name": "Pizzeria Monte Carlo",
+      "city": "Piekary Śląskie",
+      "cuisine_type": null,
+      "address": "Ul. Stanisława Maczka 22"
+    },
+    {
+      "id": "1fc1e782-bac6-47b2-978a-f6f2b38000cd",
+      "name": "Restauracja Stara Kamienica",
+      "city": "Piekary Śląskie",
+      "cuisine_type": "Polska",
+      "address": "ul. Bytomska 61"
+    },
+    {
+      "id": "4d27fbe3-20d0-4eb4-b003-1935be53af25",
+      "name": "Rezydencja Luxury Hotel",
+      "city": "Piekary Śląskie",
+      "cuisine_type": "Międzynarodowa",
+      "address": "ul. Stara 1"
+    },
+    {
+      "id": "fc844513-2869-4f42-b04f-c21e1e4cceb7",
+      "name": "Tasty King Kebab",
+      "city": "Piekary Śląskie",
+      "cuisine_type": "Kebab",
+      "address": "ul. Bytomska 70"
+    },
+    {
+      "id": "70842598-1632-43f6-8015-706d5adf182f",
+      "name": "Vien-Thien",
+      "city": "Piekary Śląskie",
+      "cuisine_type": "Wietnamska",
+      "address": "ul. Diamentowa 4"
+    }
+  ],
+  "menuSamples": {
+    "8b00b05e-72f7-4a5f-b50c-5630a75d6312": {
+      "restaurantName": "Bar Praha",
+      "items": [
+        {
+          "id": "a71888bc-e36d-4e0e-b24f-6f016af25ca0",
+          "name": "Pizza Šunková",
+          "price_pln": 37,
+          "category": "Pizza",
+          "available": true
+        },
+        {
+          "id": "2e859de9-b075-4ea8-a3c8-7ca34995335e",
+          "name": "Pizza Ekkluzivne",
+          "price_pln": 40,
+          "category": "Pizza",
+          "available": true
+        },
+        {
+          "id": "725351a2-6c59-4f70-a0da-bb2ef5f3a5a2",
+          "name": "Pizza Láska Nebeská",
+          "price_pln": 42,
+          "category": "Pizza",
+          "available": true
+        },
+        {
+          "id": "da5765e4-9537-49f6-885d-77b6a0aa6c7d",
+          "name": "Rumcajsowy Burger",
+          "price_pln": 42,
+          "category": "Burgery",
+          "available": true
+        },
+        {
+          "id": "d5020c7b-17b1-45a3-9ba6-1664a50ac5f9",
+          "name": "Golonka confit",
+          "price_pln": 79,
+          "category": "Dania główne",
+          "available": true
+        },
+        {
+          "id": "c63f0c75-a809-4b6e-bafb-a2ca64c8b5c2",
+          "name": "Sałatka z halloumi",
+          "price_pln": 39,
+          "category": "Sałatki",
+          "available": true
+        },
+        {
+          "id": "6acd64f4-36c5-4337-9175-b2f418ee567d",
+          "name": "Zupa pomidorowa",
+          "price_pln": 13,
+          "category": "Zupy",
+          "available": true
+        },
+        {
+          "id": "56faa966-bb22-483d-ab5c-742e9d7d73d8",
+          "name": "Kofola klasyczna",
+          "price_pln": 12,
+          "category": "Napoje",
+          "available": true
+        },
+        {
+          "id": "9a1da01f-03f5-44de-85c2-483c2ae10928",
+          "name": "Coca-Cola",
+          "price_pln": 10,
+          "category": "Napoje",
+          "available": true
+        },
+        {
+          "id": "87c5cd30-6264-4363-84a7-f6305a76f58f",
+          "name": "Fanta",
+          "price_pln": 10,
+          "category": "Napoje",
+          "available": true
+        }
+      ]
+    },
+    "bd9f2244-7618-4071-aa96-52616a7b4c70": {
+      "restaurantName": "Callzone",
+      "items": [
+        {
+          "id": "e0825375-5306-47c9-9786-cb8ed45884ba",
+          "name": "Pizza Margherita 33cm",
+          "price_pln": 33,
+          "category": "Pizza",
+          "available": true
+        },
+        {
+          "id": "db275777-fb4c-4a88-af5c-f89210ad7f3b",
+          "name": "Pizza Pepperoni 33cm",
+          "price_pln": 35,
+          "category": "Pizza",
+          "available": true
+        },
+        {
+          "id": "2b00efc2-7a73-4d54-81c9-b33225627937",
+          "name": "Pizza Hawajska 33cm",
+          "price_pln": 36.5,
+          "category": "Pizza",
+          "available": true
+        },
+        {
+          "id": "ec99cc51-a627-465b-828a-6ad9c81f8bfd",
+          "name": "Pizza Capricciosa 33cm",
+          "price_pln": 38.5,
+          "category": "Pizza",
+          "available": true
+        },
+        {
+          "id": "ea57b823-a0ae-41b8-b424-1735e1bbcf19",
+          "name": "Pizza Vege 33cm",
+          "price_pln": 37,
+          "category": "Pizza",
+          "available": true
+        },
+        {
+          "id": "561fb9d8-cc0b-42ae-9ce6-f3cfdf2f8770",
+          "name": "Bacon Burger",
+          "price_pln": 32,
+          "category": "Burger",
+          "available": true
+        },
+        {
+          "id": "a15220e5-b694-404d-8e90-f263b6f56eed",
+          "name": "Better Than Drwal - Wołowina",
+          "price_pln": 34,
+          "category": "Burger",
+          "available": true
+        },
+        {
+          "id": "12d0db88-141e-483c-be59-0522491d5073",
+          "name": "Cheddar Burger",
+          "price_pln": 31,
+          "category": "Burger",
+          "available": true
+        },
+        {
+          "id": "7d164335-be7d-4ec7-a16a-b52811b0e660",
+          "name": "Vege Burger",
+          "price_pln": 28,
+          "category": "Burger",
+          "available": true
+        },
+        {
+          "id": "c5f2cf04-e5e5-4bc6-bf98-31086b1b4351",
+          "name": "Spicy Burger",
+          "price_pln": 33,
+          "category": "Burger",
+          "available": true
+        }
+      ]
+    },
+    "af8448ef-974b-46c8-a4ae-b04b8dc7c9f8": {
+      "restaurantName": "Dwór Hubertus",
+      "items": [
+        {
+          "id": "ed40a3d4-ef53-44c1-bf1f-b9fb4a311867",
+          "name": "Gęsie żołądki",
+          "price_pln": 32,
+          "category": "Przystawka",
+          "available": true
+        },
+        {
+          "id": "d65946a0-416e-4730-8d9e-16429b6370e0",
+          "name": "Camembert z żurawiną",
+          "price_pln": 25,
+          "category": "Przystawka",
+          "available": true
+        },
+        {
+          "id": "ae0fb590-deb6-4631-ade6-01250021d9d8",
+          "name": "Deska zakąsek dla dwojga",
+          "price_pln": 40,
+          "category": "Przystawka",
+          "available": true
+        },
+        {
+          "id": "5a221e70-dca3-4344-b27a-9f8e0354499e",
+          "name": "Wodzionka",
+          "price_pln": 20,
+          "category": "Zupa",
+          "available": true
+        },
+        {
+          "id": "9ea9a9d9-4af4-474a-b209-be99c1482151",
+          "name": "Żur śląski w chlebie",
+          "price_pln": 29,
+          "category": "Zupa",
+          "available": true
+        },
+        {
+          "id": "640376e9-38e0-4c38-a67f-1d154ee5deb5",
+          "name": "Żur śląski na talerzu",
+          "price_pln": 22,
+          "category": "Zupa",
+          "available": true
+        },
+        {
+          "id": "501ca22c-591d-42e1-8e67-f8aafe7716d8",
+          "name": "Krem borowikowy",
+          "price_pln": 22,
+          "category": "Zupa",
+          "available": true
+        },
+        {
+          "id": "7b8fcc66-a57f-4edd-9cbb-20e4a2603699",
+          "name": "Zupa pomidorowa",
+          "price_pln": 20,
+          "category": "Zupa",
+          "available": true
+        },
+        {
+          "id": "d315d78e-6df8-494f-82f1-2c960b5553dd",
+          "name": "Barszcz z tortellini",
+          "price_pln": 22,
+          "category": "Zupa",
+          "available": true
+        },
+        {
+          "id": "8e6ce7ec-d046-48a5-a31b-b210747c6434",
+          "name": "Flaki z indyka",
+          "price_pln": 24,
+          "category": "Zupa",
+          "available": true
+        }
+      ]
+    },
+    "569a7d29-57be-4224-bdf3-09c483415cea": {
+      "restaurantName": "Klaps Burgers",
+      "items": [
+        {
+          "id": "6201f101-584a-431b-ad84-253aa5640cc3",
+          "name": "Kosmiczne Jaja Double",
+          "price_pln": 46,
+          "category": "Burger",
+          "available": true
+        },
+        {
+          "id": "d671cd1a-052a-4a63-a68b-99979204fb2a",
+          "name": "Wegetrix Double",
+          "price_pln": 39,
+          "category": "Burger",
+          "available": true
+        },
+        {
+          "id": "ba40ff88-8ce2-4458-b432-d8a0dc7e4083",
+          "name": "Żwirek i Muchomorek Standard",
+          "price_pln": 30,
+          "category": "Burger",
+          "available": true
+        },
+        {
+          "id": "108af5f7-ea9e-46f2-8d06-d7837e181dce",
+          "name": "Grzybiarz z Piekaryhill",
+          "price_pln": 40,
+          "category": "Burger",
+          "available": true
+        },
+        {
+          "id": "f5cd9ea8-d596-4ef7-b182-e75af101852c",
+          "name": "MrDrwal",
+          "price_pln": 40,
+          "category": "Burger",
+          "available": true
+        },
+        {
+          "id": "e9875272-e615-4676-a07c-391954446ef2",
+          "name": "Onionator",
+          "price_pln": 45,
+          "category": "Burger",
+          "available": true
+        },
+        {
+          "id": "497b708c-d521-4567-92d3-b9459b358cef",
+          "name": "Hot-dog by KLAPS",
+          "price_pln": 39,
+          "category": "Hot-dog",
+          "available": true
+        },
+        {
+          "id": "1752a313-2457-4034-b750-40ddf477b890",
+          "name": "Wegetrix Standard",
+          "price_pln": 30,
+          "category": "Burger",
+          "available": true
+        },
+        {
+          "id": "133d1654-8a67-4b7b-8c39-ec2a3516a94e",
+          "name": "Milczenie Wola Standard",
+          "price_pln": 46,
+          "category": "Burger",
+          "available": true
+        },
+        {
+          "id": "0f21f44f-faad-45c1-985b-4d95bb440ccf",
+          "name": "Milczenie Wola Double",
+          "price_pln": 55,
+          "category": "Burger",
+          "available": true
+        }
+      ]
+    },
+    "83566974-1017-4408-90ee-2571ccc06978": {
+      "restaurantName": "Pizzeria Monte Carlo",
+      "items": [
+        {
+          "id": "2346a6d2-4f63-4c47-b217-f752cfa02a9b",
+          "name": "Hawajska",
+          "price_pln": 32,
+          "category": "Pizza",
+          "available": true
+        },
+        {
+          "id": "ffd6f362-92a3-44ad-a43f-f6f439750212",
+          "name": "Coca-Cola",
+          "price_pln": 9,
+          "category": "Napój",
+          "available": true
+        },
+        {
+          "id": "332fcf43-ea18-4c21-93be-e28f3f35bd18",
+          "name": "Coca-Cola Zero",
+          "price_pln": 9,
+          "category": "Napój",
+          "available": true
+        },
+        {
+          "id": "c5e1d9ed-9ae2-4a5a-85ef-7deb2ea25bc3",
+          "name": "Fanta Pomarańczowa",
+          "price_pln": 9,
+          "category": "Napój",
+          "available": true
+        },
+        {
+          "id": "66c7c70a-1c03-4cd3-a342-985113bb06da",
+          "name": "Sprite",
+          "price_pln": 9,
+          "category": "Napój",
+          "available": true
+        },
+        {
+          "id": "41bdf869-9415-48b2-af8a-ce5d91102318",
+          "name": "Cappy Jabłko",
+          "price_pln": 8,
+          "category": "Napój",
+          "available": true
+        },
+        {
+          "id": "32cf850c-208f-4b9e-b451-3bcb2f412162",
+          "name": "Cappy Pomarańcza",
+          "price_pln": 8,
+          "category": "Napój",
+          "available": true
+        },
+        {
+          "id": "f5d7c74e-e3b0-4ff9-9103-8c6c4a36e854",
+          "name": "Woda Mineralna",
+          "price_pln": 6,
+          "category": "Napój",
+          "available": true
+        },
+        {
+          "id": "f9a23bd0-f0f2-4d14-bdef-16969dde7312",
+          "name": "Tiramisu",
+          "price_pln": 16,
+          "category": "Deser",
+          "available": true
+        },
+        {
+          "id": "8492d2e8-fc47-4381-af16-8ef4e1aa7b04",
+          "name": "Panna Cotta",
+          "price_pln": 15,
+          "category": "Deser",
+          "available": true
+        }
+      ]
+    },
+    "1fc1e782-bac6-47b2-978a-f6f2b38000cd": {
+      "restaurantName": "Restauracja Stara Kamienica",
+      "items": [
+        {
+          "id": "8dcb0a80-df84-4c1e-9035-ed3570ce66a8",
+          "name": "Zupa dnia",
+          "price_pln": 9,
+          "category": "Zupa",
+          "available": true
+        },
+        {
+          "id": "94a1e6c6-353e-4a2d-83e1-958f15bd5613",
+          "name": "Rosół z makaronem",
+          "price_pln": 10,
+          "category": "Zupa",
+          "available": true
+        },
+        {
+          "id": "7beac934-6b7c-49f7-915f-bcc966c2fb59",
+          "name": "Tradycyjny schabowy",
+          "price_pln": 16,
+          "category": "Danie główne",
+          "available": true
+        },
+        {
+          "id": "3868e30f-2e95-4b70-9b81-c2c2266ef836",
+          "name": "Schab po beskidzku",
+          "price_pln": 16,
+          "category": "Danie główne",
+          "available": true
+        },
+        {
+          "id": "b3d168cf-e312-4f77-b81d-6ef118da8cf6",
+          "name": "Naleśnik z kurczakiem i warzywami",
+          "price_pln": 24,
+          "category": "Naleśnik",
+          "available": true
+        },
+        {
+          "id": "5358eeb0-1b38-477a-bc5a-2f5bea3a3a37",
+          "name": "Naleśnik ze szpinakiem i serem feta",
+          "price_pln": 24,
+          "category": "Naleśnik",
+          "available": true
+        },
+        {
+          "id": "b72ffe53-5082-4e3a-8c0d-54bb527662bf",
+          "name": "Lody z gorącymi malinami i bitą śmietaną",
+          "price_pln": 18,
+          "category": "Deser",
+          "available": true
+        },
+        {
+          "id": "e939262c-f11a-4f06-b513-204c82e2bf4c",
+          "name": "Fondant czekoladowy z lodami i bitą śmietaną",
+          "price_pln": 22,
+          "category": "Deser",
+          "available": true
+        },
+        {
+          "id": "8a6b0046-6c97-4f1f-a520-3d25ab1704c1",
+          "name": "Coca-Cola, Fanta, Sprite, Cappy (200 ml)",
+          "price_pln": 7,
+          "category": "Napój",
+          "available": true
+        },
+        {
+          "id": "533383c1-f562-4286-a573-b50c7c4b1f44",
+          "name": "Woda mineralna (330 ml)",
+          "price_pln": 6,
+          "category": "Napój",
+          "available": true
+        }
+      ]
+    },
+    "4d27fbe3-20d0-4eb4-b003-1935be53af25": {
+      "restaurantName": "Rezydencja Luxury Hotel",
+      "items": [
+        {
+          "id": "3d04543b-8b6b-4d86-b027-e1e7228e3343",
+          "name": "Krem z dyni z białą czekoladą",
+          "price_pln": 35,
+          "category": "Menu sezonowe",
+          "available": true
+        },
+        {
+          "id": "092d6cf6-a2a2-4693-8525-489316c3dd06",
+          "name": "Siekany tatar z polędwicy wołowej",
+          "price_pln": 68,
+          "category": "Przystawka",
+          "available": true
+        },
+        {
+          "id": "bbb0582c-85e6-4612-9311-8f1ced33d30f",
+          "name": "Wędzony pstrąg",
+          "price_pln": 43,
+          "category": "Przystawka",
+          "available": true
+        },
+        {
+          "id": "a66f3e48-608b-4f5e-84cc-3e4510caea12",
+          "name": "Carpaccio z kaczki marynowanej w grzańcu",
+          "price_pln": 36,
+          "category": "Przystawka",
+          "available": true
+        },
+        {
+          "id": "3befae23-b623-440f-9cd5-59f479af261c",
+          "name": "BUFFAL",
+          "price_pln": 54,
+          "category": "Menu sezonowe",
+          "available": true
+        },
+        {
+          "id": "719b56ba-1e0c-4e98-b5ad-5736b2ac036d",
+          "name": "Kartacze z dzikiem",
+          "price_pln": 48,
+          "category": "Menu sezonowe",
+          "available": true
+        },
+        {
+          "id": "25fc8af2-f262-468b-8d1c-50de992e3e3b",
+          "name": "Sałatka z dynią marynowaną w musztardzie",
+          "price_pln": 33,
+          "category": "Menu sezonowe",
+          "available": true
+        },
+        {
+          "id": "099d257e-7e29-4c5d-939e-64de5fb12503",
+          "name": "Grzanka z krupniokiem",
+          "price_pln": 28,
+          "category": "Przystawka",
+          "available": true
+        },
+        {
+          "id": "42388272-d1b8-4908-a02d-c01d8f491a8d",
+          "name": "Tagliatelle z krewetkami",
+          "price_pln": 57,
+          "category": "Makaron",
+          "available": true
+        },
+        {
+          "id": "9c920acb-7fa5-4f69-9e70-29674ac83bff",
+          "name": "Makaron ryżowy z warzywami",
+          "price_pln": 37,
+          "category": "Makaron",
+          "available": true
+        }
+      ]
+    },
+    "fc844513-2869-4f42-b04f-c21e1e4cceb7": {
+      "restaurantName": "Tasty King Kebab",
+      "items": [
+        {
+          "id": "3b842a08-7769-4c33-9f48-ca6f31cfaa6c",
+          "name": "Kebab amerykański",
+          "price_pln": 20,
+          "category": "Kebab",
+          "available": true
+        },
+        {
+          "id": "df133e95-e52d-4bbc-971d-b8fc5fade7a2",
+          "name": "Nuggets box",
+          "price_pln": 15,
+          "category": "Kebab",
+          "available": true
+        },
+        {
+          "id": "56f5ee57-9939-41f5-93db-4d8116ac4f44",
+          "name": "Falafel",
+          "price_pln": 13,
+          "category": "Kebab",
+          "available": true
+        },
+        {
+          "id": "6edfdf0f-71e3-478c-bceb-0a9c58d75100",
+          "name": "Frytki z serem",
+          "price_pln": 9,
+          "category": "Przekąski",
+          "available": true
+        },
+        {
+          "id": "ed0502fa-eb68-453c-b6e0-e6fdff88f7df",
+          "name": "Frytki z Indii masala",
+          "price_pln": 7,
+          "category": "Przekąski",
+          "available": true
+        },
+        {
+          "id": "449bf26f-a549-47d2-8bc7-27453230fb80",
+          "name": "Sałatka grecka",
+          "price_pln": 15,
+          "category": "Przekąski",
+          "available": true
+        },
+        {
+          "id": "1aeca8d5-1efb-4bf8-b3f7-2d18c41f402c",
+          "name": "Sos",
+          "price_pln": 3,
+          "category": "Przekąski",
+          "available": true
+        },
+        {
+          "id": "832e3395-cd6f-4119-acc0-68290e6ba693",
+          "name": "Baklava",
+          "price_pln": 6,
+          "category": "Przekąski",
+          "available": true
+        },
+        {
+          "id": "e531c793-007a-4ed6-858f-64339048a6af",
+          "name": "Sok Cappy",
+          "price_pln": 5,
+          "category": "Napoje",
+          "available": true
+        },
+        {
+          "id": "f3eb7fe1-6e7d-47db-a98a-8cbf36b8e506",
+          "name": "Coca-Cola 0,85l",
+          "price_pln": 8,
+          "category": "Napoje",
+          "available": true
+        }
+      ]
+    },
+    "70842598-1632-43f6-8015-706d5adf182f": {
+      "restaurantName": "Vien-Thien",
+      "items": [
+        {
+          "id": "0556bbf2-b02e-40d1-bde8-0455b0d0cd27",
+          "name": "Zupa z kaczki",
+          "price_pln": 10,
+          "category": "Zupy",
+          "available": true
+        },
+        {
+          "id": "3e080f29-7e2a-4573-834b-5d80e2c5bc02",
+          "name": "Zupa Won Ton",
+          "price_pln": 10,
+          "category": "Zupy",
+          "available": true
+        },
+        {
+          "id": "4e0bf58f-d68e-44a3-93bd-e64144dbb2d4",
+          "name": "Zupa krabowa",
+          "price_pln": 10,
+          "category": "Zupy",
+          "available": true
+        },
+        {
+          "id": "bad5f584-35d3-49c7-b759-d338593c9d10",
+          "name": "Sajgonki 3 szt.",
+          "price_pln": 9,
+          "category": "Sajgonki",
+          "available": true
+        },
+        {
+          "id": "220863b5-bbe9-4f31-ab05-40f3b3c6655e",
+          "name": "Sajgonki z ryżem",
+          "price_pln": 11,
+          "category": "Sajgonki",
+          "available": true
+        },
+        {
+          "id": "74ca5e8e-f03b-43f2-9451-51f6b75a31bb",
+          "name": "Sajgonki z surówką",
+          "price_pln": 11,
+          "category": "Sajgonki",
+          "available": true
+        },
+        {
+          "id": "8126ad25-9bc9-4010-b205-5cfb9dea25a8",
+          "name": "Sajgonki z ryżem i surówką",
+          "price_pln": 13,
+          "category": "Sajgonki",
+          "available": true
+        },
+        {
+          "id": "baf48f16-4bb8-4f8a-a73c-84cb511389de",
+          "name": "Pierogi Ho Cao z ryżem i surówką",
+          "price_pln": 15,
+          "category": "Sajgonki",
+          "available": true
+        },
+        {
+          "id": "19d2b3fc-0799-4161-ae43-80892c6bb698",
+          "name": "Zupa wietnamska",
+          "price_pln": 10,
+          "category": "Zupy",
+          "available": true
+        },
+        {
+          "id": "708f5cc4-cdec-48d0-9c29-28585bbc1811",
+          "name": "Zupa z kurczakiem",
+          "price_pln": 10,
+          "category": "Zupy",
+          "available": true
+        }
+      ]
+    }
+  }
+}

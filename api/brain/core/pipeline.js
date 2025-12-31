@@ -13,7 +13,7 @@ import { OptionHandler } from '../domains/food/optionHandler.js';
 import { BrainLogger } from '../../../utils/logger.js';
 import { playTTS, stylizeWithGPT4o } from '../tts/ttsClient.js';
 import { EventLogger } from '../services/EventLogger.js';
-import { supabase } from '../../_supabase.js';
+import { getConfig } from '../../config/configService.js';
 
 // Mapa handlerów domenowych (Bezpośrednie mapowanie)
 // Kluczem jest "domain", a wewnątrz "intent"
@@ -68,6 +68,7 @@ export class BrainPipeline {
     async process(sessionId, text, options = {}) {
         const startTime = Date.now();
         const IS_SHADOW = options.shadow === true;
+        const config = await getConfig();
 
         // 1. Hydration & Validation
         if (!text || !text.trim()) {
@@ -260,8 +261,9 @@ export class BrainPipeline {
             // Respect options or default to false
             const wantsTTS = options.includeTTS === true;
             const hasReply = domainResponse.should_reply !== false; // Default true
+            const ttsEnabled = config.tts_enabled !== false; // Default true
 
-            if (hasReply && (wantsTTS || EXPERT_MODE)) {
+            if (hasReply && (wantsTTS || EXPERT_MODE) && ttsEnabled) {
                 if (speechPartForTTS) {
                     try {
                         const t0 = Date.now();

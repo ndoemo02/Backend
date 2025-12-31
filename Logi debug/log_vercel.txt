@@ -1,0 +1,256 @@
+ SUPABASE_URL: https://ezemaacyyvbpjlagchds.supabase.co
+(index):1 [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq)
+ezemaacyyvbpjlagchds.supabase.co/auth/v1/token?grant_type=password:1  Failed to load resource: the server responded with a status of 400 ()
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 📊 Zakres dat: Object
+/admin:1 [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) 
+/admin:1 Access to resource at 'https://backend-one-gilt-89.vercel.app//api/amber/live' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/amber/live:1  Failed to load resource: net::ERR_FAILED
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 📊 Zakres dat: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/performance/trends?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/performance/trends?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z:1  Failed to load resource: net::ERR_FAILED
+ trends error Failed to fetch
+st @ index-Dy65Isbr.js:411
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/performance/top-intents?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/performance/top-intents?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z:1  Failed to load resource: net::ERR_FAILED
+ top-intents error Failed to fetch
+Mt @ index-Dy65Isbr.js:411
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/amber/restaurants-activity?days=7' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/amber/restaurants-activity?days=7:1  Failed to load resource: net::ERR_FAILED
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/business/stats' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/business/stats:1  Failed to load resource: net::ERR_FAILED
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/restaurants' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/restaurants:1  Failed to load resource: net::ERR_FAILED
+ restaurants error Failed to fetch
+sn @ index-Dy65Isbr.js:411
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/system-status' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/system-status:1  Failed to load resource: net::ERR_FAILED
+ system-status error Failed to fetch
+Ye @ index-Dy65Isbr.js:411
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/amber/learning-stats?limit=20' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/amber/learning-stats?limit=20:1  Failed to load resource: net::ERR_FAILED
+ learning-stats error Failed to fetch
+xt @ index-Dy65Isbr.js:411
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/trends/alerts' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/trends/alerts:1  Failed to load resource: net::ERR_FAILED
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/intents?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/intents?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z:1  Failed to load resource: net::ERR_FAILED
+ intents error Failed to fetch
+ft @ index-Dy65Isbr.js:411
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/conversations?limit=50' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/conversations?limit=50:1  Failed to load resource: net::ERR_FAILED
+ 
+console.error @ index-Dy65Isbr.js:4175
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/system-status' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/system-status:1  Failed to load resource: net::ERR_FAILED
+ system-status error Failed to fetch
+Ye @ index-Dy65Isbr.js:411
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 📊 Zakres dat: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 📊 Zakres dat: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+/admin:1 Access to resource at 'https://backend-one-gilt-89.vercel.app//api/amber/live' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/amber/live:1  Failed to load resource: net::ERR_FAILED
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/performance/trends?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/performance/trends?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z:1  Failed to load resource: net::ERR_FAILED
+ trends error Failed to fetch
+st @ index-Dy65Isbr.js:411
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/system-status' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/system-status:1  Failed to load resource: net::ERR_FAILED
+ system-status error Failed to fetch
+Ye @ index-Dy65Isbr.js:411
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/trends/alerts' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/trends/alerts:1  Failed to load resource: net::ERR_FAILED
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/business/stats' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/business/stats:1  Failed to load resource: net::ERR_FAILED
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/amber/restaurants-activity?days=7' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/amber/restaurants-activity?days=7:1  Failed to load resource: net::ERR_FAILED
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/amber/learning-stats?limit=20' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/amber/learning-stats?limit=20:1  Failed to load resource: net::ERR_FAILED
+ learning-stats error Failed to fetch
+xt @ index-Dy65Isbr.js:411
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/performance/top-intents?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/performance/top-intents?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z:1  Failed to load resource: net::ERR_FAILED
+ top-intents error Failed to fetch
+Mt @ index-Dy65Isbr.js:411
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/restaurants' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/restaurants:1  Failed to load resource: net::ERR_FAILED
+ restaurants error Failed to fetch
+sn @ index-Dy65Isbr.js:411
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/intents?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/intents?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z:1  Failed to load resource: net::ERR_FAILED
+ intents error Failed to fetch
+ft @ index-Dy65Isbr.js:411
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/intents?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/intents?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z:1  Failed to load resource: net::ERR_FAILED
+ intents error Failed to fetch
+ft @ index-Dy65Isbr.js:411
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/performance/trends?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/performance/trends?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z:1  Failed to load resource: net::ERR_FAILED
+ trends error Failed to fetch
+st @ index-Dy65Isbr.js:411
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/business/stats' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/business/stats:1  Failed to load resource: net::ERR_FAILED
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/performance/top-intents?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/performance/top-intents?from=2025-12-24T00%3A00%3A00.000Z&to=2025-12-31T22%3A59%3A59.999Z:1  Failed to load resource: net::ERR_FAILED
+ top-intents error Failed to fetch
+Mt @ index-Dy65Isbr.js:411
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/amber/restaurants-activity?days=7' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/amber/restaurants-activity?days=7:1  Failed to load resource: net::ERR_FAILED
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/admin/system-status' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/admin/system-status:1  Failed to load resource: net::ERR_FAILED
+ system-status error Failed to fetch
+Ye @ index-Dy65Isbr.js:411
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🔗 getApiUrl: Object
+/admin:1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/health' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+backend-one-gilt-89.vercel.app//api/health:1  Failed to load resource: net::ERR_FAILED
+ 🎙️ Starting recording...
+ 🔚 Recognition ended
+ 📋 Final text before clearing: 
+ ✅ Recording set to FALSE
+ 📤 Text to send: 
+ 🎙️ Starting recording...
+ 🎤 Speech result event: 0 results: 1
+   Result 0: isFinal=false, transcript="co"
+ 📝 FinalStr:  | InterimStr: co
+ 🎤 Speech result event: 0 results: 1
+   Result 0: isFinal=false, transcript="co pole"
+ 📝 FinalStr:  | InterimStr: co pole
+ 🎤 Speech result event: 0 results: 1
+   Result 0: isFinal=false, transcript="co poleci"
+ 📝 FinalStr:  | InterimStr: co poleci
+ 🎤 Speech result event: 0 results: 2
+   Result 0: isFinal=false, transcript="co"
+   Result 1: isFinal=false, transcript=" polecisz"
+ 📝 FinalStr:  | InterimStr: co polecisz
+ 🎤 Speech result event: 0 results: 2
+   Result 0: isFinal=false, transcript="co"
+index-Dy65Isbr.js:326   Result 1: isFinal=false, transcript=" polecisz w"
+index-Dy65Isbr.js:326 📝 FinalStr:  | InterimStr: co polecisz w
+index-Dy65Isbr.js:326 🎤 Speech result event: 0 results: 2
+index-Dy65Isbr.js:326   Result 0: isFinal=false, transcript="co"
+index-Dy65Isbr.js:326   Result 1: isFinal=false, transcript=" polecisz w pie"
+index-Dy65Isbr.js:326 📝 FinalStr:  | InterimStr: co polecisz w pie
+index-Dy65Isbr.js:326 🎤 Speech result event: 0 results: 2
+index-Dy65Isbr.js:326   Result 0: isFinal=false, transcript="co"
+index-Dy65Isbr.js:326   Result 1: isFinal=false, transcript=" polecisz w Piekar"
+index-Dy65Isbr.js:326 📝 FinalStr:  | InterimStr: co polecisz w Piekar
+index-Dy65Isbr.js:326 🎤 Speech result event: 0 results: 2
+index-Dy65Isbr.js:326   Result 0: isFinal=false, transcript="co"
+index-Dy65Isbr.js:326   Result 1: isFinal=false, transcript=" polecisz w Piekarach"
+index-Dy65Isbr.js:326 📝 FinalStr:  | InterimStr: co polecisz w Piekarach
+index-Dy65Isbr.js:326 🎤 Speech result event: 0 results: 1
+index-Dy65Isbr.js:326   Result 0: isFinal=true, transcript="co polecisz w Piekarach"
+index-Dy65Isbr.js:326 📝 FinalStr: co polecisz w Piekarach | InterimStr: 
+index-Dy65Isbr.js:326 🔚 Recognition ended
+index-Dy65Isbr.js:326 📋 Final text before clearing: co polecisz w Piekarach
+index-Dy65Isbr.js:326 ✅ Recording set to FALSE
+index-Dy65Isbr.js:326 📤 Text to send: co polecisz w Piekarach
+index-Dy65Isbr.js:326 ⏰ Setting finalText: co polecisz w Piekarach
+index-Dy65Isbr.js:93 🔗 getApiUrl: Object
+(index):1 Access to fetch at 'https://backend-one-gilt-89.vercel.app//api/brain/v2' from origin 'https://freeflow-final.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a preflight request.
+backend-one-gilt-89.vercel.app//api/brain/v2:1  Failed to load resource: net::ERR_FAILED
+index-Dy65Isbr.js:326 [ERROR] Communication Error:
+index-Dy65Isbr.js:326 Timestamp: 2025-12-31T14:41:55.143Z
+index-Dy65Isbr.js:326 Data: TypeError: Failed to fetch
+    at index-Dy65Isbr.js:334:4155
+    at index-Dy65Isbr.js:335:1322
+    at sb (index-Dy65Isbr.js:40:24283)
+    at zh (index-Dy65Isbr.js:40:42409)
+    at index-Dy65Isbr.js:40:40726
+    at T (index-Dy65Isbr.js:25:1577)
+    at MessagePort.$ (index-Dy65Isbr.js:25:1943)

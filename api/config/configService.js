@@ -16,6 +16,7 @@ const KEYS = [
   "tts_rate",
   "tts_tone",
   "restaurant_aliases",
+  "tts_enabled",
 ]
 
 const DEFAULT_CONFIG = {
@@ -23,6 +24,7 @@ const DEFAULT_CONFIG = {
   tts_voice: { voice: process.env.TTS_VOICE || "alloy" },
   model: { name: process.env.OPENAI_MODEL || "gpt-5" },
   streaming: { enabled: true },
+  tts_enabled: true,
   cache_enabled: true,
   amber_prompt: "",
   speech_style: "standard",
@@ -66,6 +68,7 @@ export async function getConfig() {
       tts_voice: safeMerge(DEFAULT_CONFIG.tts_voice, map.tts_voice),
       model: safeMerge(DEFAULT_CONFIG.model, map.model),
       streaming: safeMerge(DEFAULT_CONFIG.streaming, map.streaming),
+      tts_enabled: typeof map.tts_enabled === "boolean" ? map.tts_enabled : DEFAULT_CONFIG.tts_enabled,
       cache_enabled:
         typeof map.cache_enabled === "boolean"
           ? map.cache_enabled
@@ -87,10 +90,10 @@ export async function getConfig() {
         typeof map.tts_tone === "string" && map.tts_tone.trim().length > 0
           ? map.tts_tone
           : DEFAULT_CONFIG.tts_tone,
-        restaurant_aliases:
-          map.restaurant_aliases && typeof map.restaurant_aliases === "object"
-            ? map.restaurant_aliases
-            : { ...DEFAULT_CONFIG.restaurant_aliases },
+      restaurant_aliases:
+        map.restaurant_aliases && typeof map.restaurant_aliases === "object"
+          ? map.restaurant_aliases
+          : { ...DEFAULT_CONFIG.restaurant_aliases },
     }
 
     return cfg
