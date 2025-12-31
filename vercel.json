@@ -4,9 +4,33 @@
     {
       "src": "api/server-vercel.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "api/ai/normalize/route.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/ai/respond/route.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/ai/fallback/route.ts",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
+    {
+      "src": "/api/ai/normalize",
+      "dest": "api/ai/normalize/route.ts"
+    },
+    {
+      "src": "/api/ai/respond",
+      "dest": "api/ai/respond/route.ts"
+    },
+    {
+      "src": "/api/ai/fallback",
+      "dest": "api/ai/fallback/route.ts"
+    },
     {
       "src": "/(.*)",
       "dest": "api/server-vercel.js"
