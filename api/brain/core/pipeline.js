@@ -74,7 +74,7 @@ export class BrainPipeline {
             return this.createErrorResponse('brak_tekstu', 'Nie usłyszałam, możesz powtórzyć?');
         }
 
-        const EXPERT_MODE = process.env.EXPERT_MODE === 'true';
+        const EXPERT_MODE = process.env.EXPERT_MODE !== 'false';
 
         // --- Event Logging: Received ---
         if (EXPERT_MODE && !IS_SHADOW) {
