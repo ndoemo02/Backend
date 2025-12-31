@@ -98,6 +98,17 @@ app.post("/api/brain", async (req, res) => {
   }
 });
 
+// Explicit V2 Endpoint
+app.post("/api/brain/v2", async (req, res) => {
+  try {
+    const brainV2 = await import("./brain/brainV2.js");
+    return brainV2.default(req, res);
+  } catch (error) {
+    console.error("❌ Brain V2 error:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
 // 405 dla metod innych niż POST
 app.get('/api/brain', (req, res) => {
   res.status(405).json({ ok: false, error: 'method_not_allowed' });
