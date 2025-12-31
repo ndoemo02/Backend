@@ -40,3 +40,8 @@ Test `api/brain/tests/monteCarlo_direct.e2e.test.js` failuje w ostatnim kroku:
 - **Backend**: Brain V2 naprawiony i przetestowany.
 - **Branch**: `main` (zaktualizowany).
 - **Testy**: Wszystkie testy E2E przechodzą.
+- **Frontend UI (31.12)**:
+  - Naprawiono przewijanie w Panelu Administratora (Rozmowy).
+  - Dodano usuwanie i eksportowanie rozmów.
+  - Dodano podtytuł "Voice to order" w logo.
+  - Zmieniono design inputu (szkło, brak przycisku send).
