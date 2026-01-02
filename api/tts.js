@@ -102,8 +102,8 @@ async function playGeminiTTS(text, { voice, pitch, speakingRate, live = false })
 }
 
 export function clearTtsCaches() {
-  try { ttsCache.clear(); } catch {}
-  try { stylizeCache.clear(); } catch {}
+  try { ttsCache.clear(); } catch { }
+  try { stylizeCache.clear(); } catch { }
 }
 function getOpenAI() {
   if (openaiClient) return openaiClient;
@@ -130,7 +130,7 @@ export function refineSpeechText(text, intent) {
     // usuń duplikaty generików nazw
     text = text.replace(/\b(burger|hamburger)\b(?:\s+\1\b)+/gi, '$1');
     text = text.replace(/\b(hotel|pizzeria|restauracja|bar)\b(?:\s+\1\b)+/gi, '$1');
-    try { text = text.replace(/\b([\p{L}]{2,})\b(?:\s+\1\b)+/giu, '$1'); } catch {}
+    try { text = text.replace(/\b([\p{L}]{2,})\b(?:\s+\1\b)+/giu, '$1'); } catch { }
     return text.trim();
   } catch { return text; }
 }
@@ -186,8 +186,10 @@ export async function formatTTSReply(rawText, intent = 'neutral') {
     const resp = await openai.chat.completions.create({
       model: 'gpt-4o',
       temperature: 0.7,
-      messages: [ { role: 'system', content: systemPrompt }, { role: 'user', content: `Przeredaguj do mowy:
-${pre}` } ]
+      messages: [{ role: 'system', content: systemPrompt }, {
+        role: 'user', content: `Przeredaguj do mowy:
+${pre}`
+      }]
     });
     const out = resp?.choices?.[0]?.message?.content?.trim();
     return out || pre;
@@ -224,7 +226,7 @@ Mów przyjaźnie i jasno, ale używaj śląskiej gwary (gōdka) – lekkiej i zr
 Unikaj bardzo rzadkich słów, nie przesadzaj z gwarą, tylko dodaj lokalny klimat (np. „joch”, „kaj”, „po naszymu”).
 Nie zmieniaj faktów ani liczb. Intencja użytkownika: "${intent}".`;
       }
-    } catch {}
+    } catch { }
     let out = '';
     if (process.env.OPENAI_STREAM === 'true') {
       const completion = await openai.chat.completions.create({
@@ -271,7 +273,13 @@ export async function playTTS(text, options = {}) {
     let cfg;
     try {
       cfg = await getConfig();
-    } catch {}
+    } catch { }
+
+    // GLOBAL KILL SWITCH
+    if (cfg?.tts_enabled === false) {
+      console.log('[TTS] Generation skipped: Disabled in system config.');
+      return null;
+    }
 
     const engineRaw = (cfg?.tts_engine?.engine || process.env.TTS_MODE || "vertex").toLowerCase();
     const voiceCfg = cfg?.tts_voice?.voice || process.env.TTS_VOICE || "pl-PL-Wavenet-A";
@@ -302,7 +310,7 @@ export async function playTTS(text, options = {}) {
     // - jeżeli ktoś wybrał głos Geminiego (zephyr/aoede/erinome/achernar), ale engine = Vertex/Wavenet,
     //   to przełączamy na Gemini TTS (unikamy 404 i fallbacku do Wavenet).
     const lowerVoice = String(rawVoice).toLowerCase();
-    const geminiVoiceNames = new Set(['zephyr','aoede','erinome','achernar']);
+    const geminiVoiceNames = new Set(['zephyr', 'aoede', 'erinome', 'achernar']);
     // Auto-switch wyłącznie, jeśli głos to dokładnie nazwa Geminiego (bez prefiksów pl-PL-/Chirp)
     if (!isGeminiTTS && geminiVoiceNames.has(lowerVoice)) {
       isGeminiTTS = true;
@@ -405,7 +413,7 @@ export async function playTTS(text, options = {}) {
         })
       });
       if (!response.ok) {
-        const t = await response.text().catch(()=> '');
+        const t = await response.text().catch(() => '');
         console.error('❌ BASIC TTS error:', response.status, t);
         throw new Error(`TTS API failed: ${response.status}`);
       }
@@ -492,6 +500,13 @@ export default async function handler(req, res) {
 
     // Ujednolicone wywołanie przez playTTS – korzysta z configu (głos, ton, tempo)
     const audioContent = await playTTS(text, { tone });
+
+    if (!audioContent) {
+      // Jeśli zwrócono null/empty, to znaczy że TTS jest wyłączony lub wystąpił błąd soft
+      // Zwracamy kod 423 Locked (użyty jako "Feature Disabled") lub 404
+      return res.status(423).json({ error: "TTS is disabled in system configuration" });
+    }
+
     const buffer = Buffer.from(audioContent, "base64");
 
     res.setHeader("Content-Type", "audio/mpeg");
