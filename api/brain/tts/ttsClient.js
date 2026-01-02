@@ -86,8 +86,8 @@ async function playGeminiTTS(text, { voice, pitch, speakingRate, live = false })
 }
 
 export function clearTtsCaches() {
-  try { ttsCache.clear(); } catch {}
-  try { stylizeCache.clear(); } catch {}
+  try { ttsCache.clear(); } catch { }
+  try { stylizeCache.clear(); } catch { }
 }
 function getOpenAI() {
   if (openaiClient) return openaiClient;
@@ -108,7 +108,7 @@ export function refineSpeechText(text, intent) {
     }
     text = text.replace(/\b(burger|hamburger)\b(?:\s+\1\b)+/gi, '$1');
     text = text.replace(/\b(hotel|pizzeria|restauracja|bar)\b(?:\s+\1\b)+/gi, '$1');
-    try { text = text.replace(/\b([\p{L}]{2,})\b(?:\s+\1\b)+/giu, '$1'); } catch {}
+    try { text = text.replace(/\b([\p{L}]{2,})\b(?:\s+\1\b)+/giu, '$1'); } catch { }
     return text.trim();
   } catch { return text; }
 }
@@ -155,7 +155,7 @@ export async function formatTTSReply(rawText, intent = 'neutral') {
     const resp = await openai.chat.completions.create({
       model: 'gpt-4o',
       temperature: 0.7,
-      messages: [ { role: 'system', content: systemPrompt }, { role: 'user', content: `Przeredaguj do mowy:\n${pre}` } ]
+      messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: `Przeredaguj do mowy:\n${pre}` }]
     });
     const out = resp?.choices?.[0]?.message?.content?.trim();
     return out || pre;
@@ -189,7 +189,7 @@ Mów przyjaźnie i jasno, ale używaj śląskiej gwary (gōdka) – lekkiej i zr
 Unikaj bardzo rzadkich słów, nie przesadzaj z gwarą, tylko dodaj lokalny klimat (np. „joch”, „kaj”, "po naszymu").
 Nie zmieniaj faktów ani liczb. Intencja użytkownika: "${intent}".`;
       }
-    } catch {}
+    } catch { }
     let out = '';
     if (process.env.OPENAI_STREAM === 'true') {
       const completion = await openai.chat.completions.create({
@@ -232,9 +232,16 @@ export async function playTTS(text, options = {}) {
     let cfg;
     try {
       cfg = await getConfig();
-    } catch {}
+    } catch { }
 
     const engineRaw = (cfg?.tts_engine?.engine || process.env.TTS_MODE || "vertex").toLowerCase();
+
+    // GLOBAL KILL SWITCH
+    if (cfg?.tts_enabled === false) {
+      console.log('[TTS] Generation skipped: Disabled in system config.');
+      return null;
+    }
+
     const voiceCfg = cfg?.tts_voice?.voice || process.env.TTS_VOICE || "pl-PL-Wavenet-A";
     const rawVoice = options.voice || voiceCfg;
     const voice = normalizeGoogleVoice(engineRaw, rawVoice);
@@ -257,7 +264,7 @@ export async function playTTS(text, options = {}) {
     const USE_LINEAR16 = process.env.TTS_LINEAR16 === "true";
     const isChirpHD = engineRaw === "chirp" || /Chirp3-HD/i.test(String(rawVoice));
     const lowerVoice = String(rawVoice).toLowerCase();
-    const geminiVoiceNames = new Set(['zephyr','aoede','erinome','achernar']);
+    const geminiVoiceNames = new Set(['zephyr', 'aoede', 'erinome', 'achernar']);
     if (!isGeminiTTS && geminiVoiceNames.has(lowerVoice)) {
       isGeminiTTS = true;
       USE_VERTEX = false;
@@ -352,7 +359,7 @@ export async function playTTS(text, options = {}) {
         })
       });
       if (!response.ok) {
-        const t = await response.text().catch(()=> '');
+        const t = await response.text().catch(() => '');
         console.error('❌ BASIC TTS error:', response.status, t);
         throw new Error(`TTS API failed: ${response.status}`);
       }
