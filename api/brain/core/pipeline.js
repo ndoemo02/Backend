@@ -261,7 +261,7 @@ export class BrainPipeline {
             // Respect options or default to false
             const wantsTTS = options.includeTTS === true;
             const hasReply = domainResponse.should_reply !== false; // Default true
-            const ttsEnabled = config.tts_enabled !== false; // Default true
+            const ttsEnabled = config?.tts_enabled === true; // Strict check: defaults to false if undefined or null, only true if explicitly true
 
             if (hasReply && (wantsTTS || EXPERT_MODE) && ttsEnabled) {
                 if (speechPartForTTS) {
