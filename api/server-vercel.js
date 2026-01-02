@@ -6,6 +6,9 @@ import morgan from 'morgan';
 import { createClient } from '@supabase/supabase-js';
 import { verifyAmberAdmin } from './middleware/verifyAmberAdmin.js';
 
+// 🧠 Enable Brain Debug Mode explicitly for Vercel logs
+global.BRAIN_DEBUG = true;
+
 // --- App setup ---
 const app = express();
 app.use(express.json());
