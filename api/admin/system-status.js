@@ -1,5 +1,4 @@
 import { supabase } from "../_supabase.js";
-import { logger } from "../lib/logger.js";
 
 /**
  * Validates the current system health and data status.
