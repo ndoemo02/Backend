@@ -1,60 +1,118 @@
-/**
- * Food Domain: Order Handler
- * Odpowiada za proces składania zamówienia (Parsowanie -> Koszyk -> Potwierdzenie).
- */
+// Food Domain: Order Handler
+// Odpowiada za proces składania zamówienia (Parsowanie -> Koszyk -> Potwierdzenie).
 
-import { parseOrderItems } from '../../orderService.js';
-import { getSession } from '../../context.js'; // Legacy context helper
-// import { parseOrderItems } from '../../intent-router.js'; // Use orderService wrapper which likely wraps intent-router logic
-// Wait, `orderService.js` usually wraps `intent-router.js` logic.
-// In createOrderHandler.js: import { parseOrderItems, normalize } from "../orderService.js";
+import { extractQuantity } from '../../helpers.js';
+import { resolveMenuItemConflict, DISAMBIGUATION_RESULT } from '../../services/DisambiguationService.js';
 
 export class OrderHandler {
 
     async execute(ctx) {
         const { text, session } = ctx;
-        console.log("🧠 OrderHandler executing...");
+        console.log("🧠 OrderHandler executing with disambiguation...");
 
-        // 1. Walidacja Kontekstu (Restauracja)
-        const restaurant = session?.lastRestaurant;
-        if (!restaurant) {
+        // 0. Extract basic info
+        const quantity = extractQuantity(text);
+
+        // 1. DISAMBIGUATION CHECK
+        // Use the new service to resolve what item user wants
+        // We pass the current restaurant context if available
+        const currentRestaurantId = session?.lastRestaurant?.id;
+
+        const resolution = await resolveMenuItemConflict(text, {
+            restaurant_id: currentRestaurantId
+        });
+
+        console.log(`🧠 Disambiguation Result: ${resolution.status}`);
+
+        // CASE A: Item Not Found
+        if (resolution.status === DISAMBIGUATION_RESULT.ITEM_NOT_FOUND) {
+            const rName = session?.lastRestaurant?.name || "naszej ofercie";
             return {
-                reply: "Najpierw wybierz restaurację, z której chcesz zamówić. Powiedz 'pokaż restauracje w pobliżu'."
+                reply: `Nie mogę znaleźć tego dania w ${rName}. Spróbuj podać dokładniejszą nazwę.`
             };
         }
 
-        // 2. Parsowanie Zamówienia (NLP -> Items)
-        const items = await parseOrderItems(text, restaurant.id);
+        // CASE B: Disambiguation Required (Multi-match, no context)
+        if (resolution.status === DISAMBIGUATION_RESULT.DISAMBIGUATION_REQUIRED) {
+            const options = resolution.candidates.slice(0, 3); // Limit to 3
+            const optionNames = options.map(o => o.restaurant.name).join(", ");
 
-        if (!items || items.length === 0) {
-            // Smart Fallback (did not understand dish)
             return {
-                reply: `Nie zrozumiałam co chcesz zamówić z ${restaurant.name}. Spróbuj użyć dokładnej nazwy z menu.`
+                reply: `To danie jest dostępne w: ${optionNames}. Z której restauracji chcesz zamówić?`,
+                contextUpdates: {
+                    expectedContext: 'choose_restaurant',
+                    pendingDisambiguation: resolution.candidates // Store for next turn
+                }
             };
+            // Note: NLU needs to handle 'choose_restaurant' context next
         }
 
-        // 3. Kalkulacja
-        const total = items.reduce((sum, item) => sum + (item.price_pln * item.quantity), 0);
+        // CASE C: Success (Single Item Resolved)
+        if (resolution.status === DISAMBIGUATION_RESULT.ADD_ITEM) {
+            const item = resolution.item;
+            const restaurant = resolution.restaurant;
 
-        // 4. Budowanie Payloadu (Pending Order)
-        const pendingOrder = {
-            restaurant_id: restaurant.id,
-            restaurant_details: restaurant,
-            items: items,
-            total: total.toFixed(2)
-        };
+            // Determine if we are switching restaurants
+            const isSwitch = currentRestaurantId && currentRestaurantId !== restaurant.id;
 
-        const itemsList = items.map(i => `${i.quantity}x ${i.name}`).join(", ");
-        const reply = `Dodałam ${itemsList} do zamówienia. Razem ${total.toFixed(2)} zł. Potwierdzasz?`;
+            // Build Item Payload
+            const orderItem = {
+                id: item.id,
+                name: item.name,
+                price: parseFloat(item.price_pln),
+                quantity: quantity
+            };
+            const total = (orderItem.price * quantity).toFixed(2);
 
-        // 5. Zwracanie Wyniku
-        return {
-            reply,
-            contextUpdates: {
-                pendingOrder,
-                expectedContext: 'confirm_order',
-                lastIntent: 'create_order'
+            // Construct Reply
+            let reply = "";
+            let contextUpdate = {};
+
+            if (isSwitch) {
+                // WARN USER about switch!
+                reply = `Znaleziono "${item.name}" w ${restaurant.name}. `;
+                // Auto-switch logic could be here, but safer to ask?
+                // For now, let's assume aggressive helpfulness -> Auto Switch + Inform
+                reply += `Dodałam do nowego zamówienia. Razem ${total} zł. Potwierdzasz?`;
+
+                // Clear old cart if needed, or strictly overwrite pendingOrder
+                contextUpdate = {
+                    lastRestaurant: restaurant, // UPDATE CONTEXT
+                    pendingOrder: {
+                        restaurant_id: restaurant.id,
+                        restaurant: restaurant.name,
+                        items: [orderItem],
+                        total: total,
+                        warning: 'switch_restaurant'
+                    }
+                };
+
+            } else {
+                // Same restaurant or Fresh Start
+                reply = `Dodałam ${quantity}x ${item.name} z ${restaurant.name}. Razem ${total} zł. Potwierdzasz?`;
+
+                // If it's a fresh start, allow context set
+                contextUpdate = {
+                    lastRestaurant: restaurant,
+                    pendingOrder: {
+                        restaurant_id: restaurant.id,
+                        restaurant: restaurant.name,
+                        items: [orderItem],
+                        total: total
+                    }
+                };
             }
-        };
+
+            return {
+                reply,
+                contextUpdates: {
+                    ...contextUpdate,
+                    expectedContext: 'confirm_order',
+                    lastIntent: 'create_order'
+                }
+            };
+        }
+
+        return { reply: "Przepraszam, wystąpił nieoczekiwany błąd przy wyszukiwaniu dania." };
     }
 }
