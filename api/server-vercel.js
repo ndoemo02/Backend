@@ -17,13 +17,13 @@ const CORS_ORIGINS_PROD = [
   'https://freeflow-frontend-seven.vercel.app',
   'https://freeflow-frontend.vercel.app',
   'https://freeflow-final.vercel.app',
-  'https://backend-one-gilt-89.vercel.app'
+  'https://backend-hrth4zsvt-freeflow-build.vercel.app'
 ];
 const CORS_ORIGINS_DEV = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'http://localhost:3000',
-  'https://backend-one-gilt-89.vercel.app'
+  'https://backend-hrth4zsvt-freeflow-build.vercel.app'
 ];
 const ALLOWED_ORIGINS = process.env.NODE_ENV === 'production'
   ? CORS_ORIGINS_PROD
@@ -146,6 +146,13 @@ app.post("/api/brain/router", async (req, res) => {
 // === ADMIN ENDPOINTS ===
 // Protect all /api/admin routes
 app.use('/api/admin', verifyAmberAdmin);
+app.get('/api/admin/system-status', async (req, res) => {
+  try {
+    const mod = await import('./admin/system-status.js');
+    return mod.default(req, res);
+  } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
 app.get('/api/admin/users-count', async (req, res) => {
   try {
     const mod = await import('./admin/users-count.js');
@@ -321,6 +328,11 @@ app.get('/api/admin/orders/stats', async (req, res) => {
   } catch (err) {
     return res.status(500).json({ ok: false, error: err.message });
   }
+});
+
+app.get('/api/admin/system-status', async (req, res) => {
+  try { const mod = await import('./admin/system-status.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
 });
 
 app.get('/api/admin/business/stats', async (req, res) => {
