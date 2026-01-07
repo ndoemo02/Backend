@@ -28,33 +28,48 @@ export async function resolveMenuItemConflict(itemName, context = {}) {
 
     console.log(`🧠 Disambiguation: Searching for "${itemName}"...`);
 
-    // 1. Pobierz wszystkie pasujące pozycje ze wszystkich restauracji
-    // Optymalizacja: pobieramy name, restaurant_id i cenę
+    // 1. Pobierz wszystkie pasujące pozycje (bez join, aby uniknąć błędów missing FK)
     const { data: allItems, error } = await supabase
         .from('menu_items_v2')
         .select(`
             id, 
             name, 
             price_pln, 
-            restaurant_id,
-            restaurants (id, name)
+            restaurant_id
         `);
 
     if (error) {
-        console.error("Disambiguation DB Error:", error);
+        console.error("Disambiguation DB Error (items):", error);
         return { status: DISAMBIGUATION_RESULT.ITEM_NOT_FOUND };
     }
 
-    // 2. Filtruj w pamięci (fuzzy logic)
-    // Używamy fuzzyIncludes z helpers.js dla spójności
+    // 2. Filtruj kandydatów (fuzzy)
     const candidates = allItems.filter(item => fuzzyIncludes(item.name, itemName));
 
-    console.log(`🧠 Candidates found: ${candidates.length}`, candidates.map(c => `${c.name} (${c.restaurants?.name})`));
-
-    // A) Brak wyników
     if (candidates.length === 0) {
         return { status: DISAMBIGUATION_RESULT.ITEM_NOT_FOUND };
     }
+
+    // 3. Pobierz nazwy restauracji dla znalezionych kandydatów
+    // (Manual join, bezpieczniejszy przy braku zdefiniowanych relacji)
+    const restaurantIds = [...new Set(candidates.map(c => c.restaurant_id))];
+
+    const { data: restaurants, error: rError } = await supabase
+        .from('restaurants')
+        .select('id, name')
+        .in('id', restaurantIds);
+
+    if (rError || !restaurants) {
+        console.error("Disambiguation DB Error (restaurants):", rError);
+        // Fallback: zwróć items bez nazw restauracji (choć to słabe)
+        // Ale lepiej zwrócić błąd niż crash
+        return { status: DISAMBIGUATION_RESULT.ITEM_NOT_FOUND };
+    }
+
+    // 4. Mapuj restauracje do itemów
+    candidates.forEach(c => {
+        c.restaurants = restaurants.find(r => r.id === c.restaurant_id) || { id: c.restaurant_id, name: 'Unknown' };
+    });
 
     // B) Dokładnie 1 wynik
     if (candidates.length === 1) {
@@ -66,7 +81,20 @@ export async function resolveMenuItemConflict(itemName, context = {}) {
         };
     }
 
-    // C) >1 wynik - Próba ujednoznacznienia kontekstem
+    // B2) Wiele wyników, ale WSZYSTKIE z tej samej restauracji
+    // To nie jest konflikt między lokalami. Zwracamy pierwszy (lub w przyszłości: pytamy o rozmiar).
+    const uniqueRestaurantIds = [...new Set(candidates.map(c => c.restaurant_id))];
+    if (uniqueRestaurantIds.length === 1) {
+        const first = candidates[0];
+        console.log(`🧠 Same-restaurant ambiguity (${candidates.length} items) in ${first.restaurants.name}. resolving automatically.`);
+        return {
+            status: DISAMBIGUATION_RESULT.ADD_ITEM,
+            item: first,
+            restaurant: first.restaurants
+        };
+    }
+
+    // C) >1 wynik (różne restauracje) - Próba ujednoznacznienia kontekstem
     // Priorytet 1: Obecna restauracja (context.restaurant_id)
     if (context.restaurant_id) {
         const inContext = candidates.find(c => c.restaurant_id === context.restaurant_id);
