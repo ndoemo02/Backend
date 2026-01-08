@@ -260,8 +260,8 @@ export default async function handler(req, res) {
           restaurant_name: restaurant_name || 'Unknown Restaurant',
           items: items,
           total_price: finalPLN,   // PLN (float)
-          total_cents: finalCents, // Cents (integer)
-          status: "confirmed",     // Automatycznie potwierdzone przy checkout UI
+          // total_cents: finalCents, // Cents (integer) - Commented out to prevent "column does not exist" error
+          status: "pending",     // Set to 'pending' so it shows up in Business Panel for acceptance
           customer_name: customer_name || null,
           customer_phone: customer_phone || null,
           delivery_address: delivery_address || null,
