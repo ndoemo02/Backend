@@ -93,16 +93,7 @@ app.get('/api/health', async (req, res) => {
 
 // ... (rest of endpoints)
 
-// Global Error Handler
-app.use((err, req, res, next) => {
-  console.error("🔥 Uncaught Error:", err);
-  res.status(500).json({ error: 'Internal Server Error', details: err.message, type: err.name });
-});
-
-// 404
-app.use((req, res) => {
-  res.status(404).json({ error: 'Not found' });
-});
+// ... (rest of endpoints)
 
 // --- KeepAlive removed ---
 
@@ -691,6 +682,12 @@ if (process.env.NODE_ENV !== "production") {
 // 404 handler (Express 5 style)
 app.use((req, res) => {
   res.status(404).json({ error: 'Not found' });
+});
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error("🔥 Uncaught Error:", err);
+  res.status(500).json({ error: 'Internal Server Error', details: err.message, type: err.name });
 });
 
 // --- KeepAlive removed for serverless stability ---
