@@ -10,6 +10,7 @@ import { OrderHandler } from '../domains/food/orderHandler.js';
 import { ConfirmOrderHandler } from '../domains/food/confirmHandler.js';
 import { SelectRestaurantHandler } from '../domains/food/selectHandler.js';
 import { OptionHandler } from '../domains/food/optionHandler.js';
+import { ConfirmAddToCartHandler } from '../domains/food/confirmAddToCartHandler.js';
 import { BrainLogger } from '../../../utils/logger.js';
 import { playTTS, stylizeWithGPT4o } from '../tts/ttsClient.js';
 import { EventLogger } from '../services/EventLogger.js';
@@ -27,6 +28,7 @@ const defaultHandlers = {
         create_order: new OrderHandler(),
         choose_restaurant: new OrderHandler(), // Handle ambiguous restaurant choice in OrderHandler
         confirm_order: new ConfirmOrderHandler(),
+        confirm_add_to_cart: new ConfirmAddToCartHandler(), // NEW
         select_restaurant: new SelectRestaurantHandler(),
         show_more_options: new OptionHandler(),
         find_nearby_confirmation: new FindRestaurantHandler(),
@@ -77,6 +79,7 @@ export class BrainPipeline {
                 create_order: new OrderHandler(),
                 choose_restaurant: new OrderHandler(),
                 confirm_order: new ConfirmOrderHandler(),
+                confirm_add_to_cart: new ConfirmAddToCartHandler(), // NEW
                 select_restaurant: new SelectRestaurantHandler(),
                 show_more_options: new OptionHandler(),
                 find_nearby_confirmation: new FindRestaurantHandler(repository),
@@ -160,6 +163,15 @@ export class BrainPipeline {
             context.entities = entities || {};
             context.confidence = confidence;
             context.source = source;
+
+            // --- RESTAURANT PRIORITY RESOLUTION (Utterance > Session) ---
+            const resolvedRestaurant =
+                entities?.restaurant ||           // 1. Utterance (explicit mention)
+                entities?.restaurantId ||         // 2. Catalog match ID
+                session?.currentRestaurant ||     // 3. Session persistent
+                session?.lastRestaurant;          // 4. Fallback
+
+            context.resolvedRestaurant = resolvedRestaurant;
 
             // --- GUARDS ---
 

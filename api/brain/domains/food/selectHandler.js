@@ -46,7 +46,12 @@ export class SelectRestaurantHandler {
         }
 
         // 3. Selection Success
-        // 3. Selection Success
+        // Build currentRestaurant object for persistence
+        const currentRestaurant = {
+            id: selected.id,
+            name: selected.name,
+            city: selected.city || null
+        };
 
         // Feature: Auto-convert to order if we have a pending dish remembered
         if (session?.pendingDish) {
@@ -65,10 +70,10 @@ export class SelectRestaurantHandler {
                     }
                 ],
                 contextUpdates: {
+                    currentRestaurant, // NEW: Persistent restaurant
                     lastRestaurant: selected,
                     lockedRestaurantId: selected.id,
-                    context: 'IN_RESTAURANT',
-                    expectedContext: 'confirm_order',
+                    expectedContext: 'confirm_order', // Use FSM, not context: 'IN_RESTAURANT'
                     pendingDish: null // Consume the memory
                 },
                 meta: { source: 'selection_auto_order' }
@@ -78,10 +83,10 @@ export class SelectRestaurantHandler {
         return {
             reply: `Wybrano ${selected.name}. Co chcesz zrobić? (Pokaż menu lub zamawiam)`,
             contextUpdates: {
+                currentRestaurant, // NEW: Persistent restaurant
                 lastRestaurant: selected,
                 lockedRestaurantId: selected.id,
-                context: 'IN_RESTAURANT', // Lock
-                expectedContext: 'menu_or_order'
+                expectedContext: 'restaurant_menu' // Use FSM, not context: 'IN_RESTAURANT'
             },
             meta: { source: 'selection_handler' }
         };

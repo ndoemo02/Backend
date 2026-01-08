@@ -155,9 +155,29 @@ export async function handleFindNearby({
     }
 
     console.log("⚠️ No location found in text and no session.last_location available");
-    const prompt = "Brak lokalizacji. Podaj nazwę miasta (np. Bytom) lub powiedz 'w pobliżu'.";
-    res.status(200).json({ ok: true, intent: "find_nearby", reply: prompt, fallback: true, context: getSession(sessionId) });
-    return { handled: true };
+
+    // NEW: Check if this is an implicit order (user wanted to order something)
+    const ORDER_VERBS_REGEX = /\b(zamawiam|zamow|zamów|poprosze|poprosz[ęe]|wezme|wezm[ęe]|biore|bior[ęe]|chce|chc[ęe]|chciał(bym|abym))\b/i;
+    const isImplicitOrder = ORDER_VERBS_REGEX.test(text);
+
+    // Extract dish from text (if available from entities passed in)
+    const dishEntity = meta?.entities?.dish || meta?.entities?.items;
+
+    // Save pending dish and set awaiting flag for better context continuity
+    if (isImplicitOrder && dishEntity) {
+      updateSession(sessionId, {
+        pendingDish: dishEntity,
+        awaiting: 'location'
+      });
+      const prompt = `Chętnie przyjmę zamówienie, ale najpierw podaj miasto. Gdzie szukamy?`;
+      res.status(200).json({ ok: true, intent: "find_nearby", reply: prompt, fallback: true, context: getSession(sessionId) });
+      return { handled: true };
+    } else {
+      updateSession(sessionId, { awaiting: 'location' });
+      const prompt = "Brak lokalizacji. Podaj nazwę miasta (np. Bytom) lub powiedz 'w pobliżu'.";
+      res.status(200).json({ ok: true, intent: "find_nearby", reply: prompt, fallback: true, context: getSession(sessionId) });
+      return { handled: true };
+    }
   }
 
   if (!restaurants && location) {

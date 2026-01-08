@@ -1,0 +1,1 @@
+id, restaurant_id, user_id, total_price, status, created_at, items, restaurant_name, dish_name, customer_name, customer_phone, delivery_address, notes, business_id, total_cents, total_pln, order_value, confirmed_at

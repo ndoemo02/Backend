@@ -1,5 +1,139 @@
 {
-  "passed": 9,
-  "failed": 0,
-  "failureDetails": []
+  "passed": 47,
+  "failed": 7,
+  "failureDetails": [
+    {
+      "input": "zamawiam pizzę margheritę",
+      "error": "Expected domain 'ordering', got 'food'",
+      "result": {
+        "intent": "find_nearby",
+        "confidence": 0.6,
+        "source": "food_word_fallback",
+        "entities": {
+          "location": null,
+          "cuisine": "Pizzeria",
+          "quantity": 1,
+          "restaurant": null,
+          "restaurantId": null,
+          "dish": "pizzę margheritę",
+          "items": null
+        },
+        "domain": "food"
+      }
+    },
+    {
+      "input": "poproszę dwa burgery",
+      "error": "Expected domain 'ordering', got 'food'",
+      "result": {
+        "intent": "find_nearby",
+        "confidence": 0.7,
+        "source": "legacy_hard_blocked",
+        "entities": {
+          "location": null,
+          "cuisine": "Amerykańska",
+          "quantity": 2,
+          "restaurant": null,
+          "restaurantId": null,
+          "dish": "burgery",
+          "items": null
+        },
+        "domain": "food"
+      }
+    },
+    {
+      "input": "wezmę kebab duży",
+      "error": "Expected domain 'ordering', got 'food'",
+      "result": {
+        "intent": "find_nearby",
+        "confidence": 0.6,
+        "source": "food_word_fallback",
+        "entities": {
+          "location": null,
+          "cuisine": "Kebab",
+          "quantity": 1,
+          "restaurant": null,
+          "restaurantId": null,
+          "dish": null,
+          "items": null
+        },
+        "domain": "food"
+      }
+    },
+    {
+      "input": "biorę zupę dnia",
+      "error": "Expected domain 'ordering', got 'food'",
+      "result": {
+        "intent": "find_nearby",
+        "confidence": 0.7,
+        "source": "legacy_hard_blocked",
+        "entities": {
+          "location": null,
+          "cuisine": null,
+          "quantity": 1,
+          "restaurant": null,
+          "restaurantId": null,
+          "dish": "zupę dnia",
+          "items": null
+        },
+        "domain": "food"
+      }
+    },
+    {
+      "input": "dodaj frytki",
+      "error": "Expected domain 'ordering', got 'food'",
+      "result": {
+        "intent": "find_nearby",
+        "confidence": 0.7,
+        "source": "legacy_hard_blocked",
+        "entities": {
+          "location": null,
+          "cuisine": null,
+          "quantity": 1,
+          "restaurant": null,
+          "restaurantId": null,
+          "dish": null,
+          "items": null
+        },
+        "domain": "food"
+      }
+    },
+    {
+      "input": "poproszę o schabowego",
+      "error": "Expected intent 'create_order', got 'find_nearby'",
+      "result": {
+        "intent": "find_nearby",
+        "confidence": 0.7,
+        "source": "legacy_hard_blocked",
+        "entities": {
+          "location": null,
+          "cuisine": null,
+          "quantity": 1,
+          "restaurant": null,
+          "restaurantId": null,
+          "dish": "o schabowego",
+          "items": null
+        },
+        "domain": "food"
+      }
+    },
+    {
+      "input": "wezmę roladzik",
+      "error": "Expected intent 'create_order', got 'find_nearby'",
+      "result": {
+        "intent": "find_nearby",
+        "confidence": 0.7,
+        "source": "legacy_hard_blocked",
+        "entities": {
+          "location": null,
+          "cuisine": null,
+          "quantity": 1,
+          "restaurant": null,
+          "restaurantId": null,
+          "dish": null,
+          "items": null
+        },
+        "domain": "food"
+      }
+    }
+  ]
 }

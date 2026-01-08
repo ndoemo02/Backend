@@ -96,6 +96,16 @@ export class NLURouter {
             }
         }
 
+        // NEW: Guard for confirm_add_to_cart context
+        if (session?.expectedContext === 'confirm_add_to_cart') {
+            if (/\b(tak|potwierdzam|ok|dodaj|dawaj)\b/i.test(normalized)) {
+                return { intent: 'confirm_add_to_cart', confidence: 1.0, source: 'rule_guard', entities };
+            }
+            if (/\b(nie|anuluj|stop|rezygnuję)\b/i.test(normalized)) {
+                return { intent: 'cancel_order', confidence: 1.0, source: 'rule_guard', entities };
+            }
+        }
+
         if (session?.expectedContext === 'select_restaurant' || session?.expectedContext === 'show_more_options') {
             const isIntentLike = /(menu|zamawiam|zamów|poproszę|poprosze|wezmę|wezme|chcę|chce|pokaż|pokaz|znajdź|znajdz|gdzie|health)/i.test(normalized);
             const isManualSelection = /\b(numer|nr|opcja|opcje)\s+\d+\b/i.test(normalized);
@@ -337,30 +347,21 @@ export class NLURouter {
                 const isWeakIntent = (result.intent === 'clarify_order' || result.intent === 'choose_restaurant') && (!result.items?.any && !result.items?.unavailable?.length && !result.options?.length);
 
                 if (result && result.intent && result.intent !== 'unknown' && result.intent !== 'UNKNOWN_INTENT' && !isWeakIntent) {
-                    // SAFETY GUARD ENFORCEMENT: Block legacy ordering without restaurant context
-                    // This prevents legacy path from bypassing BrainV2 Safety Guards
+                    // HARD BLOCK: Legacy ordering disabled in BrainV2 mode
+                    // Korekta 3: Always block to prevent legacy bypass of Safety Guards
                     if (result.intent === 'create_order' || result.intent === 'confirm_order') {
-                        const hasRestaurantContext = session?.lastRestaurant ||
-                            session?.context === 'IN_RESTAURANT' ||
-                            entities.restaurant ||
-                            matchedRestaurant ||
-                            parsed.restaurant ||
-                            result.restaurant;
-
-                        if (!hasRestaurantContext) {
-                            console.log('🛡️ Safety Guard: Blocking legacy create_order without restaurant context');
-                            // Fall through to find_nearby instead (discovery mode)
-                            return {
-                                intent: 'find_nearby',
-                                confidence: 0.7,
-                                source: 'legacy_blocked_safety',
-                                entities: {
-                                    ...entities,
-                                    dish: entities.dish || parsed.dish,
-                                    items: result.items || entities.items
-                                }
-                            };
-                        }
+                        console.warn('🛡️ HARD BLOCK: Legacy ordering disabled (source: classic_legacy)');
+                        // Fall through to find_nearby instead (discovery mode)
+                        return {
+                            intent: 'find_nearby',
+                            confidence: 0.7,
+                            source: 'legacy_hard_blocked',
+                            entities: {
+                                ...entities,
+                                dish: entities.dish || parsed.dish,
+                                items: result.items || entities.items
+                            }
+                        };
                     }
 
                     return {
