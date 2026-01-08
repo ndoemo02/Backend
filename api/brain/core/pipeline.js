@@ -173,6 +173,52 @@ export class BrainPipeline {
 
             context.resolvedRestaurant = resolvedRestaurant;
 
+            // --- UX GUARDS (Dialog State Polish) ---
+
+            // UX Guard 1: Menu-Scoped Ordering
+            // If we have currentRestaurant and lastIntent was menu-related,
+            // allow create_order scoped to that restaurant instead of discovery reset
+            if (context.intent === 'find_nearby' && context.source === 'legacy_hard_blocked') {
+                const hasRestaurantContext = session?.currentRestaurant || session?.lastRestaurant;
+                const wasMenuFlow = session?.lastIntent === 'menu_request' ||
+                    session?.expectedContext === 'restaurant_menu' ||
+                    session?.expectedContext === 'continue_order';
+
+                if (hasRestaurantContext && wasMenuFlow) {
+                    BrainLogger.pipeline('✨ UX Guard 1: Menu-scoped ordering. Upgrading find_nearby -> create_order with currentRestaurant.');
+                    context.intent = 'create_order';
+                    context.source = 'menu_scoped_order';
+                    context.resolvedRestaurant = session.currentRestaurant || session.lastRestaurant;
+                }
+            }
+
+            // UX Guard 2: Fuzzy Restaurant Confirmation
+            // If user mentions a restaurant name similar to currentRestaurant, ask for confirmation
+            if (context.intent === 'find_nearby' && session?.currentRestaurant && entities?.restaurant) {
+                const currentName = (session.currentRestaurant.name || '').toLowerCase();
+                const mentionedName = (entities.restaurant || '').toLowerCase();
+
+                // Simple fuzzy: first 4 chars match or partial include
+                const isSimilar = currentName.substring(0, 4) === mentionedName.substring(0, 4) ||
+                    currentName.includes(mentionedName.substring(0, 5)) ||
+                    mentionedName.includes(currentName.substring(0, 5));
+
+                if (isSimilar && currentName !== mentionedName) {
+                    BrainLogger.pipeline(`✨ UX Guard 2: Fuzzy match detected. Asking confirmation for ${session.currentRestaurant.name}`);
+                    return {
+                        session_id: sessionId,
+                        reply: `Czy chodziło Ci o ${session.currentRestaurant.name}?`,
+                        should_reply: true,
+                        intent: 'confirm_restaurant',
+                        contextUpdates: {
+                            expectedContext: 'confirm_restaurant',
+                            pendingRestaurantConfirm: session.currentRestaurant
+                        },
+                        meta: { source: 'ux_guard_fuzzy_confirm' }
+                    };
+                }
+            }
+
             // --- GUARDS ---
 
             // Rule: Confirm Guard

@@ -8,8 +8,34 @@ export class SelectRestaurantHandler {
         const { text, session } = ctx;
         console.log(`🧠 SelectRestaurantHandler executing... Pending Dish: "${session?.pendingDish}"`);
 
+        // UX Guard 3: If currentRestaurant already set and user confirms same restaurant
+        // Skip re-selection, go directly to menu/order prompt
+        if (session?.currentRestaurant) {
+            const currentName = session.currentRestaurant.name?.toLowerCase() || '';
+            const inputLower = text.toLowerCase();
+
+            // Check if user is confirming or mentioning current restaurant
+            if (fuzzyMatch(currentName, inputLower) || inputLower.includes(currentName.substring(0, 5))) {
+                console.log(`✨ UX Guard 3: Already at ${session.currentRestaurant.name}, skipping re-selection.`);
+                return {
+                    reply: `Jesteś już w ${session.currentRestaurant.name}. Co chcesz zamówić?`,
+                    contextUpdates: {
+                        expectedContext: 'create_order'
+                    },
+                    meta: { source: 'already_at_restaurant' }
+                };
+            }
+        }
+
         const list = session?.last_restaurants_list || [];
         if (!list || list.length === 0) {
+            // UX: If we have currentRestaurant but no list, use current
+            if (session?.currentRestaurant) {
+                return {
+                    reply: `Jesteś już w ${session.currentRestaurant.name}. Co chcesz zamówić?`,
+                    contextUpdates: { expectedContext: 'create_order' }
+                };
+            }
             return {
                 reply: "Nie mam listy restauracji. Powiedz najpierw 'znajdź restaurację'.",
                 contextUpdates: { expectedContext: 'find_nearby' }

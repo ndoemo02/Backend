@@ -106,6 +106,23 @@ export class NLURouter {
             }
         }
 
+        // Guard for confirm_restaurant context (fuzzy confirmation)
+        if (session?.expectedContext === 'confirm_restaurant') {
+            if (/\b(tak|potwierdzam|ok|ta|tą|tę|tę)\b/i.test(normalized)) {
+                // User confirmed - use pending restaurant
+                return {
+                    intent: 'select_restaurant',
+                    confidence: 1.0,
+                    source: 'rule_guard',
+                    entities: { ...entities, confirmedRestaurant: session.pendingRestaurantConfirm }
+                };
+            }
+            if (/\b(nie|inna|inną|zmień|zmien)\b/i.test(normalized)) {
+                // User wants different restaurant
+                return { intent: 'find_nearby', confidence: 1.0, source: 'rule_guard', entities };
+            }
+        }
+
         if (session?.expectedContext === 'select_restaurant' || session?.expectedContext === 'show_more_options') {
             const isIntentLike = /(menu|zamawiam|zamów|poproszę|poprosze|wezmę|wezme|chcę|chce|pokaż|pokaz|znajdź|znajdz|gdzie|health)/i.test(normalized);
             const isManualSelection = /\b(numer|nr|opcja|opcje)\s+\d+\b/i.test(normalized);
