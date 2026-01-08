@@ -230,6 +230,17 @@ export default async function handler(req, res) {
           return res.status(400).json({ error: "Incomplete cart order data" });
         }
 
+        // Validate UUID format for restaurant_id
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+        if (!uuidRegex.test(restaurant_id)) {
+          console.error('❌ Invalid restaurant_id format:', restaurant_id);
+          return res.status(400).json({
+            error: `Nieprawidłowy identyfikator restauracji. Proszę odświeżyć stronę i spróbować ponownie.`,
+            code: 'INVALID_RESTAURANT_ID',
+            received: restaurant_id
+          });
+        }
+
         // --- Currency Normalization Strategy ---
         // 1. If explicit total_cents is provided (New Frontend), use it as ground truth.
         // 2. If valid total_price (PLN) is provided, derive cents from it.
