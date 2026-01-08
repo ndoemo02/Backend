@@ -33,22 +33,39 @@ export class FindRestaurantHandler {
         // Normalize location for DB
         let normalizedLoc = normalizeLocation(location);
 
+
         if (!normalizedLoc) {
-            // ... (Logic for asking location remains same)
+            // NEW: Detect if this is an implicit order (user wanted to order something)
+            const ORDER_VERBS_REGEX = /\b(zamawiam|zamow|zamów|poprosze|poprosz[ęe]|wezme|wezm[ęe]|biore|bior[ęe]|chce|chc[ęe]|chciał(bym|abym))\b/i;
+            const isImplicitOrder = ORDER_VERBS_REGEX.test(text);
+            const dishEntity = entities?.dish || (entities?.items && entities.items[0]?.name);
+
             // Check if we are asking for "nearby" explicitly without location
             if (/w pobli[zż]u|blisko|tutaj|okolicy/i.test(text)) {
                 if (ctx.body && ctx.body.lat && ctx.body.lng) {
                     // Geo logic
                 } else {
                     return {
-                        reply: "W jakiej miejscowości mam szukać?",
-                        contextUpdates: { expectedContext: 'find_nearby_ask_location' }
+                        reply: isImplicitOrder && dishEntity
+                            ? `Chętnie przyjmę zamówienie ${dishEntity}, ale najpierw podaj miasto. Gdzie szukamy?`
+                            : "W jakiej miejscowości mam szukać?",
+                        contextUpdates: {
+                            expectedContext: 'find_nearby_ask_location',
+                            awaiting: 'location',
+                            pendingDish: dishEntity || null
+                        }
                     };
                 }
             } else {
                 return {
-                    reply: "Gdzie mam szukać? Podaj miasto.",
-                    contextUpdates: { expectedContext: 'find_nearby_ask_location' }
+                    reply: isImplicitOrder && dishEntity
+                        ? `Świetnie, ${dishEntity} brzmi pysznie! Tylko powiedz mi najpierw - w którym mieście szukamy?`
+                        : "Gdzie mam szukać? Podaj miasto.",
+                    contextUpdates: {
+                        expectedContext: 'find_nearby_ask_location',
+                        awaiting: 'location',
+                        pendingDish: dishEntity || null
+                    }
                 };
             }
         }
@@ -142,8 +159,9 @@ export class FindRestaurantHandler {
                 last_restaurants_list: restaurants,
                 lastRestaurants: suggestedRestaurants,
                 expectedContext: 'select_restaurant',
+                awaiting: null, // Clear awaiting flag - we resolved the location
                 // Feature: Remember implicit dish for subsequent selection
-                pendingDish: entities?.dish || (entities?.items && entities.items[0]?.name) || null
+                pendingDish: entities?.dish || entities?.pendingDish || (entities?.items && entities.items[0]?.name) || null
             }
         };
     }

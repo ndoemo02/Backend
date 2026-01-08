@@ -69,6 +69,23 @@ export class NLURouter {
             items: parsed.items || null
         };
 
+        // --- NEW: Context Resolution for Standalone Location Responses ---
+        // If system asked for location and user provides just location, continue flow
+        if (session?.awaiting === 'location' && location && !matchedRestaurant) {
+            // User is answering the location question
+            // Reset awaiting state and continue with find_nearby
+            return {
+                intent: 'find_nearby',
+                confidence: 0.99,
+                source: 'context_location_response',
+                entities: {
+                    ...entities,
+                    pendingDish: session.pendingDish || null, // Preserve pending dish from previous turn
+                    dish: session.pendingDish || entities.dish || null
+                }
+            };
+        }
+
         // --- RULE: Context-Based Guards (Priority Maximum) ---
         if (session?.expectedContext === 'confirm_order') {
             if (/\b(nie|nie\s+chce|anuluj|stop)\b/i.test(normalized)) {
@@ -320,6 +337,32 @@ export class NLURouter {
                 const isWeakIntent = (result.intent === 'clarify_order' || result.intent === 'choose_restaurant') && (!result.items?.any && !result.items?.unavailable?.length && !result.options?.length);
 
                 if (result && result.intent && result.intent !== 'unknown' && result.intent !== 'UNKNOWN_INTENT' && !isWeakIntent) {
+                    // SAFETY GUARD ENFORCEMENT: Block legacy ordering without restaurant context
+                    // This prevents legacy path from bypassing BrainV2 Safety Guards
+                    if (result.intent === 'create_order' || result.intent === 'confirm_order') {
+                        const hasRestaurantContext = session?.lastRestaurant ||
+                            session?.context === 'IN_RESTAURANT' ||
+                            entities.restaurant ||
+                            matchedRestaurant ||
+                            parsed.restaurant ||
+                            result.restaurant;
+
+                        if (!hasRestaurantContext) {
+                            console.log('🛡️ Safety Guard: Blocking legacy create_order without restaurant context');
+                            // Fall through to find_nearby instead (discovery mode)
+                            return {
+                                intent: 'find_nearby',
+                                confidence: 0.7,
+                                source: 'legacy_blocked_safety',
+                                entities: {
+                                    ...entities,
+                                    dish: entities.dish || parsed.dish,
+                                    items: result.items || entities.items
+                                }
+                            };
+                        }
+                    }
+
                     return {
                         intent: result.intent,
                         confidence: result.confidence || 0.8,
