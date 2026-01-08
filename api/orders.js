@@ -210,23 +210,45 @@ export default async function handler(req, res) {
       if (req.body.restaurant_id && req.body.items && Array.isArray(req.body.items)) {
         console.log('🛒 Cart order detected:', req.body);
 
-        const { restaurant_id, items, user_id, restaurant_name, customer_name, customer_phone, delivery_address, notes, total_price: totalPriceCents } = req.body;
+        const { restaurant_id, items, user_id, restaurant_name, customer_name, customer_phone, delivery_address, notes } = req.body;
+
+        let { total_price, total_cents } = req.body;
 
         if (!restaurant_id || !items?.length) {
           return res.status(400).json({ error: "Incomplete cart order data" });
         }
 
-        // Konwersja na PLN i Cents dla spójności z Dashboardem i Voice V2
-        const totalCents = totalPriceCents || items.reduce((sum, item) => sum + ((item.unit_price_cents || 0) * (item.qty || 0)), 0);
-        const totalPLN = totalCents / 100;
+        // --- Currency Normalization Strategy ---
+        // 1. If explicit total_cents is provided (New Frontend), use it as ground truth.
+        // 2. If valid total_price (PLN) is provided, derive cents from it.
+        // 3. Fallback: calculate from items.
+
+        let finalCents = 0;
+        let finalPLN = 0;
+
+        if (total_cents !== undefined && total_cents !== null && !isNaN(Number(total_cents))) {
+          finalCents = Number(total_cents);
+          finalPLN = finalCents / 100;
+        } else if (total_price !== undefined && total_price !== null && !isNaN(Number(total_price))) {
+          // Heuristic: If total_price seems huge (legacy cents), treat as cents.
+          // Note: Frontend update fixed this to send explicit floats for PLN.
+          // But to be safe for mixed versions:
+          // If we assume new frontend sends floats like 50.00, treat as PLN
+          finalPLN = Number(total_price);
+          finalCents = Math.round(finalPLN * 100);
+        } else {
+          // Calculate from items
+          finalCents = items.reduce((sum, item) => sum + ((item.unit_price_cents || 0) * (item.qty || item.quantity || 1)), 0);
+          finalPLN = finalCents / 100;
+        }
 
         const orderData = {
           user_id: user_id || null,
           restaurant_id: restaurant_id,
           restaurant_name: restaurant_name || 'Unknown Restaurant',
           items: items,
-          total_price: totalPLN,   // PLN (float)
-          total_cents: totalCents, // Cents (integer)
+          total_price: finalPLN,   // PLN (float)
+          total_cents: finalCents, // Cents (integer)
           status: "confirmed",     // Automatycznie potwierdzone przy checkout UI
           customer_name: customer_name || null,
           customer_phone: customer_phone || null,
