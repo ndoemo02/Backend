@@ -1,8 +1,10 @@
 // --- FreeFlow Serverless Adapter for Vercel ---
-import 'dotenv/config';
+import { config } from 'dotenv';
+try { config(); } catch (e) { console.warn('dotenv missing, assuming env vars present'); }
+
 import express from 'express';
 import cors from 'cors';
-import morgan from 'morgan';
+// import morgan from 'morgan'; // Disabled for stability debugging
 import { createClient } from '@supabase/supabase-js';
 import { verifyAmberAdmin } from './middleware/verifyAmberAdmin.js';
 
@@ -12,7 +14,8 @@ global.BRAIN_DEBUG = true;
 // --- App setup ---
 const app = express();
 app.use(express.json());
-// CORS (tuż po dotenv.config): prod = Vercel, dev = localhost:5173
+
+// CORS configuration
 const CORS_ORIGINS_PROD = [
   'https://freeflow-frontend-seven.vercel.app',
   'https://freeflow-frontend.vercel.app',
@@ -28,30 +31,40 @@ const CORS_ORIGINS_DEV = [
 const ALLOWED_ORIGINS = process.env.NODE_ENV === 'production'
   ? CORS_ORIGINS_PROD
   : [...CORS_ORIGINS_PROD, ...CORS_ORIGINS_DEV];
-// Pozwól także na PATCH/DELETE, żeby Panel Klienta mógł aktualizować / anulować zamówienia
+
 app.use(cors({
   origin: ALLOWED_ORIGINS,
   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   credentials: true,
 }));
-// Express 5: preflight dla wszystkich ścieżek – z tym samym zestawem metod
 app.options(/.*/, cors({
   origin: ALLOWED_ORIGINS,
   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
 }));
-app.use(morgan('tiny'));
+// app.use(morgan('tiny'));
 
 // --- Env sanity ---
 console.log('🚀 Booting FreeFlow Serverless...');
 console.log('🧠 ENV OK');
 console.log('🔑 SUPABASE_URL:', process.env.SUPABASE_URL ? '✅' : '❌');
-console.log('🔑 OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? '✅' : '❌');
+console.log('🔑 SUPABASE_KEY:', process.env.SUPABASE_SERVICE_ROLE_KEY ? '✅' : '❌');
 
 // --- Supabase client ---
-export const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+let supabase;
+try {
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error('Missing Supabase Credentials');
+  }
+  supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+  console.log('✅ Supabase client initialized');
+} catch (err) {
+  console.error('❌ Supabase init failed:', err);
+  supabase = { from: () => ({ select: () => ({ limit: () => ({ data: [], error: { message: 'Supabase Not Initialized' } }) }) }) };
+}
+export { supabase };
 
 // --- Health check ---
 app.get('/api/health', async (req, res) => {
@@ -73,9 +86,25 @@ app.get('/api/health', async (req, res) => {
   } catch (err) {
     health.ok = false;
     health.supabase.error = err.message;
+    console.error('Health check failed:', err);
   }
-  res.json(health);
+  res.status(health.ok ? 200 : 500).json(health);
 });
+
+// ... (rest of endpoints)
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error("🔥 Uncaught Error:", err);
+  res.status(500).json({ error: 'Internal Server Error', details: err.message, type: err.name });
+});
+
+// 404
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not found' });
+});
+
+// --- KeepAlive removed ---
 
 // --- Environment check ---
 app.get('/api/env-check', (req, res) => {
