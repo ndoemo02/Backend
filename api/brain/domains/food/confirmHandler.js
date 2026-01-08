@@ -42,10 +42,13 @@ export class ConfirmOrderHandler {
         }
 
         // ═══════════════════════════════════════════════════════════════════
-        // 4. PERSIST TO DB - JEDYNY CENTRALNY ZAPIS
-        // Wykonuje się PRZED streamem/TTS, synchronicznie
+        // 4. PERSIST TO DB - DISABLED (New Workflow: Voice -> Cart -> Manual UI -> DB)
+        // Zamówienie trafia tylko do koszyka w sesji. Zapis do DB następuje
+        // dopiero po manualnym potwierdzeniu w UI (CartContext.jsx).
         // ═══════════════════════════════════════════════════════════════════
         let orderId = null;
+        console.log(`🛒 Order added to cart session. Persistence deferred to manual checkout.`);
+        /*
         try {
             const persistResult = await persistOrderToDB(sessionId, session, {
                 restaurant_id: restaurantId,
@@ -57,12 +60,11 @@ export class ConfirmOrderHandler {
                 console.log(`✅ Order persisted to DB: ${orderId}${persistResult.skipped ? ' (idempotent)' : ''}`);
             } else {
                 console.error(`⚠️ Order persist failed: ${persistResult.error}`);
-                // Kontynuuj mimo błędu - użytkownik dostanie odpowiedź
             }
         } catch (persistError) {
             console.error(`🔥 Order persist exception:`, persistError.message);
-            // Nie blokuj odpowiedzi - loguj błąd i kontynuuj
         }
+        */
 
         // 5. Budowanie odpowiedzi
         const intro = `Dodano do koszyka. `;
