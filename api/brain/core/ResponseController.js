@@ -102,12 +102,14 @@ export async function finalizeResponse(rawReply, context) {
     let policyError = null;
 
     try {
+        console.time('response_policy');
         policy = resolveResponsePolicy({
             intent: context.intent,
             entities: context.entities || {},
             session: context.session || {},
             adminConfig: context.adminConfig || null
         });
+        console.timeEnd('response_policy');
 
         // Walidacja policy (defensive programming)
         if (!validatePolicy(policy)) {

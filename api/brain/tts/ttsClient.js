@@ -227,6 +227,7 @@ Nie zmieniaj faktów ani liczb. Intencja użytkownika: "${intent}".`;
 }
 
 export async function playTTS(text, options = {}) {
+  console.time('tts_total');
   try {
     text = normalizeForTTS(text);
     let cfg;
@@ -239,6 +240,7 @@ export async function playTTS(text, options = {}) {
     // GLOBAL KILL SWITCH
     if (cfg?.tts_enabled === false) {
       console.log('[TTS] Generation skipped: Disabled in system config.');
+      console.timeEnd('tts_total');
       return null;
     }
 
@@ -291,7 +293,10 @@ export async function playTTS(text, options = {}) {
         `[TTS] Using Gemini ${isGeminiLive ? "Live" : "2.5 Pro TTS"} voice: ${voice}`
       );
       const cacheKeyGemini = `${String(text)}|${voice}|${toneRaw}|gemini${isGeminiLive ? ":live" : ""}`;
-      if (ttsCache.has(cacheKeyGemini)) return ttsCache.get(cacheKeyGemini);
+      if (ttsCache.has(cacheKeyGemini)) {
+        console.timeEnd('tts_total');
+        return ttsCache.get(cacheKeyGemini);
+      }
       try {
         const audio = await playGeminiTTS(text, {
           voice,
@@ -304,6 +309,7 @@ export async function playTTS(text, options = {}) {
         }
         ttsCache.set(cacheKeyGemini, audio);
         if (ttsCache.size > 10) ttsCache.delete(ttsCache.keys().next().value);
+        console.timeEnd('tts_total');
         return audio;
       } catch (err) {
         console.warn(`⚠️ Gemini TTS failed: ${err?.message || err}. Falling back to BASIC/Wavenet.`);
@@ -337,7 +343,10 @@ export async function playTTS(text, options = {}) {
       console.log(`🔊 Using ${engineLabel} TTS (${googleVoiceName}, ${audioEnc})`);
 
       const cacheKey = `${ssml}|${googleVoiceName}|${toneRaw}|${engineRaw}`;
-      if (ttsCache.has(cacheKey)) return ttsCache.get(cacheKey);
+      if (ttsCache.has(cacheKey)) {
+        console.timeEnd('tts_total');
+        return ttsCache.get(cacheKey);
+      }
 
       const audioConfig = {
         audioEncoding: 'MP3',
@@ -367,6 +376,7 @@ export async function playTTS(text, options = {}) {
       const audioContent = result.audioContent || '';
       ttsCache.set(cacheKey, audioContent);
       if (ttsCache.size > 10) ttsCache.delete(ttsCache.keys().next().value);
+      console.timeEnd('tts_total');
       return audioContent;
     }
     console.log('✅ Google access token obtained successfully');
@@ -379,7 +389,10 @@ export async function playTTS(text, options = {}) {
     };
     console.log('🔊 Using Vertex: ' + voice);
     const cacheKeyVertex = `${JSON.stringify(reqBody.input)}|${voice}|${toneRaw}`;
-    if (ttsCache.has(cacheKeyVertex)) return ttsCache.get(cacheKeyVertex);
+    if (ttsCache.has(cacheKeyVertex)) {
+      console.timeEnd('tts_total');
+      return ttsCache.get(cacheKeyVertex);
+    }
     let response = await fetch(
       endpoint,
       {
@@ -422,9 +435,11 @@ export async function playTTS(text, options = {}) {
     const finalKey = endpoint.includes('europe-west1') ? cacheKeyVertex : `${String(text)}|${voice}|${toneRaw}`;
     ttsCache.set(finalKey, audioContent);
     if (ttsCache.size > 10) ttsCache.delete(ttsCache.keys().next().value);
+    console.timeEnd('tts_total');
     return audioContent;
   } catch (e) {
     console.error("🔥 playTTS Error:", e.message);
+    console.timeEnd('tts_total');
     throw e;
   }
 }
