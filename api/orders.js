@@ -158,7 +158,19 @@ export async function createOrder(restaurantId, userId = "guest") {
 }
 
 export default async function handler(req, res) {
-  if (applyCORS(req, res)) return; // 👈 ważne: obsługuje preflight
+  // Manual CORS check specifically for this endpoint to ensure Vercel doesn't block it
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, X-Admin-Token'
+  );
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
 
   // GET - pobierz zamówienia
   if (req.method === 'GET') {
