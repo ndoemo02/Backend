@@ -127,11 +127,12 @@ export function extractLocation(text) {
 function isBlacklisted(locLower) {
     const blacklist = [
         'tutaj', 'tu', 'szybko', 'pobliżu', 'okolicy', 'menu', 'coś', 'cos',
-        'azjatyckiego', 'azjatyckie', 'szybkiego', 'dobrego', 'innego',
+        'azjatyckiego', 'azjatyckie', 'szybkiego', 'dobrego', 'innego', 'inne',
         'zamów', 'pokaż', 'znajdź', 'chcę', 'raz', 'dwa', 'mam',
         'hubertus', 'kamienica', 'monte', 'carlo',
         'chleb', 'chlebie', 'talerz', 'talerzu', 'miska', 'misce', 'zupa', 'zupie',
-        'pizzy', 'pizza', 'burger', 'burgera'
+        'pizzy', 'pizza', 'burger', 'burgera',
+        'cola', 'coca', 'coca-cola', 'fanta', 'sprite', 'napój', 'napoje', 'woda'
     ];
     return blacklist.includes(locLower) || blacklist.some(word => locLower.startsWith(word + ' '));
 }

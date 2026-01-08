@@ -56,10 +56,63 @@ const defaultHandlers = {
     },
 };
 
+import { SupabaseRestaurantRepository } from './repository.js';
+
 export class BrainPipeline {
     constructor(deps = {}) {
         this.nlu = deps.nlu;
-        this.handlers = deps.handlers || defaultHandlers;
+        // Repository Injection: Use provided or default Supabase
+        this.repository = deps.repository || new SupabaseRestaurantRepository();
+
+        // Dynamic Handler Initialization with DI
+        this.handlers = this.createHandlers(this.repository, deps.handlers);
+    }
+
+    createHandlers(repository, overrides = {}) {
+        const defaults = {
+            food: {
+                find_nearby: new FindRestaurantHandler(repository),
+                menu_request: new MenuHandler(), // Need repo injection too if MenuHandler refactored
+                show_menu: new MenuHandler(),
+                create_order: new OrderHandler(),
+                choose_restaurant: new OrderHandler(),
+                confirm_order: new ConfirmOrderHandler(),
+                select_restaurant: new SelectRestaurantHandler(),
+                show_more_options: new OptionHandler(),
+                find_nearby_confirmation: new FindRestaurantHandler(repository),
+                recommend: {
+                    execute: async (ctx) => ({
+                        reply: 'Co polecam? W okolicy masz świetne opcje! Powiedz gdzie szukać.',
+                        intent: 'recommend',
+                        contextUpdates: { expectedContext: 'find_nearby' }
+                    })
+                },
+                cancel_order: {
+                    execute: async (ctx) => ({
+                        reply: 'Zamówienie anulowałam.',
+                        intent: 'cancel_order',
+                        contextUpdates: { pendingOrder: null, expectedContext: null }
+                    })
+                },
+                confirm: new FindRestaurantHandler(repository),
+            },
+            ordering: {
+                create_order: new OrderHandler(),
+                confirm_order: new ConfirmOrderHandler(),
+            },
+            system: {
+                health_check: { execute: async () => ({ reply: 'System działa', meta: {} }) },
+                fallback: { execute: async () => ({ reply: 'Nie rozumiem tego polecenia.', fallback: true }) }
+            },
+        };
+
+        // Deep merge overrides if any (simplified)
+        // For now, if overrides provided, we might just replace. 
+        // But tests usually provide mocks via repo, not handler overrides.
+        // If 'handlers' passed in deps, assume it's full map replacement (legacy support).
+        if (overrides && Object.keys(overrides).length > 0) return overrides;
+
+        return defaults;
     }
 
     /**
@@ -297,6 +350,7 @@ export class BrainPipeline {
                 actions: domainResponse.actions || [],
                 restaurants: restaurants,
                 menuItems: menuItems,
+                menu: menuItems, // Legacy Alias
                 meta: {
                     latency_total_ms: totalLatency,
                     source: domainMeta?.source || source || 'llm',
@@ -305,6 +359,7 @@ export class BrainPipeline {
                     ...(domainMeta || {})
                 },
                 context: getSession(sessionId),
+                locationRestaurants: restaurants, // Legacy Alias
                 timestamp: new Date().toISOString()
             };
 

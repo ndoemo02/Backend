@@ -1,0 +1,198 @@
+{
+  "analysis": {
+    "restaurantConflicts": [],
+    "menuCollisions": [
+      {
+        "dish": "zupa pomidorowa",
+        "restaurantCount": 2,
+        "restaurantIds": [
+          "8b00b05e-72f7-4a5f-b50c-5630a75d6312",
+          "af8448ef-974b-46c8-a4ae-b04b8dc7c9f8"
+        ]
+      },
+      {
+        "dish": "coca-cola",
+        "restaurantCount": 2,
+        "restaurantIds": [
+          "83566974-1017-4408-90ee-2571ccc06978",
+          "8b00b05e-72f7-4a5f-b50c-5630a75d6312"
+        ]
+      },
+      {
+        "dish": "wątróbka drobiowa",
+        "restaurantCount": 2,
+        "restaurantIds": [
+          "af8448ef-974b-46c8-a4ae-b04b8dc7c9f8",
+          "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
+        ]
+      },
+      {
+        "dish": "grillowany filet z kurczaka",
+        "restaurantCount": 2,
+        "restaurantIds": [
+          "af8448ef-974b-46c8-a4ae-b04b8dc7c9f8",
+          "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
+        ]
+      },
+      {
+        "dish": "rosół z makaronem",
+        "restaurantCount": 2,
+        "restaurantIds": [
+          "af8448ef-974b-46c8-a4ae-b04b8dc7c9f8",
+          "1fc1e782-bac6-47b2-978a-f6f2b38000cd"
+        ]
+      }
+    ],
+    "poisonousNames": [],
+    "stats": {
+      "restaurants": 9,
+      "menuItems": 245
+    }
+  },
+  "testCases": [
+    {
+      "type": "discovery",
+      "input": "Gdzie jest Restauracja Stara Kamienica?",
+      "expectedIntent": "find_nearby",
+      "expectedRestaurant": "Restauracja Stara Kamienica"
+    },
+    {
+      "type": "discovery",
+      "input": "Gdzie jest Rezydencja Luxury Hotel?",
+      "expectedIntent": "find_nearby",
+      "expectedRestaurant": "Rezydencja Luxury Hotel"
+    },
+    {
+      "type": "discovery",
+      "input": "Gdzie jest Klaps Burgers?",
+      "expectedIntent": "find_nearby",
+      "expectedRestaurant": "Klaps Burgers"
+    },
+    {
+      "type": "discovery",
+      "input": "Gdzie jest Vien-Thien?",
+      "expectedIntent": "find_nearby",
+      "expectedRestaurant": "Vien-Thien"
+    },
+    {
+      "type": "discovery",
+      "input": "Gdzie jest Bar Praha?",
+      "expectedIntent": "find_nearby",
+      "expectedRestaurant": "Bar Praha"
+    },
+    {
+      "type": "discovery",
+      "input": "Gdzie jest Callzone?",
+      "expectedIntent": "find_nearby",
+      "expectedRestaurant": "Callzone"
+    },
+    {
+      "type": "discovery",
+      "input": "Gdzie jest Dwór Hubertus?",
+      "expectedIntent": "find_nearby",
+      "expectedRestaurant": "Dwór Hubertus"
+    },
+    {
+      "type": "discovery",
+      "input": "Gdzie jest Tasty King Kebab?",
+      "expectedIntent": "find_nearby",
+      "expectedRestaurant": "Tasty King Kebab"
+    },
+    {
+      "type": "discovery",
+      "input": "Gdzie jest Pizzeria Monte Carlo?",
+      "expectedIntent": "find_nearby",
+      "expectedRestaurant": "Pizzeria Monte Carlo"
+    },
+    {
+      "type": "order_unique",
+      "input": "Zamawiam żur śląski na talerzu",
+      "expectedIntent": "create_order",
+      "expectedDish": "żur śląski na talerzu"
+    },
+    {
+      "type": "order_unique",
+      "input": "Zamawiam cheddar burger",
+      "expectedIntent": "create_order",
+      "expectedDish": "cheddar burger"
+    },
+    {
+      "type": "order_unique",
+      "input": "Zamawiam sałatka cezar callzone",
+      "expectedIntent": "create_order",
+      "expectedDish": "sałatka cezar callzone"
+    },
+    {
+      "type": "order_unique",
+      "input": "Zamawiam cappy jabłko",
+      "expectedIntent": "create_order",
+      "expectedDish": "cappy jabłko"
+    },
+    {
+      "type": "order_unique",
+      "input": "Zamawiam krewetki pikantne",
+      "expectedIntent": "create_order",
+      "expectedDish": "krewetki pikantne"
+    },
+    {
+      "type": "order_unique",
+      "input": "Zamawiam latte",
+      "expectedIntent": "create_order",
+      "expectedDish": "latte"
+    },
+    {
+      "type": "order_unique",
+      "input": "Zamawiam fanta",
+      "expectedIntent": "create_order",
+      "expectedDish": "fanta"
+    },
+    {
+      "type": "order_unique",
+      "input": "Zamawiam wołowina z warzywami",
+      "expectedIntent": "create_order",
+      "expectedDish": "wołowina z warzywami"
+    },
+    {
+      "type": "order_unique",
+      "input": "Zamawiam kalmary chrupiące curry",
+      "expectedIntent": "create_order",
+      "expectedDish": "kalmary chrupiące curry"
+    },
+    {
+      "type": "order_unique",
+      "input": "Zamawiam pizza pepperoni 33cm",
+      "expectedIntent": "create_order",
+      "expectedDish": "pizza pepperoni 33cm"
+    },
+    {
+      "type": "order_ambiguous",
+      "input": "Chcę zamówić zupa pomidorowa",
+      "expectedIntent": "find_nearby",
+      "notes": "Exists in 2 places"
+    },
+    {
+      "type": "order_ambiguous",
+      "input": "Chcę zamówić coca-cola",
+      "expectedIntent": "find_nearby",
+      "notes": "Exists in 2 places"
+    },
+    {
+      "type": "order_ambiguous",
+      "input": "Chcę zamówić wątróbka drobiowa",
+      "expectedIntent": "find_nearby",
+      "notes": "Exists in 2 places"
+    },
+    {
+      "type": "order_ambiguous",
+      "input": "Chcę zamówić grillowany filet z kurczaka",
+      "expectedIntent": "find_nearby",
+      "notes": "Exists in 2 places"
+    },
+    {
+      "type": "order_ambiguous",
+      "input": "Chcę zamówić rosół z makaronem",
+      "expectedIntent": "find_nearby",
+      "notes": "Exists in 2 places"
+    }
+  ]
+}

@@ -56,13 +56,60 @@ export class NLURouter {
         // Instant 0ms check against known 9 restaurants
         const matchedRestaurant = findRestaurantInText(text);
 
+        // --- RULE 3b: Aliases & Entity Parsing (Dish Detection) ---
+        const parsed = parseRestaurantAndDish(text);
+
         const entities = {
             location,
             cuisine,
             quantity,
             restaurant: matchedRestaurant ? matchedRestaurant.name : null,
-            restaurantId: matchedRestaurant ? matchedRestaurant.id : null
+            restaurantId: matchedRestaurant ? matchedRestaurant.id : null,
+            dish: parsed.dish || null, // EXPOSE DISH GLOBALLY
+            items: parsed.items || null
         };
+
+        // --- RULE: Context-Based Guards (Priority Maximum) ---
+        if (session?.expectedContext === 'confirm_order') {
+            if (/\b(nie|nie\s+chce|anuluj|stop)\b/i.test(normalized)) {
+                return { intent: 'cancel_order', confidence: 1.0, source: 'rule_guard', entities };
+            }
+            if (/\b(tak|potwierdzam|potwierdza|ok|dobra|zamawiam|dodaj|prosze|proszę)\b/i.test(normalized)) {
+                return { intent: 'confirm_order', confidence: 1.0, source: 'rule_guard', entities };
+            }
+        }
+
+        if (session?.expectedContext === 'select_restaurant' || session?.expectedContext === 'show_more_options') {
+            const isIntentLike = /(menu|zamawiam|zamów|poproszę|poprosze|wezmę|wezme|chcę|chce|pokaż|pokaz|znajdź|znajdz|gdzie|health)/i.test(normalized);
+            const isManualSelection = /\b(numer|nr|opcja|opcje)\s+\d+\b/i.test(normalized);
+            // If it's just a number or simple phrase, it's selection
+            if (!isIntentLike || /^[0-9]\b/.test(normalized.trim()) || isManualSelection) {
+                // If it contains "inne" or "wiecej", it might be show_more_options
+                if (/\b(wiecej|więcej|inne|lista)\b/i.test(normalized) && !isManualSelection) {
+                    // fall through to more options block
+                } else {
+                    return {
+                        intent: 'select_restaurant',
+                        confidence: 0.95,
+                        entities: { ...entities, raw: text },
+                        source: 'context_lock'
+                    };
+                }
+            }
+        }
+
+        // --- OPTIMIZATION (PRIORITY HIGH): More Options ---
+        if (/\b(wiecej|więcej|inne|opcje|lista)\b/i.test(normalized)) {
+            // Only if we were just looking for restaurants
+            if (session?.lastIntent === 'find_nearby' || session?.expectedContext === 'select_restaurant' || session?.expectedContext === 'show_more_options') {
+                return {
+                    intent: 'show_more_options',
+                    confidence: 0.99,
+                    source: 'explicit_more_options',
+                    entities
+                };
+            }
+        }
 
         // --- RULE 0 & 5: Discovery & Numerals (Blocking Rules) ---
 
@@ -114,6 +161,19 @@ export class NLURouter {
         // --- RULE 3: Strict Restaurant Match (Catalog) ---
         // If we found a restaurant from our static list 
         if (matchedRestaurant) {
+            // Check for ordering context FIRST
+            // Fix: "Zamawiam z Bar Praha" should be create_order, not select_restaurant
+            const isOrderContext = /\b(zamawiam|zamow|zamów|poprosze|poprosz[ęe]|wezme|wezm[ęe]|biore|bior[ęe]|chce|chc[ęe]|dla mnie|poprosic)\b/i.test(normalized);
+
+            if (isOrderContext) {
+                return {
+                    intent: 'create_order',
+                    confidence: 1.0,
+                    source: 'catalog_match_order',
+                    entities
+                };
+            }
+
             // Check context: "pokaż menu w Hubertusie" vs "idziemy do Hubertusa"
             if (/\b(menu|karta|oferta|cennik|co\s+ma|co\s+maja|zje[sś][ćc])\b/i.test(normalized)) {
                 return {
@@ -133,7 +193,7 @@ export class NLURouter {
         }
 
         // --- RULE 3b: Aliases & Entity Parsing (Dish Detection) ---
-        const parsed = parseRestaurantAndDish(text);
+        // (Previously parsed above for entities object)
 
         // --- RULE 1: Show + Restaurant (UX Guard) ---
         if (parsed.restaurant && /\b(pokaz|pokaż|co|jakie|zobacz)\b/i.test(normalized)) {
@@ -154,63 +214,36 @@ export class NLURouter {
             }
         }
 
-        // 0.5. Explicit "More Options" Detection (Prioritize over selection)
-        if (/\b(wiecej|więcej|inne|opcje|lista)\b/i.test(normalized)) {
-            // Only if we were just looking for restaurants
-            if (session?.lastIntent === 'find_nearby' || session?.expectedContext === 'select_restaurant' || session?.expectedContext === 'show_more_options') {
+        // --- OPTIMIZATION: Task 3 - Lexical Override (Priority high) ---
+        const isOrderingVerb = /(wybieram|poprosze|poprosz[ęe]|wezme|wezm[ęe]|dodaj|zamawiam|zamow|zamów|chce|chc[ęe]|zamowie|zamówię)/i.test(normalized);
+        const wantsMenuFirst = /\b(menu|karta|karte|kartę|oferta|ofertę|oferte|cennik|co\s+macie|lista|pokaz|pokaż|zobacz)\b/i.test(normalized);
+        const isChceDiscovery = /chc[ęe]\s+(co|gdzie|zje|jedzenie|kuchni|kuchnia|dania|danie|azjatyckie|wloskie|włoskie|chinskie|chińskie|orientalne|restauracj)/i.test(normalized);
+
+        if (!wantsMenuFirst && isOrderingVerb && !isChceDiscovery) {
+            // SAFETY CHECK: Ambiguous Item Order (Disambiguation Guard)
+            // If we are ordering, but have NO restaurant context/entity, assume discovery/disambiguation needed.
+            // Exception: If we have a very obscure unique item, Legacy/Smart logic below might catch it, 
+            // but for safety, "Zamawiam frytki" (no context) -> find_nearby.
+            const hasRestCtx = session?.lastRestaurant || session?.context === 'IN_RESTAURANT' ||
+                entities.restaurant || matchedRestaurant || parsed.restaurant;
+
+            if (hasRestCtx) {
                 return {
-                    intent: 'show_more_options',
-                    confidence: 0.99,
-                    source: 'explicit_more_options',
+                    intent: 'create_order',
+                    confidence: 1.0,
+                    source: 'lexical_override',
                     entities
                 };
             }
+            // If no context, FALL THROUGH. 
+            // "Zamawiam frytki" will likely hit FOOD_WORDS fallback -> find_nearby (Safe).
         }
 
-        // 1. Context-Based Decision (Priority High)
-        if (session?.expectedContext === 'select_restaurant' || session?.expectedContext === 'show_more_options') {
-            // Only if it doesn't look like a new intent
-            const isIntentLike = /(menu|zamawiam|pokaż|znajdź|gdzie|health)/i.test(normalized);
-            // If it's just a number or simple phrase, it's selection
-            if (!isIntentLike || /^[0-9]$/.test(normalized.trim())) {
-                return {
-                    intent: 'select_restaurant',
-                    confidence: 0.95,
-                    entities: { ...entities, raw: text },
-                    source: 'context_lock'
-                };
-            }
-        }
-
-        if (session?.expectedContext === 'confirm_order') {
-            if (/^(nie|nie\s+chcę|anuluj|stop)$/i.test(normalized)) {
-                return { intent: 'cancel_order', confidence: 1.0, source: 'rule_guard', entities };
-            }
-            if (/^(tak|potwierdzam|potwierdza|ok|dobra|zamawiam|dodaj|proszę)$/i.test(normalized)) {
-                return { intent: 'confirm_order', confidence: 1.0, source: 'rule_guard', entities };
-            }
-        }
+        // (Redundant guards moved up)
 
         // --- RULE 7: Generic Confirm (Legacy Parity) ---
         if (/^tak$/i.test(normalized)) {
             return { intent: 'confirm', confidence: 0.9, source: 'generic_confirm', entities };
-        }
-
-        // --- OPTIMIZATION: Task 3 - Lexical Override ---
-        // Exception: if user mentions "menu/karta/oferta" they want to see menu first
-        const isOrderingVerb = /(wybieram|poprosze|poprosz[ęe]|wezme|wezm[ęe]|dodaj|zamawiam|zamow|zamów|chce|chc[ęe]|zamowie|zamówię)/i.test(normalized);
-        const wantsMenuFirst = /\b(menu|karta|karte|kartę|oferta|ofertę|oferte|cennik|co\s+macie|lista|pokaz|pokaż|zobacz)\b/i.test(normalized);
-
-        // "Chcę" guard: skip if followed by discovery terms
-        const isChceDiscovery = /chc[ęe]\s+(co|gdzie|zje|jedzenie|kuchni|kuchnia|dania|danie|azjatyckie|wloskie|włoskie|chinskie|chińskie|orientalne|restauracj)/i.test(normalized);
-
-        if (!wantsMenuFirst && isOrderingVerb && !isChceDiscovery) {
-            return {
-                intent: 'create_order',
-                confidence: 1.0,
-                source: 'lexical_override',
-                entities
-            };
         }
 
         // 1.5 Explicit Regex NLU (Standardized)
@@ -284,7 +317,7 @@ export class NLURouter {
         }
 
         // 3. Food-word Fallback: if unknown but contains food words, assume exploration
-        const FOOD_WORDS = /\b(pizza|pizz[aeęyę]|kebab|kebaba|burger|burgera|burgery|sushi|ramen|pad\s*thai|pho|pierogi|pierog|zupy?|zup[ęka]|schabowy?|kotlet|frytki|frytek|king|kfc|mcdonald|mac|jedzenie|cos|coś|zjeść|zjesz|dania|baner|dobry)\b/i;
+        const FOOD_WORDS = /\b(pizza|pizz[aeęyę]|kebab|kebaba|burger|burgera|burgery|sushi|ramen|pad\s*thai|pho|pierogi|pierog|zupy?|zup[ęka]|schabowy?|kotlet|frytki|frytek|king|kfc|mcdonald|mac|jedzenie|cos|coś|zjeść|zjesz|dania|baner|dobry|cola|colę|cole|coca|fanta|sprite|woda|wode|wodę|napój|napoje)\b/i;
         if (FOOD_WORDS.test(normalized)) {
             return {
                 intent: 'find_nearby',

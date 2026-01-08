@@ -10,35 +10,35 @@ export const RESTAURANT_CATALOG = [
     {
         id: '1fc1e782-bac6-47b2-978a-f6f2b38000cd',
         name: 'Restauracja Stara Kamienica',
-        aliases: ['stara kamienica', 'kamienica', 'kamienicy'],
+        aliases: ['stara kamienica', 'kamienica', 'kamienicy', 'kamienicy'],
         city: 'Piekary Śląskie',
         cuisine: 'Polska'
     },
     {
         id: '4d27fbe3-20d0-4eb4-b003-1935be53af25',
         name: 'Rezydencja Luxury Hotel',
-        aliases: ['rezydencja', 'luxury', 'rezydencji'],
+        aliases: ['rezydencja', 'luxury', 'rezydencji', 'rezydencja luxury hotel'],
         city: 'Piekary Śląskie',
         cuisine: 'Międzynarodowa'
     },
     {
         id: '569a7d29-57be-4224-bdf3-09c483415cea',
         name: 'Klaps Burgers',
-        aliases: ['klaps', 'klapsa', 'burgerownia'],
+        aliases: ['klaps', 'klapsa', 'klapsie', 'klapsem'],
         city: 'Piekary Śląskie',
         cuisine: 'Amerykańska'
     },
     {
         id: '70842598-1632-43f6-8015-706d5adf182f',
         name: 'Vien-Thien',
-        aliases: ['vien thien', 'wietnamska', 'chinczyk', 'chińczyk'],
+        aliases: ['vien thien', 'wietnamska', 'chinczyk', 'chińczyk', 'vienta', 'vienten'],
         city: 'Piekary Śląskie',
         cuisine: 'Wietnamska'
     },
     {
         id: '8b00b05e-72f7-4a5f-b50c-5630a75d6312',
         name: 'Bar Praha',
-        aliases: ['bar praha', 'praha', 'praga', 'bar praga'],
+        aliases: ['bar praha', 'praha', 'praga', 'bar praga', 'praze', 'pradze'],
         city: 'Piekary Śląskie',
         cuisine: 'Czeska / Polska'
     },
@@ -52,21 +52,21 @@ export const RESTAURANT_CATALOG = [
     {
         id: 'af8448ef-974b-46c8-a4ae-b04b8dc7c9f8',
         name: 'Dwór Hubertus',
-        aliases: ['dwór hubertus', 'hubertus', 'hubertusa', 'dwor hubertus'],
+        aliases: ['dwór hubertus', 'hubertus', 'hubertusa', 'dwor hubertus', 'hubertusie', 'hubertusem'],
         city: 'Piekary Śląskie',
         cuisine: 'Śląska / Europejska'
     },
     {
         id: 'fc844513-2869-4f42-b04f-c21e1e4cceb7',
         name: 'Tasty King Kebab',
-        aliases: ['tasty king', 'tasty', 'king kebab', 'król kebaba'],
+        aliases: ['tasty king', 'tasty', 'king kebab', 'król kebaba', 'tastiego'],
         city: 'Piekary Śląskie',
         cuisine: 'Kebab'
     },
     {
         id: '83566974-1017-4408-90ee-2571ccc06978',
         name: 'Pizzeria Monte Carlo',
-        aliases: ['monte carlo', 'monte', 'carlo'],
+        aliases: ['monte carlo', 'monte', 'carlo', 'monte carlo'],
         city: 'Piekary Śląskie',
         cuisine: 'Pizzeria'
     }

@@ -3,7 +3,6 @@
  * Odpowiada za wyszukiwanie restauracji (SQL/Geo).
  */
 
-import { supabase } from '../../../_supabase.js';
 import { extractLocation, extractCuisineType } from '../../nlu/extractors.js';
 import { pluralPl } from '../../utils/formatter.js';
 
@@ -16,7 +15,11 @@ function normalizeLocation(loc) {
     return loc;
 }
 
+
 export class FindRestaurantHandler {
+    constructor(repository) {
+        this.repo = repository;
+    }
 
     async execute(ctx) {
         const { text, session, entities } = ctx;
@@ -25,19 +28,17 @@ export class FindRestaurantHandler {
         // Prefer entities from NLU (already extracted nicely), fallback to manual extract
         let location = entities?.location || extractLocation(text);
         if (!location) location = session?.last_location;
-
         const cuisineType = entities?.cuisine || extractCuisineType(text);
 
         // Normalize location for DB
         let normalizedLoc = normalizeLocation(location);
 
         if (!normalizedLoc) {
+            // ... (Logic for asking location remains same)
             // Check if we are asking for "nearby" explicitly without location
             if (/w pobli[zż]u|blisko|tutaj|okolicy/i.test(text)) {
-                // If we have Lat/Lng in body, we could use that. For now, prompt user.
-                // TODO: Implement Geo-search if coords available
                 if (ctx.body && ctx.body.lat && ctx.body.lng) {
-                    // Geo logic would go here
+                    // Geo logic
                 } else {
                     return {
                         reply: "W jakiej miejscowości mam szukać?",
@@ -45,7 +46,6 @@ export class FindRestaurantHandler {
                     };
                 }
             } else {
-                // Default prompt
                 return {
                     reply: "Gdzie mam szukać? Podaj miasto.",
                     contextUpdates: { expectedContext: 'find_nearby_ask_location' }
@@ -55,13 +55,28 @@ export class FindRestaurantHandler {
 
         console.log(`🔎 Searching for ${cuisineType || 'any'} in ${normalizedLoc} (Original: ${location})...`);
 
-        // 2. Primary Search
-        let { data: restaurants, error } = await this.queryDb(normalizedLoc, cuisineType);
+        // 3. Fallback: Nearby Cities logic (Legacy Port)
+        // Hardcoded Known Cities for Validation
+        const KNOWN_CITIES = ['Piekary Śląskie', 'Bytom', 'Radzionków', 'Chorzów', 'Katowice', 'Siemianowice Śląskie', 'Świerklaniec', 'Zabrze', 'Tarnowskie Góry', 'Świętochłowice', 'Mysłowice'];
+
+        // BUGFIX: If extracted location is valid string but NOT in known cities, overwrite with session location if valid
+        // This prevents aggressive NLU extraction (e.g. "Zamawiam") from poisoning the search
+        if (normalizedLoc && !KNOWN_CITIES.includes(normalizedLoc) && session?.last_location && KNOWN_CITIES.includes(session.last_location)) {
+            console.log(`⚠️ Invalid/Unknown location "${normalizedLoc}" detected. Fallback to valid session location: "${session.last_location}"`);
+            normalizedLoc = session.last_location;
+        }
+
+        let restaurants;
+        try {
+            restaurants = await this.repo.searchRestaurants(normalizedLoc, cuisineType);
+        } catch (error) {
+            console.error('Repo Error:', error);
+            return { reply: "Mam problem z bazą danych. Spróbuj później.", error: 'db_error' };
+        }
 
         let replyPrefix = "";
         let foundInNearby = false;
 
-        // 3. Fallback: Nearby Cities logic (Legacy Port)
         if (!restaurants?.length) {
             const nearbyCitySuggestions = {
                 'Piekary Śląskie': ['Bytom', 'Radzionków', 'Chorzów', 'Siemianowice Śląskie', 'Świerklaniec'],
@@ -75,7 +90,7 @@ export class FindRestaurantHandler {
 
             for (const neighbor of suggestions) {
                 console.log(`🔎 Fallback: Checking ${neighbor}...`);
-                const { data: neighborRest, error: nErr } = await this.queryDb(neighbor, cuisineType);
+                const neighborRest = await this.repo.searchRestaurants(neighbor, cuisineType);
 
                 if (neighborRest && neighborRest.length > 0) {
                     restaurants = neighborRest;
@@ -87,17 +102,16 @@ export class FindRestaurantHandler {
             }
         }
 
-        if (error) {
-            console.error('DB Error:', error);
-            return { reply: "Mam problem z bazą danych. Spróbuj później.", error: 'db_error' };
-        }
-
         // 4. Formatting Result
         if (!restaurants || restaurants.length === 0) {
             const cuisineMsg = cuisineType ? ` serwujących ${cuisineType}` : '';
             return {
                 reply: `Nie znalazłam żadnych restauracji w ${location}${cuisineMsg}. Może inna kuchnia?`,
-                contextUpdates: { last_location: normalizedLoc }
+                contextUpdates: {
+                    last_location: normalizedLoc,
+                    // Feature: Keep dish in memory even if search failed, in case user provides a specific place next
+                    pendingDish: entities?.dish || (entities?.items && entities.items[0]?.name) || null
+                }
             };
         }
 
@@ -127,24 +141,10 @@ export class FindRestaurantHandler {
                 last_location: normalizedLoc,
                 last_restaurants_list: restaurants,
                 lastRestaurants: suggestedRestaurants,
-                expectedContext: 'select_restaurant'
+                expectedContext: 'select_restaurant',
+                // Feature: Remember implicit dish for subsequent selection
+                pendingDish: entities?.dish || (entities?.items && entities.items[0]?.name) || null
             }
         };
-    }
-
-    async queryDb(city, cuisineType) {
-        let query = supabase
-            .from('restaurants')
-            .select('id, name, address, city, cuisine_type, lat, lng')
-            .ilike('city', `%${city}%`);
-
-        if (cuisineType) {
-            // Use legacy expandCuisineType logic if needed, or simple ILIKE
-            // For exact parity, we should import expandCuisineType. 
-            // Assuming simplified exact match or mapped types for now as per V2 standard.
-            query = query.ilike('cuisine_type', `%${cuisineType}%`);
-        }
-
-        return await query.limit(10);
     }
 }

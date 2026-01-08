@@ -50,7 +50,7 @@ export function parseRestaurantAndDish(text) {
   }
 
   // Pattern for "Zamów [danie]" (no restaurant name in text)
-  const simpleOrderPattern = /(?:zamów|poproszę|chcę|poproszę\s+o)\s+([a-ząćęłńóśźż\d\s]+)$/i;
+  const simpleOrderPattern = /^(?:poprosz[eę]|chc[eę]|bior[eę]|dla mnie|zamawiam|szukam)\s+(.+)$/i;
   const simpleMatch = text.match(simpleOrderPattern);
   if (simpleMatch) {
     let dish = simpleMatch[1]?.trim();
@@ -68,7 +68,7 @@ export function parseRestaurantAndDish(text) {
   }
 
   // Pattern 1: "Zamów [danie] [nazwa restauracji]"
-  const orderPattern = /(?:zamów|poproszę|chcę)\s+([a-ząćęłńóśźż\s]+?)\s+([A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż\s]+)/i;
+  const orderPattern = /(?:poprosz[eę]|chc[eę]|bior[eę]|dla mnie|zamawiam|szukam)\s+((?:\d+\s+)?(?:[a-zA-ZąęćłńóśźżĄĘĆŁŃÓŚŹŻ]+\s*)+)\s+([A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż\s]+)/i;
   const orderMatch = text.match(orderPattern);
   if (orderMatch) {
     let dish = orderMatch[1]?.trim();

@@ -88,6 +88,7 @@ export class ConfirmOrderHandler {
                 addedToCart: true,
                 cart: session.cart,
                 order_id: orderId,
+                transaction_status: 'success',
                 persisted: !!orderId,
                 source: 'confirm_handler'
             },

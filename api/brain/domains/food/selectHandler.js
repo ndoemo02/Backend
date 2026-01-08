@@ -6,7 +6,7 @@ export class SelectRestaurantHandler {
 
     async execute(ctx) {
         const { text, session } = ctx;
-        console.log("🧠 SelectRestaurantHandler executing...");
+        console.log(`🧠 SelectRestaurantHandler executing... Pending Dish: "${session?.pendingDish}"`);
 
         const list = session?.last_restaurants_list || [];
         if (!list || list.length === 0) {
@@ -46,6 +46,35 @@ export class SelectRestaurantHandler {
         }
 
         // 3. Selection Success
+        // 3. Selection Success
+
+        // Feature: Auto-convert to order if we have a pending dish remembered
+        if (session?.pendingDish) {
+            const dishName = session.pendingDish;
+            return {
+                reply: `Wybrano ${selected.name}. Rozpoczynam zamawianie: ${dishName}. Coś jeszcze?`,
+                should_reply: true,
+                actions: [
+                    {
+                        type: 'create_order',
+                        payload: {
+                            restaurant: selected,
+                            restaurant_id: selected.id,
+                            items: [{ name: dishName, quantity: 1 }]
+                        }
+                    }
+                ],
+                contextUpdates: {
+                    lastRestaurant: selected,
+                    lockedRestaurantId: selected.id,
+                    context: 'IN_RESTAURANT',
+                    expectedContext: 'confirm_order',
+                    pendingDish: null // Consume the memory
+                },
+                meta: { source: 'selection_auto_order' }
+            };
+        }
+
         return {
             reply: `Wybrano ${selected.name}. Co chcesz zrobić? (Pokaż menu lub zamawiam)`,
             contextUpdates: {

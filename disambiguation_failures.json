@@ -1,0 +1,12 @@
+[
+  {
+    "dish": "zupa pomidorowa",
+    "input": "Zamawiam zupa pomidorowa",
+    "error": "Unsafe Intent: Got 'create_order' for ambiguous item 'zupa pomidorowa'. Expected 'find_nearby', 'unknown', or clarification intent."
+  },
+  {
+    "dish": "coca-cola",
+    "input": "Zamawiam coca-cola",
+    "error": "Unsafe Intent: Got 'create_order' for ambiguous item 'coca-cola'. Expected 'find_nearby', 'unknown', or clarification intent."
+  }
+]

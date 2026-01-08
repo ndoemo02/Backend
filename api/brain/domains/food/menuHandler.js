@@ -142,6 +142,7 @@ export class MenuHandler {
             reply,
             closing_question: closing,
             menuItems: preview.shortlist,
+            menu: preview.shortlist, // Legacy compat
             restaurants: [],
             restaurant: restaurant, // CRITICAL: Frontend needs restaurant details (name, etc.)
             contextUpdates: {

@@ -1,0 +1,152 @@
+🌍 Loaded .env from: C:\Firerfox Portable\Freeflow brain\backend\.env
+✅ Supabase client initialized (singleton mode)
+🚀 Starting NLU Smoke Tests...
+
+Testing: Discovery - Generic            | Input: "Gdzie mogę zjeść coś dobrego?" ... [NLU] Detecting intent for: Gdzie mogę zjeść coś dobrego?
+[NLU] Result: {
+  intent: 'find_nearby',
+  confidence: 0.99,
+  source: 'discovery_guard_block',
+  entities: {
+    location: 'Gdza',
+    cuisine: null,
+    quantity: 1,
+    restaurant: null,
+    restaurantId: null
+  },
+  domain: 'food'
+}
+✅ PASS
+Testing: Discovery - Location           | Input: "Szukam pizzerii w Piekarach" ... [NLU] Detecting intent for: Szukam pizzerii w Piekarach
+[NLU] Result: {
+  intent: 'find_nearby',
+  confidence: 0.99,
+  source: 'discovery_guard_block',
+  entities: {
+    location: 'Piekary',
+    cuisine: 'Pizzeria',
+    quantity: 1,
+    restaurant: null,
+    restaurantId: null
+  },
+  domain: 'food'
+}
+✅ PASS
+Testing: Menu Request - Explicit        | Input: "Pokaż mi menu Hubertusa" ... [NLU] Detecting intent for: Pokaż mi menu Hubertusa
+[NLU] Result: {
+  intent: 'menu_request',
+  confidence: 1,
+  source: 'catalog_match_menu',
+  entities: {
+    location: 'Hubertusa',
+    cuisine: null,
+    quantity: 1,
+    restaurant: 'Dwór Hubertus',
+    restaurantId: 'af8448ef-974b-46c8-a4ae-b04b8dc7c9f8'
+  },
+  domain: 'food'
+}
+✅ PASS
+Testing: Selection - Contextual         | Input: "Wybieram opcję 1" ... [NLU] Detecting intent for: Wybieram opcję 1
+[NLU] Result: {
+  intent: 'select_restaurant',
+  confidence: 0.95,
+  entities: {
+    location: 'Wybieram',
+    cuisine: null,
+    quantity: 1,
+    restaurant: null,
+    restaurantId: null,
+    raw: 'Wybieram opcję 1'
+  },
+  source: 'context_lock',
+  domain: 'food'
+}
+✅ PASS
+Testing: Ordering - Lexical             | Input: "Poproszę kebab" ... [NLU] Detecting intent for: Poproszę kebab
+[NLU] Result: {
+  intent: 'create_order',
+  confidence: 1,
+  source: 'lexical_override',
+  entities: {
+    location: 'Poprosz',
+    cuisine: 'Kebab',
+    quantity: 1,
+    restaurant: null,
+    restaurantId: null
+  },
+  domain: 'ordering'
+}
+✅ PASS
+Testing: Confirm Order - Contextual     | Input: "Tak, zamawiam" ... [NLU] Detecting intent for: Tak, zamawiam
+[NLU] Result: {
+  intent: 'confirm_order',
+  confidence: 1,
+  source: 'rule_guard',
+  entities: {
+    location: 'Tak',
+    cuisine: null,
+    quantity: 1,
+    restaurant: null,
+    restaurantId: null
+  },
+  domain: 'ordering'
+}
+✅ PASS
+Testing: Discovery - Numerals (Rule 5)  | Input: "Dwa kebaby poproszę" ... [NLU] Detecting intent for: Dwa kebaby poproszę
+[NLU] Result: {
+  intent: 'create_order',
+  confidence: 1,
+  source: 'lexical_override',
+  entities: {
+    location: null,
+    cuisine: 'Kebab',
+    quantity: 2,
+    restaurant: null,
+    restaurantId: null
+  },
+  domain: 'ordering'
+}
+✅ PASS
+Testing: Discovery - More Options       | Input: "Inne opcje" ... [NLU] Detecting intent for: Inne opcje
+[NLU] Result: {
+  intent: 'show_more_options',
+  confidence: 0.99,
+  source: 'explicit_more_options',
+  entities: {
+    location: null,
+    cuisine: null,
+    quantity: 1,
+    restaurant: null,
+    restaurantId: null
+  },
+  domain: 'food'
+}
+✅ PASS
+Testing: Selection - By Number          | Input: "Poproszę numer 2" ... [NLU] Detecting intent for: Poproszę numer 2
+[NLU] Result: {
+  intent: 'select_restaurant',
+  confidence: 0.95,
+  entities: {
+    location: 'Poprosz',
+    cuisine: null,
+    quantity: 2,
+    restaurant: null,
+    restaurantId: null,
+    raw: 'Poproszę numer 2'
+  },
+  source: 'context_lock',
+  domain: 'food'
+}
+✅ PASS
+Testing: Context Escape - Change Restaurant | Input: "Zmień na inną" ... [NLU] Detecting intent for: Zmień na inną
+[NLU] Result: {
+  intent: 'find_nearby',
+  confidence: 0.9,
+  source: 'lock_escape',
+  entities: {},
+  domain: 'food'
+}
+✅ PASS
+
+📊 Results: 10 Passed, 0 Failed

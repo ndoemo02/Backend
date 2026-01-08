@@ -1,0 +1,18 @@
+[
+  {
+    "input": "Zamawiam Pizza Šunková i Pizza Ekkluzivne z Bar Praha",
+    "result": {
+      "intent": "select_restaurant",
+      "confidence": 0.98,
+      "source": "catalog_match_explicit",
+      "entities": {
+        "location": "Bar Praha",
+        "cuisine": "Pizzeria",
+        "quantity": 1,
+        "restaurant": "Bar Praha",
+        "restaurantId": "8b00b05e-72f7-4a5f-b50c-5630a75d6312"
+      },
+      "domain": "food"
+    }
+  }
+]

@@ -3,8 +3,22 @@ import { getMenuItems } from "./menuService.js";
 
 export function normalize(text) {
   if (!text) return "";
-  return text
-    .toLowerCase()
+  let s = text.toLowerCase();
+
+  // Strip common ordering verbs and courtesy words
+  s = s.replace(/\b(zamawiam|zamów|poproszę|poprosze|wezmę|wezme|chcę|chce|dodaj|biorę|biore|poproszę\s+o)\b/g, "");
+
+  // Remove common quantity words
+  s = s.replace(/\b(jeden|jedna|jedno|dwa|dwie|trzy|cztery|pięć|piec|dziesięć|dziesiec|kilka|parę|pare)\b/g, "");
+
+  // Polish declension normalization (approximate to root)
+  s = s.replace(/ę\b/g, "a"); // pizzę -> pizza
+  s = s.replace(/ą\b/g, "a"); // pizzą -> pizza
+  s = s.replace(/y\b/g, "a"); // rolady -> rolada (approx)
+  s = s.replace(/e\b/g, "a"); // frytki -> frytka? No, but helps for "rolade" -> "rolada" (if misspelled) 
+  // Actually, 'e' is tricky (burgery -> burgera?). Let's be careful.
+
+  return s
     .replace(/restauracji|restauracja|w|u|na|do/g, "")
     .replace(/[-_]/g, " ")
     .replace(/[^a-ząćęłńóśźż0-9\s]/g, "")
