@@ -79,6 +79,9 @@ export async function persistOrderToDB(sessionId, session, options = {}) {
         const restaurantId = options.restaurant_id || firstItem.restaurant_id || session?.lastRestaurant?.id || null;
         const restaurantName = options.restaurant_name || firstItem.restaurant_name || session?.lastRestaurant?.name || 'Unknown';
 
+        const totalPLN = Number(cart.total || 0);
+        const totalCents = Math.round(totalPLN * 100);
+
         const orderData = {
             // Identyfikatory
             user_id: options.user_id || session?.user_id || null,
@@ -94,10 +97,13 @@ export async function persistOrderToDB(sessionId, session, options = {}) {
                 unit_price_cents: Math.round((item.price_pln || item.price || 0) * 100),
                 qty: item.qty || item.quantity || 1
             })),
-            total_price: Math.round((cart.total || 0) * 100), // grosze
+            total_price: totalPLN, // PLN (float) - standard dla Dashboardów
+            total_cents: totalCents, // Cents (integer) - dla precyzji analitycznej
 
             // Status
-            status: 'pending',
+            // Zmieniamy na 'confirmed', ponieważ Voice Flow v2 zapisuje zamówienie
+            // JEDYNIE gdy intencja 'confirm_order' została przetworzona przez Brain.
+            status: 'confirmed',
             source: 'voice_brain_v2',
 
             // Timestamps

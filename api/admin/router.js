@@ -1,6 +1,7 @@
 
 import express from 'express';
 import conversations from './conversations.js';
+import conversationsClear from './conversations-clear.js';
 import conversation from './conversation.js';
 import stats from './business-stats.js';
 import systemStatus from './system-status.js';
@@ -17,6 +18,7 @@ const wrap = (handler) => async (req, res, next) => {
 };
 
 router.get('/conversations', wrap(conversations));
+router.delete('/conversations', wrap(conversationsClear));
 router.get('/conversation', wrap(conversation));
 router.get('/business-stats', wrap(stats));
 router.get('/system-status', wrap(systemStatus));

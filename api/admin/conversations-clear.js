@@ -22,36 +22,44 @@ export default async function handler(req, res) {
     // created_at > 0 is a hacky way to match all if no specific filter is needed but delete() acts on filters.
     // better: .neq('id', '00000000-0000-0000-0000-000000000000') or something.
     // Or just .gt('id', '00000000-0000-0000-0000-000000000000') (uuids are lexicographically comparable?)
-    
+
     // Actually, .neq('id', '0') might work if internal IDs are UUIDs. 
     // Another way is to separate calls or use RPC.
-    
+
     // Let's try clearing conversation_events first for safety.
     const { error: err1 } = await supabase.from('conversation_events').delete().neq('id', 0); // Assuming 'id' is int or uuid.
     // If id is uuid, neq 0 might fail type check if strict.
-    
+
     // Let's rely on simply deleting conversations and hoping for cascade or manually deleting.
     // But how to "delete all" in Supabase-js?
     // .delete() requires a filter.
     // We can use .neq('course_name', 'ThisStringDoesNotExist') but we don't know columns for sure.
     // usually .not('id', 'is', null) work?
-    
+
     try {
         // 1. Delete events
         const { error: errorEvents } = await supabase
             .from('conversation_events')
             .delete()
-            .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete not null/empty
-            
+            .not('id', 'is', null);
+
         // 2. Delete conversations
         const { error: errorConvs } = await supabase
             .from('conversations')
             .delete()
-            .neq('id', '00000000-0000-0000-0000-000000000000'); // UUID pattern
+            .not('id', 'is', null);
+
+        // 3. Clear amber_intents (Secondary Analytics table used by Dashboard)
+        // This ensures the "AI Interactions" and other stats in Dashboard reset to 0
+        const { error: errorAmber } = await supabase
+            .from('amber_intents')
+            .delete()
+            .not('id', 'is', null);
 
         if (errorConvs) throw errorConvs;
 
-        return res.json({ ok: true, message: 'All conversations cleared' });
+        console.log("✅ Admin: All conversations and intent logs cleared.");
+        return res.json({ ok: true, message: 'All conversations and analytics cleared' });
     } catch (e) {
         console.error("Clear error:", e);
         return res.status(500).json({ ok: false, error: e.message });
