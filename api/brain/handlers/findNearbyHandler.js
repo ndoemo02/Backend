@@ -219,7 +219,16 @@ export async function handleFindNearby({
       const list = top
         .map((r, i) => `${i + 1}. ${sanitizePlaceName(r.name, r.cuisine_type, r.category)} (${formatDistance(r.distance)})`)
         .join("\n");
-      replyCore = `W pobliżu mam:\n${list}\n\nKtórą wybierasz?`;
+
+      // UX IMPROVEMENT: Implicit Order Recognition
+      const ORDER_VERBS_REGEX = /\b(zamawiam|zamow|zamów|poprosze|poprosz[ęe]|wezme|wezm[ęe]|biore|bior[ęe]|chce|chc[ęe]|chciał(bym|abym))\b/i;
+      const isImplicitOrder = ORDER_VERBS_REGEX.test(text);
+
+      if (isImplicitOrder) {
+        replyCore = `Chętnie przyjmę zamówienie, ale najpierw wybierzmy miejsce. W pobliżu mam:\n${list}\n\nZ której restauracji zamawiamy?`;
+      } else {
+        replyCore = `W pobliżu mam:\n${list}\n\nKtórą wybierasz?`;
+      }
       return { reply: replyCore, meta };
     }
   }
@@ -254,42 +263,61 @@ export async function handleFindNearby({
   const categories = groupRestaurantsByCategory(displayRestaurants);
   const categoryNames = Object.keys(categories);
 
+  // UX IMPROVEMENT: Implicit Order Recognition (DB path)
+  const ORDER_VERBS_REGEX = /\b(zamawiam|zamow|zamów|poprosze|poprosz[ęe]|wezme|wezm[ęe]|biore|bior[ęe]|chce|chc[ęe]|chciał(bym|abym))\b/i;
+  const isImplicitOrder = ORDER_VERBS_REGEX.test(text);
+
   if (cuisineType && categoryNames.length) {
     const finalLoc = displayLocation || location || displayRestaurants[0]?.city || null;
     const locationInfo = finalLoc ? ` w ${finalLoc}` : " w pobliżu";
     const countText =
       displayRestaurants.length === 1 ? "miejsce" : displayRestaurants.length < 5 ? "miejsca" : "miejsc";
-    replyCore =
-      `${replyPrefix}Znalazłam ${displayRestaurants.length} ${countText}${locationInfo}:\n` +
-      displayRestaurants
-        .map((r, i) => {
-          let distanceStr = "";
-          if (r.distance && r.distance < 999) {
-            distanceStr = r.distance < 1 ? ` (${Math.round(r.distance * 1000)} metrów)` : ` (${r.distance.toFixed(1)} kilometra)`;
-          }
-          return `${i + 1}. ${r.name}${r.cuisine_type ? ` - ${r.cuisine_type}` : ""}${distanceStr}`;
-        })
-        .join("\n") +
-      (restaurants.length > requestedCount ? `\n\n(+${restaurants.length - requestedCount} więcej — powiedz "pokaż wszystkie")` : "") +
-      "\n\nKtóre Cię interesuje?";
+
+    if (isImplicitOrder) {
+      replyCore = `${replyPrefix}Widzę, że masz ochotę na ${cuisineType}! Znalazłam ${displayRestaurants.length} ${countText}${locationInfo}:\n` +
+        displayRestaurants.map((r, i) => `${i + 1}. ${r.name} (${formatDistance(r.distance)})`).join("\n") +
+        `\n\nZ której restauracji chcesz zamówić?`;
+    } else {
+      replyCore =
+        `${replyPrefix}Znalazłam ${displayRestaurants.length} ${countText}${locationInfo}:\n` +
+        displayRestaurants
+          .map((r, i) => {
+            let distanceStr = "";
+            if (r.distance && r.distance < 999) {
+              distanceStr = r.distance < 1 ? ` (${Math.round(r.distance * 1000)} metrów)` : ` (${r.distance.toFixed(1)} kilometra)`;
+            }
+            return `${i + 1}. ${r.name}${r.cuisine_type ? ` - ${r.cuisine_type}` : ""}${distanceStr}`;
+          })
+          .join("\n") +
+        (restaurants.length > requestedCount ? `\n\n(+${restaurants.length - requestedCount} więcej — powiedz "pokaż wszystkie")` : "") +
+        "\n\nKtóre Cię interesuje?";
+    }
   } else {
+    // Generic List
     const finalLoc2 = displayLocation || location || displayRestaurants[0]?.city || null;
     const locationInfo = finalLoc2 ? ` w ${finalLoc2}` : " w pobliżu";
     const countText =
       displayRestaurants.length === 1 ? "miejsce" : displayRestaurants.length < 5 ? "miejsca" : "miejsc";
-    replyCore =
-      `${replyPrefix}Mam ${displayRestaurants.length} ${countText}${locationInfo}:\n` +
-      displayRestaurants
-        .map((r, i) => {
-          let distanceStr = "";
-          if (r.distance && r.distance < 999) {
-            distanceStr = r.distance < 1 ? ` (${Math.round(r.distance * 1000)} metrów)` : ` (${r.distance.toFixed(1)} kilometra)`;
-          }
-          return `${i + 1}. ${r.name}${r.cuisine_type ? ` - ${r.cuisine_type}` : ""}${distanceStr}`;
-        })
-        .join("\n") +
-      (restaurants.length > requestedCount ? `\n\n(+${restaurants.length - requestedCount} więcej — powiedz "pokaż wszystkie")` : "") +
-      "\n\nKtóre Cię interesuje?";
+
+    if (isImplicitOrder) {
+      replyCore = `${replyPrefix}Chętnie przyjmę zamówienie, ale musimy wybrać skąd. Mam ${displayRestaurants.length} ${countText}${locationInfo}:\n` +
+        displayRestaurants.map((r, i) => `${i + 1}. ${r.name}${r.cuisine_type ? ` - ${r.cuisine_type}` : ""}`).join("\n") +
+        `\n\nPodaj nazwę lub numer restauracji, z której zamawiamy.`;
+    } else {
+      replyCore =
+        `${replyPrefix}Mam ${displayRestaurants.length} ${countText}${locationInfo}:\n` +
+        displayRestaurants
+          .map((r, i) => {
+            let distanceStr = "";
+            if (r.distance && r.distance < 999) {
+              distanceStr = r.distance < 1 ? ` (${Math.round(r.distance * 1000)} metrów)` : ` (${r.distance.toFixed(1)} kilometra)`;
+            }
+            return `${i + 1}. ${r.name}${r.cuisine_type ? ` - ${r.cuisine_type}` : ""}${distanceStr}`;
+          })
+          .join("\n") +
+        (restaurants.length > requestedCount ? `\n\n(+${restaurants.length - requestedCount} więcej — powiedz "pokaż wszystkie")` : "") +
+        "\n\nKtóre Cię interesuje?";
+    }
   }
 
   if (restaurants.length > requestedCount) {

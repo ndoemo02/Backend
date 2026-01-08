@@ -123,7 +123,8 @@ export class NLURouter {
         const RECOMMEND_KEYWORDS = ['polecisz', 'polec'];
         // 5. Numeric Discovery (e.g. "dwa kebaby", "trzy lokale") - if no ordering verb, it's discovery
         const NUMERALS = /\b(dwa|dwie|dwoje|trzy|troje|cztery|pięć|sześć|siedem|osiem|dziewięć|dziesięć|kilka|parę)\b/i;
-        const ORDER_VERBS = /\b(menu|karta|oferta|zamawiam|wezm[ęe]|dodaj|poprosz[ęe]|chc[ęe]|bior[ęe])\b/i;
+        // UPDATED: Added natural forms: "biorę", "wezmę", "poproszę", "chciałbym", "chciałabym"
+        const ORDER_VERBS = /\b(menu|karta|oferta|zamawiam|wezm[ęe]|dodaj|poprosz[ęe]|chc[ęe]|bior[ęe]|chciał(bym|abym))\b/i;
 
         const isRecommend = RECOMMEND_KEYWORDS.some(k => normalized.includes(k));
         const isDiscovery = DISCOVERY_KEYWORDS.some(k => normalized.includes(k));
@@ -150,12 +151,20 @@ export class NLURouter {
         }
 
         if (isDiscovery || isNumericDiscovery || isUncertain) {
-            return {
-                intent: 'find_nearby',
-                confidence: 0.99,
-                source: isNumericDiscovery ? 'rule_5_numeric' : (isUncertain ? 'uncertainty_block' : 'discovery_guard_block'),
-                entities
-            };
+            // PRIORITY FIX: If specific restaurant is named, we might want to select it, 
+            // BUT if it's "Szukam <restauracji>" it implies looking for it (find_nearby/map) OR selecting text.
+            // However, "Szukam w Piekarach" (Location) should ALWAYS be find_nearby.
+
+            // If we have a Location entity AND Discovery keyword, Force find_nearby
+            // (Even if 'Piekarach' loosely matches a restaurant name)
+            if (location || !matchedRestaurant) {
+                return {
+                    intent: 'find_nearby',
+                    confidence: 0.99,
+                    source: isNumericDiscovery ? 'rule_5_numeric' : (isUncertain ? 'uncertainty_block' : 'discovery_guard_block'),
+                    entities
+                };
+            }
         }
 
         // --- RULE 3: Strict Restaurant Match (Catalog) ---
@@ -163,7 +172,8 @@ export class NLURouter {
         if (matchedRestaurant) {
             // Check for ordering context FIRST
             // Fix: "Zamawiam z Bar Praha" should be create_order, not select_restaurant
-            const isOrderContext = /\b(zamawiam|zamow|zamów|poprosze|poprosz[ęe]|wezme|wezm[ęe]|biore|bior[ęe]|chce|chc[ęe]|dla mnie|poprosic)\b/i.test(normalized);
+            // UPDATED: Included "chciałbym/chciałabym"
+            const isOrderContext = /\b(zamawiam|zamow|zamów|poprosze|poprosz[ęe]|wezme|wezm[ęe]|biore|bior[ęe]|chce|chc[ęe]|dla mnie|poprosic|chciał(bym|abym))\b/i.test(normalized);
 
             if (isOrderContext) {
                 return {
@@ -215,7 +225,8 @@ export class NLURouter {
         }
 
         // --- OPTIMIZATION: Task 3 - Lexical Override (Priority high) ---
-        const isOrderingVerb = /(wybieram|poprosze|poprosz[ęe]|wezme|wezm[ęe]|dodaj|zamawiam|zamow|zamów|chce|chc[ęe]|zamowie|zamówię)/i.test(normalized);
+        // UPDATED: Syncing verbs
+        const isOrderingVerb = /(wybieram|poprosze|poprosz[ęe]|wezme|wezm[ęe]|dodaj|zamawiam|zamow|zamów|chce|chc[ęe]|zamowie|zamówię|biore|bior[ęe]|chciał(bym|abym))/i.test(normalized);
         const wantsMenuFirst = /\b(menu|karta|karte|kartę|oferta|ofertę|oferte|cennik|co\s+macie|lista|pokaz|pokaż|zobacz)\b/i.test(normalized);
         const isChceDiscovery = /chc[ęe]\s+(co|gdzie|zje|jedzenie|kuchni|kuchnia|dania|danie|azjatyckie|wloskie|włoskie|chinskie|chińskie|orientalne|restauracj)/i.test(normalized);
 
@@ -224,6 +235,10 @@ export class NLURouter {
             // If we are ordering, but have NO restaurant context/entity, assume discovery/disambiguation needed.
             // Exception: If we have a very obscure unique item, Legacy/Smart logic below might catch it, 
             // but for safety, "Zamawiam frytki" (no context) -> find_nearby.
+
+            // FIX: If we found a known dish (parsed.dish), that counts as context!
+            // REVERTED: Including parsed.dish breaks Disambiguation Safeguard (generic items like "frytki" become orders).
+            // We must rely on legacy/smart layer for specific items, or require restaurant context.
             const hasRestCtx = session?.lastRestaurant || session?.context === 'IN_RESTAURANT' ||
                 entities.restaurant || matchedRestaurant || parsed.restaurant;
 
@@ -267,7 +282,8 @@ export class NLURouter {
         const findRegex = /(co|gdzie).*(zje[sś][ćc]|poleca|poleci|masz|macie|jedzenia|jedzenie)|(szukam|znajd[źz]).*|(chc[ęe]|głodny|glodny|ochote|ochotę|co[śs]).*(co[śs]|zje[sś][ćc]|jedzenie|kuchni)|(lokale|restauracje|knajpy|pizzeri[ae]|kebaby|kebab|bary|pizza|burger|jedzenie|głodny|glodny)/i;
 
         // Guard: don't trigger findRegex if we have strong ordering verbs like "poproszę" or "zamawiam"
-        const hasOrderVerbStrict = /\b(poprosze|poprosz[ęe]|zamawiam|zamow|wezme|wezm[ęe]|biore|bior[ęe]|dodaj)\b/i.test(normalized);
+        // UPDATED: Syncing verbs
+        const hasOrderVerbStrict = /\b(poprosze|poprosz[ęe]|zamawiam|zamow|wezme|wezm[ęe]|biore|bior[ęe]|dodaj|chciał(bym|abym))\b/i.test(normalized);
 
         if (findRegex.test(normalized) && !hasOrderVerbStrict) {
             return {
