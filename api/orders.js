@@ -232,7 +232,6 @@ export default async function handler(req, res) {
           customer_phone: customer_phone || null,
           delivery_address: delivery_address || null,
           notes: notes || null,
-          source: 'manual_ui',
           created_at: new Date().toISOString(),
         };
 

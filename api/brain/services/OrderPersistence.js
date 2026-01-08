@@ -104,7 +104,6 @@ export async function persistOrderToDB(sessionId, session, options = {}) {
             // Zmieniamy na 'confirmed', ponieważ Voice Flow v2 zapisuje zamówienie
             // JEDYNIE gdy intencja 'confirm_order' została przetworzona przez Brain.
             status: 'confirmed',
-            source: 'voice_brain_v2',
 
             // Timestamps
             created_at: new Date().toISOString()

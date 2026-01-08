@@ -303,6 +303,76 @@ app.delete('/api/admin/conversation', async (req, res) => {
   } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
 });
 
+app.get('/api/admin/business-stats', async (req, res) => {
+  try { const mod = await import('./admin/business-stats.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.get('/api/admin/system-status', async (req, res) => {
+  try { const mod = await import('./admin/system-status.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.get('/api/admin/restaurants', async (req, res) => {
+  try { const mod = await import('./admin/restaurants.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.get('/api/admin/business/stats', async (req, res) => {
+  try { const mod = await import('./admin/business-stats.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.get('/api/admin/intents', async (req, res) => {
+  try { const mod = await import('./admin/intents.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.get('/api/admin/performance/trends', async (req, res) => {
+  try { const mod = await import('./admin/performance-trends.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.get('/api/admin/performance/top-intents', async (req, res) => {
+  try { const mod = await import('./admin/performance-top-intents.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.get('/api/admin/amber/restaurants-activity', async (req, res) => {
+  try { const mod = await import('./admin/amber-restaurants-activity.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.get('/api/admin/amber/learning-stats', async (req, res) => {
+  try { const mod = await import('./admin/amber-learning-stats.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.get('/api/admin/trends/alerts', async (req, res) => {
+  try { const mod = await import('./admin/trends-alerts.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.get('/api/admin/prompt', async (req, res) => {
+  try { const mod = await import('./admin/prompt.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.post('/api/admin/prompt', async (req, res) => {
+  try { const mod = await import('./admin/prompt.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.get('/api/admin/aliases', async (req, res) => {
+  try { const mod = await import('./admin/aliases.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.post('/api/admin/aliases', async (req, res) => {
+  try { const mod = await import('./admin/aliases.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
 // === FREEFUN ENDPOINTS ===
 app.get('/api/freefun/list', async (req, res) => {
   try { const mod = await import('./freefun/list.js'); return mod.default(req, res); }
@@ -532,7 +602,16 @@ app.get("/api/restaurants", async (req, res) => {
 });
 
 // === ORDERS ===
-app.get("/api/orders", async (req, res) => {
+app.all("/api/orders", async (req, res) => {
+  try {
+    const ordersHandler = await import("./orders.js");
+    return ordersHandler.default(req, res);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.all("/api/orders/*", async (req, res) => {
   try {
     const ordersHandler = await import("./orders.js");
     return ordersHandler.default(req, res);
