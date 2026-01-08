@@ -278,9 +278,29 @@ app.get('/api/admin/conversations', async (req, res) => {
   catch (err) { res.status(500).json({ ok: false, error: err.message }); }
 });
 
+app.delete('/api/admin/conversations', async (req, res) => {
+  try { const mod = await import('./admin/conversations-clear.js'); return mod.default(req, res); }
+  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
 app.get('/api/admin/conversation', async (req, res) => {
   try { const mod = await import('./admin/conversation.js'); return mod.default(req, res); }
   catch (err) { res.status(500).json({ ok: false, error: err.message }); }
+});
+
+app.delete('/api/admin/conversation', async (req, res) => {
+  try {
+    const { supabase } = await import('./_supabase.js');
+    const id = req.query.id;
+    if (!id) return res.status(400).json({ ok: false, error: 'missing_id' });
+
+    // Delete events first due to FK
+    await supabase.from('conversation_events').delete().eq('conversation_id', id);
+    const { error } = await supabase.from('conversations').delete().eq('id', id);
+
+    if (error) return res.status(500).json({ ok: false, error: error.message });
+    return res.json({ ok: true });
+  } catch (err) { res.status(500).json({ ok: false, error: err.message }); }
 });
 
 // === FREEFUN ENDPOINTS ===

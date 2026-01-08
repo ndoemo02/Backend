@@ -210,23 +210,29 @@ export default async function handler(req, res) {
       if (req.body.restaurant_id && req.body.items && Array.isArray(req.body.items)) {
         console.log('🛒 Cart order detected:', req.body);
 
-        const { restaurant_id, items, user_id, restaurant_name, customer_name, customer_phone, delivery_address, notes, total_price } = req.body;
+        const { restaurant_id, items, user_id, restaurant_name, customer_name, customer_phone, delivery_address, notes, total_price: totalPriceCents } = req.body;
 
         if (!restaurant_id || !items?.length) {
           return res.status(400).json({ error: "Incomplete cart order data" });
         }
+
+        // Konwersja na PLN i Cents dla spójności z Dashboardem i Voice V2
+        const totalCents = totalPriceCents || items.reduce((sum, item) => sum + ((item.unit_price_cents || 0) * (item.qty || 0)), 0);
+        const totalPLN = totalCents / 100;
 
         const orderData = {
           user_id: user_id || null,
           restaurant_id: restaurant_id,
           restaurant_name: restaurant_name || 'Unknown Restaurant',
           items: items,
-          total_price: total_price || items.reduce((sum, item) => sum + (item.unit_price_cents * item.qty), 0),
-          status: "pending",
+          total_price: totalPLN,   // PLN (float)
+          total_cents: totalCents, // Cents (integer)
+          status: "confirmed",     // Automatycznie potwierdzone przy checkout UI
           customer_name: customer_name || null,
           customer_phone: customer_phone || null,
           delivery_address: delivery_address || null,
           notes: notes || null,
+          source: 'manual_ui',
           created_at: new Date().toISOString(),
         };
 
