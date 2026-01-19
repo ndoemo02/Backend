@@ -3,7 +3,7 @@
  * Odpowiada za przepływ danych: Request -> Hydration -> NLU -> Domain -> Response
  */
 
-import { getSession, updateSession } from '../session/sessionStore.js';
+import { getSession, updateSession, getOrCreateActiveSession, closeConversation } from '../session/sessionStore.js';
 import { FindRestaurantHandler } from '../domains/food/findHandler.js';
 import { MenuHandler } from '../domains/food/menuHandler.js';
 import { OrderHandler } from '../domains/food/orderHandler.js';
@@ -15,6 +15,13 @@ import { BrainLogger } from '../../../utils/logger.js';
 import { playTTS, stylizeWithGPT4o } from '../tts/ttsClient.js';
 import { EventLogger } from '../services/EventLogger.js';
 import { getConfig } from '../../config/configService.js';
+import {
+    checkRequiredState,
+    getFallbackIntent,
+    isHardBlockedFromLegacy,
+    mutatesCart
+} from './IntentCapabilityMap.js';
+import { renderSurface, detectSurface } from '../dialog/SurfaceRenderer.js';
 
 // Mapa handlerów domenowych (Bezpośrednie mapowanie)
 // Kluczem jest "domain", a wewnątrz "intent"
@@ -140,23 +147,183 @@ export class BrainPipeline {
             EventLogger.logEvent(sessionId, 'request_received', { text }, null, initialWorkflowStep).catch(() => { });
         }
 
-        const session = getSession(sessionId);
+        // ═══════════════════════════════════════════════════════════════════════════
+        // CONVERSATION ISOLATION: Auto-create new session if previous was closed
+        // ═══════════════════════════════════════════════════════════════════════════
+        const sessionResult = getOrCreateActiveSession(sessionId);
+        let activeSessionId = sessionResult.sessionId;
+        const session = sessionResult.session;
+        
+        if (sessionResult.isNew && sessionId !== activeSessionId) {
+            BrainLogger.pipeline(`🔄 NEW CONVERSATION: ${sessionId} was closed, using ${activeSessionId}`);
+        }
+        
         // Deep copy session for shadow mode simulation
         const sessionContext = IS_SHADOW ? JSON.parse(JSON.stringify(session || {})) : session;
 
         const context = {
-            sessionId,
+            sessionId: activeSessionId,  // Use active (possibly new) session ID
+            originalSessionId: sessionId, // Keep original for tracking
             text,
             session: sessionContext,
             startTime,
-            meta: {}
+            meta: { conversationNew: sessionResult.isNew }
         };
 
         try {
             // 2. NLU Decision
             const intentResult = await this.nlu.detect(context);
 
-            const { intent, domain, confidence, source, entities } = intentResult;
+            let { intent, domain, confidence, source, entities } = intentResult;
+
+            // ═══════════════════════════════════════════════════════════════════
+            // ICM GATE: Validate FSM state requirements BEFORE executing intent
+            // This ensures NO intent (regex/legacy/LLM) can bypass FSM
+            // ═══════════════════════════════════════════════════════════════════
+            const stateCheck = checkRequiredState(intent, sessionContext);
+            const originalIntent = intent; // Remember for soft dialog bridge
+
+            if (!stateCheck.met) {
+                // ═══════════════════════════════════════════════════════════════════
+                // SOFT DIALOG BRIDGE (KROK 1 & 4): Instead of hard reset, show dialog
+                // If user wants menu/order but no restaurant, and we have candidates → ASK
+                // ═══════════════════════════════════════════════════════════════════
+                const hasRestaurantsList = sessionContext?.last_restaurants_list?.length > 0;
+
+                if (originalIntent === 'menu_request' && hasRestaurantsList) {
+                    // User wants menu, we have restaurants → ask which one
+                    BrainLogger.pipeline(`🌉 SOFT DIALOG BRIDGE: menu_request blocked, showing restaurant picker`);
+
+                    const surfaceResult = renderSurface({
+                        key: 'ASK_RESTAURANT_FOR_MENU',
+                        facts: {
+                            restaurants: sessionContext.last_restaurants_list.slice(0, 5)
+                        }
+                    });
+
+                    // Set dialog focus for context tracking (KROK 2)
+                    if (!IS_SHADOW) {
+                        updateSession(sessionId, {
+                            dialog_focus: 'CHOOSING_RESTAURANT_FOR_MENU',
+                            expectedContext: 'select_restaurant'
+                        });
+                    }
+
+                    return {
+                        ok: true,
+                        session_id: sessionId,
+                        intent: 'menu_request', // Keep original intent for tracking
+                        reply: surfaceResult.reply,
+                        uiHints: surfaceResult.uiHints,
+                        restaurants: sessionContext.last_restaurants_list.slice(0, 5),
+                        should_reply: true,
+                        meta: { source: 'soft_dialog_bridge', originalIntent: 'menu_request' }
+                    };
+                }
+
+                if (originalIntent === 'create_order' && hasRestaurantsList) {
+                    // User wants to order, we have restaurants → ask which one
+                    BrainLogger.pipeline(`🌉 SOFT DIALOG BRIDGE: create_order blocked, showing restaurant picker`);
+
+                    const surfaceResult = renderSurface({
+                        key: 'ASK_RESTAURANT_FOR_ORDER',
+                        facts: {
+                            restaurants: sessionContext.last_restaurants_list.slice(0, 5),
+                            dishNames: entities.dish ? [entities.dish] : []
+                        }
+                    });
+
+                    // Set dialog focus and preserve pending dish (KROK 2)
+                    if (!IS_SHADOW) {
+                        updateSession(sessionId, {
+                            dialog_focus: 'CHOOSING_RESTAURANT_FOR_ORDER',
+                            expectedContext: 'select_restaurant',
+                            pendingDish: entities.dish || sessionContext.pendingDish
+                        });
+                    }
+
+                    return {
+                        ok: true,
+                        session_id: sessionId,
+                        intent: 'create_order', // Keep original intent for tracking
+                        reply: surfaceResult.reply,
+                        uiHints: surfaceResult.uiHints,
+                        restaurants: sessionContext.last_restaurants_list.slice(0, 5),
+                        should_reply: true,
+                        meta: { source: 'soft_dialog_bridge', originalIntent: 'create_order' }
+                    };
+                }
+
+                // Standard fallback for other cases
+                const fallbackIntent = getFallbackIntent(originalIntent);
+                BrainLogger.pipeline(`🛡️ ICM GATE: ${originalIntent} blocked (${stateCheck.reason}). Fallback → ${fallbackIntent}`);
+                intent = fallbackIntent;
+                source = 'icm_fallback';
+            }
+
+            // ═══════════════════════════════════════════════════════════════════
+            // CART MUTATION GUARD: Only confirm_order can mutate cart
+            // ═══════════════════════════════════════════════════════════════════
+            if (mutatesCart(intent) && intent !== 'confirm_order') {
+                BrainLogger.pipeline(`🛡️ CART GUARD: ${intent} tried to mutate cart - BLOCKED`);
+                intent = 'find_nearby';
+                source = 'cart_mutation_blocked';
+            }
+
+            // ═══════════════════════════════════════════════════════════════════
+            // DISCOVERY RESET: find_nearby resets restaurant context
+            // SAFETY: Skip reset if intent came from a blocked source (preserve context)
+            // ═══════════════════════════════════════════════════════════════════
+            const isFromBlock = source?.endsWith('_blocked') || source === 'icm_fallback';
+            if (intent === 'find_nearby' && !IS_SHADOW && !isFromBlock) {
+                updateSession(sessionId, {
+                    currentRestaurant: null,
+                    lockedRestaurantId: null
+                });
+                BrainLogger.pipeline('🔄 DISCOVERY RESET: Cleared restaurant context for find_nearby');
+            }
+
+            // ═══════════════════════════════════════════════════════════════════
+            // CHOOSE_RESTAURANT DIALOG: When ambiguous restaurants, show picker
+            // ═══════════════════════════════════════════════════════════════════
+            if (intent === 'choose_restaurant' && entities?.options?.length > 0) {
+                BrainLogger.pipeline(`🌉 CHOOSE_RESTAURANT: Showing picker for ${entities.options.length} restaurants`);
+
+                const restaurants = entities.options.map(opt => ({
+                    id: opt.restaurant_id,
+                    name: opt.restaurant_name,
+                    items: opt.items
+                }));
+
+                const surfaceResult = renderSurface({
+                    key: 'ASK_RESTAURANT_FOR_ORDER',
+                    facts: {
+                        restaurants: restaurants,
+                        dishNames: entities.parsedOrder?.available?.map(i => i.name) || []
+                    }
+                });
+
+                // Set dialog focus and save restaurants list
+                if (!IS_SHADOW) {
+                    updateSession(sessionId, {
+                        dialog_focus: 'CHOOSING_RESTAURANT_FOR_ORDER',
+                        expectedContext: 'select_restaurant',
+                        last_restaurants_list: restaurants,
+                        pendingDish: entities.parsedOrder?.available?.[0]?.name || sessionContext.pendingDish
+                    });
+                }
+
+                return {
+                    ok: true,
+                    session_id: sessionId,
+                    intent: 'choose_restaurant',
+                    reply: surfaceResult.reply,
+                    uiHints: surfaceResult.uiHints,
+                    restaurants: restaurants,
+                    should_reply: true,
+                    meta: { source: 'choose_restaurant_dialog', ambiguous: true }
+                };
+            }
 
             context.intent = intent;
             context.domain = domain || 'food';
@@ -176,9 +343,10 @@ export class BrainPipeline {
             // --- UX GUARDS (Dialog State Polish) ---
 
             // UX Guard 1: Menu-Scoped Ordering
-            // If we have currentRestaurant and lastIntent was menu-related,
-            // allow create_order scoped to that restaurant instead of discovery reset
-            if (context.intent === 'find_nearby' && context.source === 'legacy_hard_blocked') {
+            // If user is in menu flow with restaurant context, allow ordering
+            // SAFETY: NEVER upgrade if intent was BLOCKED (source ends with '_blocked' or 'icm_fallback')
+            const isBlocked = context.source?.endsWith('_blocked') || context.source === 'icm_fallback';
+            if (context.intent === 'find_nearby' && !isBlocked) {
                 const hasRestaurantContext = session?.currentRestaurant || session?.lastRestaurant;
                 const wasMenuFlow = session?.lastIntent === 'menu_request' ||
                     session?.expectedContext === 'restaurant_menu' ||
@@ -190,6 +358,8 @@ export class BrainPipeline {
                     context.source = 'menu_scoped_order';
                     context.resolvedRestaurant = session.currentRestaurant || session.lastRestaurant;
                 }
+            } else if (isBlocked) {
+                BrainLogger.pipeline(`🛡️ UX Guard 1 SKIPPED: Intent was blocked (source: ${context.source})`);
             }
 
             // UX Guard 2: Fuzzy Restaurant Confirmation
@@ -319,6 +489,23 @@ export class BrainPipeline {
 
             const handler = this.handlers[context.domain][context.intent] || this.handlers.system.fallback;
             const domainResponse = await handler.execute(context);
+
+            // ═══════════════════════════════════════════════════════════════════
+            // DIALOG SURFACE LAYER: Transform structured facts to natural Polish
+            // Pipeline is SSoT, Surface is presentation only
+            // Detect actionable cases and render appropriate reply
+            // ═══════════════════════════════════════════════════════════════════
+            const detectedSurface = detectSurface(domainResponse, context);
+
+            if (detectedSurface) {
+                const surfaceResult = renderSurface(detectedSurface);
+
+                // Override reply with rendered text, keep structured data
+                domainResponse.reply = surfaceResult.reply;
+                domainResponse.uiHints = surfaceResult.uiHints;
+
+                BrainLogger.pipeline(`🎨 SurfaceRenderer: ${detectedSurface.key} → "${surfaceResult.reply.substring(0, 50)}..."`);
+            }
 
             // Apply state changes from handler
             if (domainResponse.contextUpdates && !IS_SHADOW) {

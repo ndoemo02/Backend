@@ -1,0 +1,425 @@
+[
+    {
+        "id": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+        "name": "Ser Mozzarella",
+        "aliases": [
+            "ser",
+            "sera",
+            "serek",
+            "mozzarella",
+            "mozarella"
+        ],
+        "flags": {
+            "allergen": true,
+            "meat": false,
+            "veg": true,
+            "vegan": false,
+            "spicy": false
+        },
+        "price_pln": 4.00
+    },
+    {
+        "id": "b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12",
+        "name": "Sos Pomidorowy",
+        "aliases": [
+            "sos",
+            "pomidorowy",
+            "sosu"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": false,
+            "veg": true,
+            "vegan": true,
+            "spicy": false
+        },
+        "price_pln": 2.00
+    },
+    {
+        "id": "c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a13",
+        "name": "Pieczarki",
+        "aliases": [
+            "pieczarki",
+            "grzyby",
+            "pieczarek"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": false,
+            "veg": true,
+            "vegan": true,
+            "spicy": false
+        },
+        "price_pln": 3.00
+    },
+    {
+        "id": "d0eebc99-9c0b-4ef8-bb6d-6bb9bd380a14",
+        "name": "Szynka",
+        "aliases": [
+            "szynka",
+            "szynkę",
+            "szynki",
+            "wezuwiusz"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": true,
+            "veg": false,
+            "vegan": false,
+            "spicy": false
+        },
+        "price_pln": 5.00
+    },
+    {
+        "id": "e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a15",
+        "name": "Salami",
+        "aliases": [
+            "salami",
+            "pikantne salami"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": true,
+            "veg": false,
+            "vegan": false,
+            "spicy": false
+        },
+        "price_pln": 6.00
+    },
+    {
+        "id": "f0eebc99-9c0b-4ef8-bb6d-6bb9bd380a16",
+        "name": "Cebula",
+        "aliases": [
+            "cebula",
+            "cebulę",
+            "cebulka",
+            "cebulki"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": false,
+            "veg": true,
+            "vegan": true,
+            "spicy": false
+        },
+        "price_pln": 2.00
+    },
+    {
+        "id": "10eebc99-9c0b-4ef8-bb6d-6bb9bd380a17",
+        "name": "Papryka",
+        "aliases": [
+            "papryka",
+            "paprykę",
+            "papryczki"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": false,
+            "veg": true,
+            "vegan": true,
+            "spicy": false
+        },
+        "price_pln": 3.00
+    },
+    {
+        "id": "20eebc99-9c0b-4ef8-bb6d-6bb9bd380a18",
+        "name": "Kurczak",
+        "aliases": [
+            "kurczak",
+            "kurczaka",
+            "filet"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": true,
+            "veg": false,
+            "vegan": false,
+            "spicy": false
+        },
+        "price_pln": 6.00
+    },
+    {
+        "id": "30eebc99-9c0b-4ef8-bb6d-6bb9bd380a19",
+        "name": "Boczek",
+        "aliases": [
+            "boczek",
+            "boczku",
+            "bekon"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": true,
+            "veg": false,
+            "vegan": false,
+            "spicy": false
+        },
+        "price_pln": 5.00
+    },
+    {
+        "id": "40eebc99-9c0b-4ef8-bb6d-6bb9bd380a20",
+        "name": "Kukurydza",
+        "aliases": [
+            "kukurydza",
+            "kukurydzę",
+            "ziarna"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": false,
+            "veg": true,
+            "vegan": true,
+            "spicy": false
+        },
+        "price_pln": 3.00
+    },
+    {
+        "id": "50eebc99-9c0b-4ef8-bb6d-6bb9bd380a21",
+        "name": "Ananas",
+        "aliases": [
+            "ananas",
+            "ananasa",
+            "hawajska"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": false,
+            "veg": true,
+            "vegan": true,
+            "spicy": false
+        },
+        "price_pln": 3.00
+    },
+    {
+        "id": "60eebc99-9c0b-4ef8-bb6d-6bb9bd380a22",
+        "name": "Oliwki",
+        "aliases": [
+            "oliwki",
+            "oliwek",
+            "czarne oliwki"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": false,
+            "veg": true,
+            "vegan": true,
+            "spicy": false
+        },
+        "price_pln": 4.00
+    },
+    {
+        "id": "70eebc99-9c0b-4ef8-bb6d-6bb9bd380a23",
+        "name": "Jalapeno",
+        "aliases": [
+            "jalapeno",
+            "papryczki jalapeno",
+            "ostra papryka",
+            "chili"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": false,
+            "veg": true,
+            "vegan": true,
+            "spicy": true
+        },
+        "price_pln": 4.00
+    },
+    {
+        "id": "80eebc99-9c0b-4ef8-bb6d-6bb9bd380a24",
+        "name": "Rukola",
+        "aliases": [
+            "rukola",
+            "rukolę"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": false,
+            "veg": true,
+            "vegan": true,
+            "spicy": false
+        },
+        "price_pln": 3.00
+    },
+    {
+        "id": "90eebc99-9c0b-4ef8-bb6d-6bb9bd380a25",
+        "name": "Pomidor świeży",
+        "aliases": [
+            "pomidor",
+            "pomidory",
+            "świeży pomidor"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": false,
+            "veg": true,
+            "vegan": true,
+            "spicy": false
+        },
+        "price_pln": 3.00
+    },
+    {
+        "id": "a1eebc99-9c0b-4ef8-bb6d-6bb9bd380a26",
+        "name": "Czosnek",
+        "aliases": [
+            "czosnek",
+            "czosnku",
+            "zosnek"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": false,
+            "veg": true,
+            "vegan": true,
+            "spicy": false
+        },
+        "price_pln": 1.00
+    },
+    {
+        "id": "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a27",
+        "name": "Tuńczyk",
+        "aliases": [
+            "tuńczyk",
+            "tuńczyka",
+            "ryba"
+        ],
+        "flags": {
+            "allergen": true,
+            "meat": true,
+            "veg": false,
+            "vegan": false,
+            "spicy": false
+        },
+        "price_pln": 6.00
+    },
+    {
+        "id": "c1eebc99-9c0b-4ef8-bb6d-6bb9bd380a28",
+        "name": "Wołowina",
+        "aliases": [
+            "wołowina",
+            "mięso mielone",
+            "bolonese"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": true,
+            "veg": false,
+            "vegan": false,
+            "spicy": false
+        },
+        "price_pln": 7.00
+    },
+    {
+        "id": "d1eebc99-9c0b-4ef8-bb6d-6bb9bd380a29",
+        "name": "Ser Feta",
+        "aliases": [
+            "fetę",
+            "ser feta",
+            "feta"
+        ],
+        "flags": {
+            "allergen": true,
+            "meat": false,
+            "veg": true,
+            "vegan": false,
+            "spicy": false
+        },
+        "price_pln": 5.00
+    },
+    {
+        "id": "e1eebc99-9c0b-4ef8-bb6d-6bb9bd380a30",
+        "name": "Ser Gorgonzola",
+        "aliases": [
+            "gorgonzola",
+            "ser pleśniowy",
+            "rokpol"
+        ],
+        "flags": {
+            "allergen": true,
+            "meat": false,
+            "veg": true,
+            "vegan": false,
+            "spicy": false
+        },
+        "price_pln": 6.00
+    },
+    {
+        "id": "f1eebc99-9c0b-4ef8-bb6d-6bb9bd380a31",
+        "name": "Szpinak",
+        "aliases": [
+            "szpinak",
+            "szpinaku"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": false,
+            "veg": true,
+            "vegan": true,
+            "spicy": false
+        },
+        "price_pln": 3.00
+    },
+    {
+        "id": "12eebc99-9c0b-4ef8-bb6d-6bb9bd380a32",
+        "name": "Brokuły",
+        "aliases": [
+            "brokuły",
+            "brokuł"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": false,
+            "veg": true,
+            "vegan": true,
+            "spicy": false
+        },
+        "price_pln": 3.00
+    },
+    {
+        "id": "22eebc99-9c0b-4ef8-bb6d-6bb9bd380a33",
+        "name": "Krewetki",
+        "aliases": [
+            "krewetki",
+            "owoce morza"
+        ],
+        "flags": {
+            "allergen": true,
+            "meat": true,
+            "veg": false,
+            "vegan": false,
+            "spicy": false
+        },
+        "price_pln": 12.00
+    },
+    {
+        "id": "32eebc99-9c0b-4ef8-bb6d-6bb9bd380a34",
+        "name": "Frytki",
+        "aliases": [
+            "frytki",
+            "ziemniaczki"
+        ],
+        "flags": {
+            "allergen": false,
+            "meat": false,
+            "veg": true,
+            "vegan": true,
+            "spicy": false
+        },
+        "price_pln": 6.00
+    },
+    {
+        "id": "42eebc99-9c0b-4ef8-bb6d-6bb9bd380a35",
+        "name": "Sos Czosnkowy",
+        "aliases": [
+            "sos czosnkowy",
+            "czosnkowy"
+        ],
+        "flags": {
+            "allergen": true,
+            "meat": false,
+            "veg": true,
+            "vegan": false,
+            "spicy": false
+        },
+        "price_pln": 2.00
+    }
+]

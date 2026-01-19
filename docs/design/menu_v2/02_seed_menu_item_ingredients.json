@@ -1,0 +1,92 @@
+[
+    {
+        "menu_item_id": "00000000-0000-0000-0000-000000000001",
+        "ingredient_id": "b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12",
+        "note": "Margherita: Sos Pomidorowy",
+        "default_included": true,
+        "is_optional": false,
+        "max_extra": 2,
+        "price_override_pln": null
+    },
+    {
+        "menu_item_id": "00000000-0000-0000-0000-000000000001",
+        "ingredient_id": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+        "note": "Margherita: Ser",
+        "default_included": true,
+        "is_optional": true,
+        "max_extra": 3,
+        "price_override_pln": null
+    },
+    {
+        "menu_item_id": "00000000-0000-0000-0000-000000000001",
+        "ingredient_id": "90eebc99-9c0b-4ef8-bb6d-6bb9bd380a25",
+        "note": "Margherita: Pomidor (Opcja - nie w standardzie)",
+        "default_included": false,
+        "is_optional": true,
+        "max_extra": 2,
+        "price_override_pln": 3.00
+    },
+    {
+        "menu_item_id": "00000000-0000-0000-0000-000000000002",
+        "ingredient_id": "b0eebc99-9c0b-4ef8-bb6d-6bb9bd380a12",
+        "note": "Capricciosa: Sos",
+        "default_included": true,
+        "is_optional": false,
+        "max_extra": 1,
+        "price_override_pln": null
+    },
+    {
+        "menu_item_id": "00000000-0000-0000-0000-000000000002",
+        "ingredient_id": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+        "note": "Capricciosa: Ser",
+        "default_included": true,
+        "is_optional": true,
+        "max_extra": 2,
+        "price_override_pln": null
+    },
+    {
+        "menu_item_id": "00000000-0000-0000-0000-000000000002",
+        "ingredient_id": "d0eebc99-9c0b-4ef8-bb6d-6bb9bd380a14",
+        "note": "Capricciosa: Szynka",
+        "default_included": true,
+        "is_optional": true,
+        "max_extra": 2,
+        "price_override_pln": null
+    },
+    {
+        "menu_item_id": "00000000-0000-0000-0000-000000000002",
+        "ingredient_id": "c0eebc99-9c0b-4ef8-bb6d-6bb9bd380a13",
+        "note": "Capricciosa: Pieczarki",
+        "default_included": true,
+        "is_optional": true,
+        "max_extra": 2,
+        "price_override_pln": null
+    },
+    {
+        "menu_item_id": "00000000-0000-0000-0000-000000000003",
+        "ingredient_id": "e0eebc99-9c0b-4ef8-bb6d-6bb9bd380a15",
+        "note": "Pepperoni: Salami",
+        "default_included": true,
+        "is_optional": true,
+        "max_extra": 3,
+        "price_override_pln": null
+    },
+    {
+        "menu_item_id": "00000000-0000-0000-0000-000000000003",
+        "ingredient_id": "70eebc99-9c0b-4ef8-bb6d-6bb9bd380a23",
+        "note": "Pepperoni: Jalapeno",
+        "default_included": true,
+        "is_optional": true,
+        "max_extra": 2,
+        "price_override_pln": null
+    },
+    {
+        "menu_item_id": "00000000-0000-0000-0000-000000000004",
+        "ingredient_id": "40eebc99-9c0b-4ef8-bb6d-6bb9bd380a20",
+        "note": "Hawajska: Kukurydza (Opcja)",
+        "default_included": false,
+        "is_optional": true,
+        "max_extra": 1,
+        "price_override_pln": 2.00
+    }
+]

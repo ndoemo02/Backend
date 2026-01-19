@@ -5,10 +5,14 @@
  * 
  * WAŻNE: To jest JEDYNE miejsce gdzie zamówienie jest zapisywane do DB.
  * Zapis następuje PO commit do session, PRZED streamem/TTS.
+ * 
+ * CONVERSATION BOUNDARY: This handler CLOSES the conversation.
+ * After this, a new session_id will be generated for the next input.
  * ═══════════════════════════════════════════════════════════════════════════
  */
 
 import { persistOrderToDB } from '../../services/OrderPersistence.js';
+import { closeConversation } from '../../session/sessionStore.js';
 
 export class ConfirmOrderHandler {
 
@@ -48,25 +52,15 @@ export class ConfirmOrderHandler {
         // ═══════════════════════════════════════════════════════════════════
         let orderId = null;
         console.log(`🛒 Order added to cart session. Persistence deferred to manual checkout.`);
-        /*
-        try {
-            const persistResult = await persistOrderToDB(sessionId, session, {
-                restaurant_id: restaurantId,
-                restaurant_name: restaurantName
-            });
 
-            if (persistResult.success) {
-                orderId = persistResult.order_id;
-                console.log(`✅ Order persisted to DB: ${orderId}${persistResult.skipped ? ' (idempotent)' : ''}`);
-            } else {
-                console.error(`⚠️ Order persist failed: ${persistResult.error}`);
-            }
-        } catch (persistError) {
-            console.error(`🔥 Order persist exception:`, persistError.message);
-        }
-        */
+        // ═══════════════════════════════════════════════════════════════════
+        // 5. CONVERSATION BOUNDARY: Close this conversation
+        // Next user input will get a new session_id
+        // ═══════════════════════════════════════════════════════════════════
+        const closureResult = closeConversation(sessionId, 'ORDER_CONFIRMED');
+        console.log(`🔒 Conversation closed. Next session: ${closureResult.newSessionId}`);
 
-        // 5. Budowanie odpowiedzi
+        // 6. Budowanie odpowiedzi
         const intro = `Dodano do koszyka. `;
         const closing = `Coś jeszcze?`;
         const reply = `${intro}${closing}`;
@@ -78,6 +72,10 @@ export class ConfirmOrderHandler {
             intent: 'confirm_order',
             // Order ID z DB
             order_id: orderId,
+            // NEW: Session lifecycle info for frontend
+            conversationClosed: true,
+            newSessionId: closureResult.newSessionId,
+            closedReason: 'ORDER_CONFIRMED',
             // Actions for Frontend (Task 2)
             actions: [
                 {
@@ -92,13 +90,16 @@ export class ConfirmOrderHandler {
                 order_id: orderId,
                 transaction_status: 'success',
                 persisted: !!orderId,
-                source: 'confirm_handler'
+                source: 'confirm_handler',
+                conversationClosed: true
             },
+            // NOTE: contextUpdates are now irrelevant as session is closed
+            // But we keep them for backward compatibility
             contextUpdates: {
-                pendingOrder: null,        // Wyczyść tymczasowy bufor
-                expectedContext: null,     // Koniec flow potwierdzania
+                pendingOrder: null,
+                expectedContext: null,
                 lastIntent: 'order_complete',
-                lastOrderId: orderId       // Zapisz ID zamówienia w sesji
+                lastOrderId: orderId
             }
         };
     }

@@ -441,6 +441,32 @@ export function parseOrderItems(text, catalog) {
   const PREFIXES = /^(poproszę|zamawiam|wezmę|dodaj|chciałbym|chciałabym|proszę|biorę|dla\s+mnie)\s+/i;
   let cleanText = text.replace(PREFIXES, '').trim();
 
+  // 2. STOP PHRASES: Menu/exploratory questions are NOT dish items
+  // "co oferują", "jakie macie", "menu" should not be parsed as order items
+  const STOP_PHRASES = [
+    'co oferują', 'co oferujecie', 'co macie', 'jakie macie',
+    'menu', 'pokaż menu', 'pokaz menu', 'oferta', 'karta',
+    'co polecasz', 'co polecacie', 'polecisz', 'polecicie',
+    'co jest', 'jakie są', 'jakie sa', 'co mają', 'co maja'
+  ];
+
+  const normalizedClean = normalizeTxt(cleanText);
+  for (const phrase of STOP_PHRASES) {
+    if (normalizedClean.includes(phrase) || normalizedClean === phrase) {
+      console.log(`[parseOrderItems] 🛡️ STOP PHRASE detected: "${phrase}" - not a dish order`);
+      return {
+        any: false,
+        groups: [],
+        clarify: [],
+        available: [],
+        unavailable: [],
+        needsClarification: false,
+        missingAll: false,
+        stopPhrase: phrase  // Mark as stop phrase for debugging
+      };
+    }
+  }
+
   // Use cleanText for alias application and further processing
   let textAliased;
   let unknownItems = [];

@@ -213,8 +213,57 @@ export async function parseOrderItems(text, restaurantId) {
       return [];
     }
 
-    const items = [];
+    // ═══════════════════════════════════════════════════════════════════════
+    // SEMANTIC GUARD - Block pure confirmations without explicit menu request
+    // ═══════════════════════════════════════════════════════════════════════
     const normalized = normalize(text);
+    
+    // Check if text contains explicit dish/product keywords
+    const explicitOrderKeywords = [
+      'pizza', 'burger', 'kebab', 'frytki', 'cola', 'pepsi', 'napój', 'napoj',
+      'zupa', 'sałatka', 'salatka', 'danie', 'porcja', 'sztuka', 'zamawiam',
+      'zamów', 'poproszę', 'chcę', 'chce', 'biorę', 'biore', 'dla mnie',
+      'margherita', 'pepperoni', 'hawajska', 'capricciosa', 'menu'
+    ];
+    
+    // Check for quantity indicators (suggests ordering)
+    const hasQuantityIndicator = /\b(\d+\s*(x|razy|sztuk)?|dwa|dwie|trzy|cztery|pięć)\b/i.test(text);
+    
+    // Check if text matches any menu item (high-confidence match)
+    const hasMenuMatch = menu.some(item => {
+      const normName = normalize(item.name);
+      const normText = normalized;
+      // Exact or substring match with reasonable length
+      return normName.length > 3 && (
+        normText.includes(normName) || 
+        normName.includes(normText) ||
+        normText.split(' ').some(word => word.length > 3 && normName.includes(word))
+      );
+    });
+    
+    // Check for explicit keywords
+    const hasExplicitKeyword = explicitOrderKeywords.some(kw => normalized.includes(kw));
+    
+    // Detect pure confirmation patterns (should NOT trigger ordering)
+    const isPureConfirmation = /^(tak|ok|okej|dobrze|potwierdzam|zgoda|jasne|git|super|extra|spoko|no|nom|mhm|aha|potwierdz|potwierdze|potwierdź)$/i.test(text.trim());
+    
+    const hasExplicitRequest = hasExplicitKeyword || hasQuantityIndicator || hasMenuMatch;
+    
+    if (!hasExplicitRequest || isPureConfirmation) {
+      console.log(`🛡️ SEMANTIC GUARD: No explicit menu request detected in "${text}"`);
+      return {
+        any: false,
+        groups: [],
+        available: [],
+        clarify: [],
+        needsClarification: false,
+        unknownItems: [],
+        reason: 'NO_EXPLICIT_MENU_REQUEST'
+      };
+    }
+    // ═══════════════════════════════════════════════════════════════════════
+
+    const items = [];
     const quantity = extractQuantity(text);
 
     // FAZA 1 — Twarde tokeny (znane produkty z menu)

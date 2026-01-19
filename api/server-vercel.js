@@ -7,6 +7,7 @@ import cors from 'cors';
 // import morgan from 'morgan'; // Disabled for stability debugging
 import { createClient } from '@supabase/supabase-js';
 import { verifyAmberAdmin } from './middleware/verifyAmberAdmin.js';
+import adminRouter from './admin/adminRouter.js';
 
 // 🧠 Enable Brain Debug Mode explicitly for Vercel logs
 global.BRAIN_DEBUG = true;
@@ -34,13 +35,25 @@ const ALLOWED_ORIGINS = process.env.NODE_ENV === 'production'
 
 app.use(cors({
   origin: ALLOWED_ORIGINS,
-  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-token'],
+  exposedHeaders: ['x-admin-token']
 }));
-app.options(/.*/, cors({
-  origin: ALLOWED_ORIGINS,
-  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-}));
+
+app.options(/.*/, (req, res) => {
+  const origin = req.headers.origin;
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    // Default fallback if we trust it or wildcard
+    res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGINS[0]);
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-token');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.status(200).end();
+});
 // app.use(morgan('tiny'));
 
 // --- Env sanity ---
@@ -166,6 +179,11 @@ app.post("/api/brain/router", async (req, res) => {
 // === ADMIN ENDPOINTS ===
 // Protect all /api/admin routes
 app.use('/api/admin', verifyAmberAdmin);
+
+// 🆕 Clean Admin API Router (READ-ONLY)
+// Provides: GET /restaurants, /restaurants/:id/menu, /conversations, /conversations/:sessionId, /orders, /orders/:id
+app.use('/api/admin', adminRouter);
+
 app.get('/api/admin/system-status', async (req, res) => {
   try {
     const mod = await import('./admin/system-status.js');

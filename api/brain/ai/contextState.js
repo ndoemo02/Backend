@@ -2,6 +2,15 @@
 
 export function getDefault() {
     return {
+        // ═══════════════════════════════════════════════════════════════════════════
+        // SESSION LIFECYCLE (Conversation Isolation)
+        // One conversation = one session_id. Closed sessions cannot be reused.
+        // ═══════════════════════════════════════════════════════════════════════════
+        status: 'active',           // 'active' | 'closed'
+        closedReason: null,         // 'CART_ITEM_ADDED' | 'ORDER_CONFIRMED' | null
+        closedAt: null,             // ISO timestamp when closed
+        
+        // FSM / Dialog State
         expectedContext: "neutral",
         lastIntent: null,
         lastRestaurant: null,
@@ -10,7 +19,12 @@ export function getDefault() {
         lastRestaurantsTimestamp: null,
         lastMenu: [],
         locationOverride: null,
-        history: []
+        history: [],
+        
+        // Pending state (reset on close)
+        pendingDish: null,
+        awaiting: null,
+        pendingOrder: null
     };
 }
 

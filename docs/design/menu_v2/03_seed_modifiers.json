@@ -1,0 +1,117 @@
+[
+    {
+        "id": "11111111-0000-0000-0000-000000000001",
+        "name": "Rozmiar Mały (30cm)",
+        "type": "SIZE",
+        "aliases": [
+            "mała",
+            "mały",
+            "30cm",
+            "małą"
+        ],
+        "price_delta_pln": 0.00,
+        "constraints": {
+            "default": false,
+            "exclusive_group": "pizza_size"
+        }
+    },
+    {
+        "id": "11111111-0000-0000-0000-000000000002",
+        "name": "Rozmiar Średni (40cm)",
+        "type": "SIZE",
+        "aliases": [
+            "średnia",
+            "średni",
+            "40cm",
+            "średnią"
+        ],
+        "price_delta_pln": 8.00,
+        "constraints": {
+            "default": true,
+            "exclusive_group": "pizza_size"
+        }
+    },
+    {
+        "id": "11111111-0000-0000-0000-000000000003",
+        "name": "Rozmiar Duży (50cm)",
+        "type": "SIZE",
+        "aliases": [
+            "duża",
+            "duży",
+            "50cm",
+            "dużą",
+            "gigant"
+        ],
+        "price_delta_pln": 15.00,
+        "constraints": {
+            "default": false,
+            "exclusive_group": "pizza_size"
+        }
+    },
+    {
+        "id": "22222222-0000-0000-0000-000000000001",
+        "name": "Ciasto Cienkie",
+        "type": "VARIANT",
+        "aliases": [
+            "cienkie",
+            "na cienkim"
+        ],
+        "price_delta_pln": 0.00,
+        "constraints": {
+            "default": true,
+            "exclusive_group": "pizza_dough"
+        }
+    },
+    {
+        "id": "22222222-0000-0000-0000-000000000002",
+        "name": "Ciasto Grube",
+        "type": "VARIANT",
+        "aliases": [
+            "grube",
+            "na grubym",
+            "puszyste"
+        ],
+        "price_delta_pln": 4.00,
+        "constraints": {
+            "default": false,
+            "exclusive_group": "pizza_dough"
+        }
+    },
+    {
+        "id": "22222222-0000-0000-0000-000000000003",
+        "name": "Brzegi z serem",
+        "type": "OPTION",
+        "aliases": [
+            "ser w brzegach",
+            "serowe brzegi"
+        ],
+        "price_delta_pln": 6.00,
+        "constraints": {
+            "max_qty": 1
+        }
+    },
+    {
+        "id": "33333333-0000-0000-0000-000000000001",
+        "name": "Wypieczenie: Mocne",
+        "type": "PREPARATION",
+        "aliases": [
+            "mocno wypieczona",
+            "spalona",
+            "chrupiąca"
+        ],
+        "price_delta_pln": 0.00,
+        "constraints": {}
+    },
+    {
+        "id": "33333333-0000-0000-0000-000000000002",
+        "name": "Wypieczenie: Lekkie",
+        "type": "PREPARATION",
+        "aliases": [
+            "lekko wypieczona",
+            "jasna",
+            "miękka"
+        ],
+        "price_delta_pln": 0.00,
+        "constraints": {}
+    }
+]

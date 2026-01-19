@@ -361,7 +361,11 @@ export class NLURouter {
                 const { detectIntent } = await import('../intents/intentRouterGlue.js');
                 const result = await detectIntent(text, session, entities);
                 // Skip if legacy returns unknown OR a weak clarify_order/choose_restaurant without any actual items
-                const isWeakIntent = (result.intent === 'clarify_order' || result.intent === 'choose_restaurant') && (!result.items?.any && !result.items?.unavailable?.length && !result.options?.length);
+                // Note: intent-router returns items as result.entities.parsedOrder and options as result.entities.options
+                const parsedOrder = result.items || result.entities?.parsedOrder || result.parsedOrder;
+                const hasOptions = result.options?.length > 0 || result.entities?.options?.length > 0;
+                const isWeakIntent = (result.intent === 'clarify_order' || result.intent === 'choose_restaurant') &&
+                    (!parsedOrder?.any && !parsedOrder?.unavailable?.length && !hasOptions);
 
                 if (result && result.intent && result.intent !== 'unknown' && result.intent !== 'UNKNOWN_INTENT' && !isWeakIntent) {
                     // HARD BLOCK: Legacy ordering disabled in BrainV2 mode
@@ -404,7 +408,58 @@ export class NLURouter {
             };
         }
 
-        // 4. Last Resort Fallback
+        // ═══════════════════════════════════════════════════════════════════
+        // 4. LLM INTENT TRANSLATOR (LAST FALLBACK)
+        // Only runs if all other methods failed
+        // ═══════════════════════════════════════════════════════════════════
+        const LLM_TRANSLATOR_ENABLED = process.env.LLM_TRANSLATOR_ENABLED === 'true';
+
+        if (LLM_TRANSLATOR_ENABLED) {
+            try {
+                const { translateIntent } = await import('./intentTranslator.js');
+
+                const llmResult = await translateIntent(text, {
+                    // READ-ONLY hints (no session mutation possible)
+                    lastIntent: session?.lastIntent,
+                    hasRestaurant: !!session?.currentRestaurant,
+                    hasLocation: !!session?.last_location
+                });
+
+                if (llmResult && llmResult.intent !== 'unknown' && llmResult.source === 'llm_translator') {
+                    // ═══════════════════════════════════════════════════════════════════
+                    // HARD BLOCK: LLM cannot execute ordering intents
+                    // ═══════════════════════════════════════════════════════════════════
+                    if (llmResult.intent === 'create_order' || llmResult.intent === 'confirm_order') {
+                        console.warn('🛡️ LLM tried ordering intent - blocked, downgrading to find_nearby');
+                        return {
+                            intent: 'find_nearby',
+                            confidence: 0.7,
+                            source: 'llm_ordering_blocked',
+                            entities: {
+                                ...entities,
+                                dish: llmResult.entities?.dish || entities.dish
+                            }
+                        };
+                    }
+
+                    // LLM result accepted (non-ordering intent)
+                    return {
+                        intent: llmResult.intent,
+                        confidence: llmResult.confidence,
+                        source: llmResult.source,
+                        entities: {
+                            ...entities,
+                            ...llmResult.entities
+                        }
+                    };
+                }
+            } catch (e) {
+                console.warn('🛡️ LLM Translator failed:', e.message);
+                // Continue to final fallback
+            }
+        }
+
+        // 5. Last Resort Fallback
         return {
             intent: 'unknown',
             confidence: 0.0,

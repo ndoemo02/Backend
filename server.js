@@ -60,18 +60,28 @@ app.use(
         console.log('✅ CORS: No origin (same-origin or tool)');
         return callback(null, true);
       }
-      // Check if origin is allowed
-      if (isAllowedOrigin(origin)) {
+      // Check if origin is allowed or if it is localhost (for development)
+      if (isAllowedOrigin(origin) || origin.includes('localhost') || origin.includes('127.0.0.1')) {
         return callback(null, true);
       }
       console.warn("❌ Blocked by CORS:", origin);
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-    allowedHeaders: ALLOWED_HEADERS,
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-token'], // ✅ Added x-admin-token
+    exposedHeaders: ['x-admin-token'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   })
 );
+
+// Explicit OPTIONS handling for preflight
+app.options(/.*/, (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || 'http://localhost:5173');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-admin-token');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.status(200).end();
+});
 
 // --- CLIENTS INIT ---
 let openai, sttClient, ttsClient;
@@ -246,6 +256,48 @@ app.post("/api/tts-chirp-stream", async (req, res) => {
     return chirpStreamHandler.default(req, res);
   } catch (error) {
     res.status(500).json({ error: "Chirp Stream failed" });
+  }
+});
+
+// === [7.5] AI TOOLS (Voice Agent) ===
+app.get("/api/ai/tools/menu", async (req, res) => {
+  try {
+    const menuHandler = await import("./api/ai/tools/menu.js");
+    return menuHandler.default(req, res);
+  } catch (err) {
+    console.error("❌ AI Menu Tool error:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.get("/api/ai/tools/stock", async (req, res) => {
+  try {
+    const stockHandler = await import("./api/ai/tools/stock.js");
+    return stockHandler.default(req, res);
+  } catch (err) {
+    console.error("❌ AI Stock Tool error:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.post("/api/ai/tools/order", async (req, res) => {
+  try {
+    const orderHandler = await import("./api/ai/tools/order.js");
+    return orderHandler.default(req, res);
+  } catch (err) {
+    console.error("❌ AI Order Tool error:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// === [7.6] AI AGENT (Brain Orchestrator) ===
+app.post("/api/ai/agent", async (req, res) => {
+  try {
+    const agentHandler = await import("./api/ai/agent.js");
+    return agentHandler.default(req, res);
+  } catch (err) {
+    console.error("❌ AI Agent error:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
   }
 });
 
