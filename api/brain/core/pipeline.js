@@ -183,6 +183,15 @@ export class BrainPipeline {
             if (navResult.handled) {
                 BrainLogger.pipeline(`🔀 DIALOG NAV: ${navResult.response.intent} - skipping NLU/FSM`);
                 
+                // --- Event Logging: Dialog Navigation ---
+                if (EXPERT_MODE && !IS_SHADOW) {
+                    EventLogger.logEvent(activeSessionId, 'dialog_nav', {
+                        navIntent: navResult.response.intent,
+                        reply: navResult.response.reply?.substring(0, 100),
+                        stopTTS: navResult.response.stopTTS
+                    }, null, 'nav').catch(() => {});
+                }
+                
                 // Apply context updates if any (e.g., dialogStackIndex)
                 if (navResult.response.contextUpdates && !IS_SHADOW) {
                     updateSession(activeSessionId, navResult.response.contextUpdates);
@@ -203,6 +212,14 @@ export class BrainPipeline {
             const intentResult = await this.nlu.detect(context);
 
             let { intent, domain, confidence, source, entities } = intentResult;
+
+            // --- Event Logging: NLU Result ---
+            if (EXPERT_MODE && !IS_SHADOW) {
+                EventLogger.logEvent(activeSessionId, 'nlu_result', {
+                    intent, domain, confidence, source,
+                    entities: entities ? Object.keys(entities) : []
+                }, confidence, 'nlu').catch(() => {});
+            }
 
             // ═══════════════════════════════════════════════════════════════════
             // ICM GATE: Validate FSM state requirements BEFORE executing intent
@@ -285,6 +302,16 @@ export class BrainPipeline {
                 // Standard fallback for other cases
                 const fallbackIntent = getFallbackIntent(originalIntent);
                 BrainLogger.pipeline(`🛡️ ICM GATE: ${originalIntent} blocked (${stateCheck.reason}). Fallback → ${fallbackIntent}`);
+                
+                // --- Event Logging: ICM Blocked ---
+                if (EXPERT_MODE && !IS_SHADOW) {
+                    EventLogger.logEvent(activeSessionId, 'icm_blocked', {
+                        originalIntent,
+                        blockedReason: stateCheck.reason,
+                        fallbackIntent
+                    }, null, 'icm').catch(() => {});
+                }
+                
                 intent = fallbackIntent;
                 source = 'icm_fallback';
             }
@@ -534,6 +561,14 @@ export class BrainPipeline {
 
                 BrainLogger.pipeline(`🎨 SurfaceRenderer: ${detectedSurface.key} → "${surfaceResult.reply.substring(0, 50)}..."`);
 
+                // --- Event Logging: Surface Rendered ---
+                if (EXPERT_MODE && !IS_SHADOW) {
+                    EventLogger.logEvent(activeSessionId, 'surface_rendered', {
+                        surfaceKey: detectedSurface.key,
+                        replyPreview: surfaceResult.reply?.substring(0, 100)
+                    }, null, 'dialog').catch(() => {});
+                }
+
                 // ═══════════════════════════════════════════════════════════════════
                 // DIALOG STACK: Push rendered surface for BACK/REPEAT navigation
                 // ═══════════════════════════════════════════════════════════════════
@@ -664,6 +699,14 @@ export class BrainPipeline {
                 EventLogger.logEvent(sessionId, 'intent_resolved', {
                     intent, reply: speechText, confidence, source, domain: context.domain
                 }, confidence, wStep).catch(() => { });
+
+                // --- Event Logging: Response Sent ---
+                EventLogger.logEvent(sessionId, 'response_sent', {
+                    intent,
+                    replyPreview: speechText?.substring(0, 150),
+                    latency_ms: totalLatency,
+                    has_audio: !!audioContent
+                }, null, 'response').catch(() => { });
 
                 this.persistAnalytics({
                     intent, reply: speechText, durationMs: totalLatency, confidence, ttsMs
