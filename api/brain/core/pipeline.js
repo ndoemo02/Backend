@@ -22,6 +22,7 @@ import {
     mutatesCart
 } from './IntentCapabilityMap.js';
 import { renderSurface, detectSurface } from '../dialog/SurfaceRenderer.js';
+import { dialogNavGuard, pushDialogStack } from '../dialog/DialogNavGuard.js';
 
 // Mapa handlerów domenowych (Bezpośrednie mapowanie)
 // Kluczem jest "domain", a wewnątrz "intent"
@@ -171,6 +172,33 @@ export class BrainPipeline {
         };
 
         try {
+            // ═══════════════════════════════════════════════════════════════════
+            // 1. DIALOG NAVIGATION GUARD (Meta-Intent Layer)
+            // Handles: BACK, REPEAT, NEXT, STOP
+            // SHORT-CIRCUITS pipeline if matched - does NOT touch FSM
+            // Config-aware: respects dialog_navigation_enabled and fallback_mode
+            // ═══════════════════════════════════════════════════════════════════
+            const navResult = dialogNavGuard(text, sessionContext, config);
+            
+            if (navResult.handled) {
+                BrainLogger.pipeline(`🔀 DIALOG NAV: ${navResult.response.intent} - skipping NLU/FSM`);
+                
+                // Apply context updates if any (e.g., dialogStackIndex)
+                if (navResult.response.contextUpdates && !IS_SHADOW) {
+                    updateSession(activeSessionId, navResult.response.contextUpdates);
+                }
+                
+                return {
+                    ok: true,
+                    session_id: activeSessionId,
+                    intent: navResult.response.intent,
+                    reply: navResult.response.reply,
+                    should_reply: navResult.response.should_reply,
+                    stopTTS: navResult.response.stopTTS || false,
+                    meta: navResult.response.meta
+                };
+            }
+
             // 2. NLU Decision
             const intentResult = await this.nlu.detect(context);
 
@@ -505,6 +533,21 @@ export class BrainPipeline {
                 domainResponse.uiHints = surfaceResult.uiHints;
 
                 BrainLogger.pipeline(`🎨 SurfaceRenderer: ${detectedSurface.key} → "${surfaceResult.reply.substring(0, 50)}..."`);
+
+                // ═══════════════════════════════════════════════════════════════════
+                // DIALOG STACK: Push rendered surface for BACK/REPEAT navigation
+                // ═══════════════════════════════════════════════════════════════════
+                if (!IS_SHADOW) {
+                    pushDialogStack(sessionContext, {
+                        surfaceKey: detectedSurface.key,
+                        facts: detectedSurface.facts,
+                        renderedText: surfaceResult.reply
+                    });
+                    updateSession(sessionId, {
+                        dialogStack: sessionContext.dialogStack,
+                        dialogStackIndex: sessionContext.dialogStackIndex
+                    });
+                }
             }
 
             // Apply state changes from handler

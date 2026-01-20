@@ -17,6 +17,10 @@ const KEYS = [
   "tts_tone",
   "restaurant_aliases",
   "tts_enabled",
+  // Dialog UX Enhancement
+  "dialog_navigation_enabled",
+  "tts_chunking_enabled",
+  "fallback_mode",
 ]
 
 const DEFAULT_CONFIG = {
@@ -32,6 +36,10 @@ const DEFAULT_CONFIG = {
   tts_rate: 1.0,
   tts_tone: "swobodny",
   restaurant_aliases: {},
+  // Dialog UX Enhancement defaults
+  dialog_navigation_enabled: true,
+  tts_chunking_enabled: true,
+  fallback_mode: "SMART",  // "SMART" | "SIMPLE"
 }
 
 function safeMerge(base, value) {
@@ -94,6 +102,19 @@ export async function getConfig() {
         map.restaurant_aliases && typeof map.restaurant_aliases === "object"
           ? map.restaurant_aliases
           : { ...DEFAULT_CONFIG.restaurant_aliases },
+      // Dialog UX Enhancement
+      dialog_navigation_enabled:
+        typeof map.dialog_navigation_enabled === "boolean"
+          ? map.dialog_navigation_enabled
+          : DEFAULT_CONFIG.dialog_navigation_enabled,
+      tts_chunking_enabled:
+        typeof map.tts_chunking_enabled === "boolean"
+          ? map.tts_chunking_enabled
+          : DEFAULT_CONFIG.tts_chunking_enabled,
+      fallback_mode:
+        typeof map.fallback_mode === "string" && ["SMART", "SIMPLE"].includes(map.fallback_mode)
+          ? map.fallback_mode
+          : DEFAULT_CONFIG.fallback_mode,
     }
 
     return cfg
