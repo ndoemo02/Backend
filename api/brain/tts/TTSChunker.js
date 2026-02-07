@@ -33,7 +33,7 @@ export function splitIntoChunks(text, maxLen = 120) {
 
     for (const sentence of sentences) {
         const combined = current ? current + ' ' + sentence : sentence;
-        
+
         if (combined.length > maxLen && current) {
             // Current chunk is full, push it
             chunks.push(current.trim());
@@ -56,11 +56,11 @@ export function splitIntoChunks(text, maxLen = 120) {
 // ═══════════════════════════════════════════════════════════════════════════
 
 const POLISH_ORDINALS = [
-    '', 
-    'Po pierwsze', 
-    'Po drugie', 
-    'Po trzecie', 
-    'Po czwarte', 
+    '',
+    'Po pierwsze',
+    'Po drugie',
+    'Po trzecie',
+    'Po czwarte',
     'Po piąte',
     'Po szóste',
     'Po siódme',
@@ -105,11 +105,11 @@ export function polishForSpeech(text) {
     result = result.replace(/\*\*([^*]+)\*\*/g, '$1');  // **bold** → bold
     result = result.replace(/\*([^*]+)\*/g, '$1');      // *italic* → italic
     result = result.replace(/_([^_]+)_/g, '$1');        // _underline_ → underline
-    
+
     // Convert dashes to natural pauses
     result = result.replace(/\s*–\s*/g, ', ');
     result = result.replace(/\s*—\s*/g, ', ');
-    
+
     // Normalize multiple spaces
     result = result.replace(/\s+/g, ' ');
 
@@ -166,4 +166,135 @@ export function processForTTS(text, options = {}) {
         processedLength: polished?.length || 0,
         chunkCount: chunks.length
     };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BARGE-IN CONTROLLER
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Create a barge-in controller for TTS playback
+ * Use abort() when user starts speaking to stop TTS immediately
+ * 
+ * @returns {{ abort: () => void, signal: AbortSignal, isAborted: () => boolean }}
+ */
+export function createBargeInController() {
+    const controller = new AbortController();
+
+    return {
+        abort: () => controller.abort(),
+        signal: controller.signal,
+        isAborted: () => controller.signal.aborted
+    };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// STREAMING ITERATOR
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Chunk structure for streaming
+ * @typedef {Object} TtsChunk
+ * @property {number} index - Chunk index (0-based)
+ * @property {string} text - Chunk text
+ * @property {boolean} isFirst - Is this the first chunk
+ * @property {boolean} isLast - Is this the last chunk
+ * @property {number} pauseAfter - Pause in ms after chunk
+ */
+
+/**
+ * Create an async iterator for streaming chunks
+ * Supports barge-in cancellation via AbortSignal
+ * 
+ * @param {string} text - Full response text
+ * @param {Object} [options]
+ * @param {AbortSignal} [options.signal] - Abort signal for barge-in
+ * @param {boolean} [options.polish=true] - Polish text before chunking
+ * @returns {AsyncGenerator<TtsChunk>}
+ */
+export async function* streamChunks(text, options = {}) {
+    const { signal, polish = true } = options;
+    const { chunks, pacing } = processForTTS(text, { polish });
+
+    for (let i = 0; i < chunks.length; i++) {
+        // Check for barge-in
+        if (signal?.aborted) {
+            console.log('[TtsChunker] Barge-in detected, stopping stream');
+            return;
+        }
+
+        const chunk = {
+            index: i,
+            text: chunks[i],
+            isFirst: i === 0,
+            isLast: i === chunks.length - 1,
+            pauseAfter: i === chunks.length - 1 ? 0 : pacing.pauseBetweenChunks
+        };
+
+        yield chunk;
+
+        // Pause between chunks (except last)
+        if (!chunk.isLast && chunk.pauseAfter > 0) {
+            await new Promise((resolve, reject) => {
+                const timeout = setTimeout(resolve, getNaturalPause(chunk.pauseAfter, pacing.pauseVariation));
+
+                // Cancel on abort
+                if (signal) {
+                    const abortHandler = () => {
+                        clearTimeout(timeout);
+                        reject(new Error('Aborted'));
+                    };
+                    signal.addEventListener('abort', abortHandler, { once: true });
+                }
+            }).catch(() => {
+                // Aborted - stop iteration
+                return;
+            });
+        }
+    }
+}
+
+/**
+ * Get first chunk for immediate playback
+ * 
+ * @param {string} text - Full response text
+ * @param {Object} [options]
+ * @param {boolean} [options.polish=true] - Polish text before chunking
+ * @returns {{ chunk: TtsChunk | null, remaining: TtsChunk[] }}
+ */
+export function getFirstChunk(text, options = {}) {
+    const { polish = true } = options;
+    const { chunks, pacing } = processForTTS(text, { polish });
+
+    if (chunks.length === 0) {
+        return { chunk: null, remaining: [] };
+    }
+
+    const ttsChunks = chunks.map((chunkText, i) => ({
+        index: i,
+        text: chunkText,
+        isFirst: i === 0,
+        isLast: i === chunks.length - 1,
+        pauseAfter: i === chunks.length - 1 ? 0 : pacing.pauseBetweenChunks
+    }));
+
+    return {
+        chunk: ttsChunks[0],
+        remaining: ttsChunks.slice(1)
+    };
+}
+
+/**
+ * Estimate TTS duration for text (rough)
+ * @param {string} text
+ * @param {number} [wordsPerMinute=150] - Average speaking rate
+ * @returns {number} - Duration in milliseconds
+ */
+export function estimateDuration(text, wordsPerMinute = 150) {
+    if (!text) return 0;
+
+    const wordCount = text.split(/\s+/).length;
+    const minutes = wordCount / wordsPerMinute;
+
+    return Math.round(minutes * 60 * 1000);
 }

@@ -2,11 +2,12 @@
  * DialogNavGuard.js
  * 
  * Meta-Intent Layer for Dialog Navigation
- * Handles: BACK, REPEAT, NEXT, STOP
+ * Handles: BACK, REPEAT, NEXT, STOP, CANCEL, HELP, CORRECT
  * 
  * ❌ Does NOT touch FSM
  * ❌ Does NOT change session state (except dialogStackIndex)
  * ✅ Operates ONLY on dialog history
+ * ✅ Returns nav_action flags only
  * 
  * This runs BEFORE NLU - if matched, SHORT-CIRCUITS the pipeline.
  */
@@ -17,9 +18,12 @@
 
 export const DIALOG_NAV_INTENTS = {
     BACK: 'DIALOG_BACK',
-    REPEAT: 'DIALOG_REPEAT', 
+    REPEAT: 'DIALOG_REPEAT',
     NEXT: 'DIALOG_NEXT',
-    STOP: 'DIALOG_STOP'
+    STOP: 'DIALOG_STOP',
+    CANCEL: 'DIALOG_CANCEL',
+    HELP: 'DIALOG_HELP',
+    CORRECT: 'DIALOG_CORRECT'
 };
 
 // Phrase mappings (Polish)
@@ -39,6 +43,21 @@ const NAV_PATTERNS = {
     STOP: [
         /(^|\s)(stop|wystarczy|cisza|przestań|przestan|zamilknij|cicho)(\s|$)/i,
         /(^|\s)nie\s+mów(\s|$)/i
+    ],
+    CANCEL: [
+        /(^|\s)(anuluj|rezygnuj[eę]?|nie\s+chc[eę]|zrezygnuj|odwołaj|kasuj)(\s|$)/i,
+        /(^|\s)jednak\s+nie(\s|$)/i,
+        /(^|\s)nie,?\s*dziękuję(\s|$)/i
+    ],
+    HELP: [
+        /(^|\s)(pomoc|pomocy|help|co\s+mogę|co\s+mog[eę]\s+powiedzieć|jak\s+to\s+działa|instrukcja)(\s|$)/i,
+        /(^|\s)jakie\s+(mam\s+)?opcje(\s|$)/i,
+        /(^|\s)co\s+um[ie]esz(\s|$)/i
+    ],
+    CORRECT: [
+        /(^|\s)(nie,?\s+chodziło\s+mi\s+o|nie,?\s+miałem\s+na\s+myśli|popraw|źle\s+zrozumiała?[sś]?)(\s|$)/i,
+        /(^|\s)nie\s+to\s+miałem(\s|$)/i,
+        /(^|\s)nie,?\s+chodzi\s+o(\s|$)/i
     ]
 };
 
@@ -121,7 +140,7 @@ export function goBackInDialog(session) {
     if (!session.dialogStack || session.dialogStack.length === 0) {
         return null;
     }
-    
+
     if (session.dialogStackIndex === undefined) {
         session.dialogStackIndex = session.dialogStack.length - 1;
     }
@@ -236,6 +255,43 @@ export function handleDialogNav(navIntent, sessionContext) {
             };
         }
 
+        case DIALOG_NAV_INTENTS.CANCEL: {
+            // CANCEL signals intent to abort current action
+            // Does NOT mutate state - FSM decides what to do with this signal
+            return {
+                reply: 'Rozumiem, anuluję.',
+                shouldSpeak: true,
+                skipPipeline: true,
+                cancelRequested: true, // Signal for FSM to handle
+                meta: { navAction: 'CANCEL' }
+            };
+        }
+
+        case DIALOG_NAV_INTENTS.HELP: {
+            // HELP shows available commands - pure info, no state change
+            const helpMessage = 'Możesz powiedzieć: „pokaż menu", „zamów pizzę", ' +
+                '„cofnij", „powtórz", „anuluj", „stop". ' +
+                'Powiedz numer aby wybrać opcję z listy.';
+            return {
+                reply: helpMessage,
+                shouldSpeak: true,
+                skipPipeline: true,
+                meta: { navAction: 'HELP' }
+            };
+        }
+
+        case DIALOG_NAV_INTENTS.CORRECT: {
+            // CORRECT signals user wants to fix something
+            // This just flags it - doesn't decide what to do
+            return {
+                reply: 'Przepraszam, spróbujmy jeszcze raz. Co chciałeś zamówić?',
+                shouldSpeak: true,
+                skipPipeline: true,
+                correctionRequested: true,
+                meta: { navAction: 'CORRECT', clearLastIntent: true }
+            };
+        }
+
         default:
             return {
                 reply: null,
@@ -261,11 +317,11 @@ export function dialogNavGuard(text, sessionContext, config = {}) {
 
     // STOP always works (safety) - even when dialog nav is disabled
     const isStop = navIntent === DIALOG_NAV_INTENTS.STOP;
-    
+
     // Check if dialog navigation is enabled (SIMPLE mode or explicit disable)
     const isSimpleMode = config.fallback_mode === 'SIMPLE';
     const navDisabled = config.dialog_navigation_enabled === false;
-    
+
     if (!isStop && (navDisabled || isSimpleMode)) {
         console.log(`🔀 DialogNavGuard: ${navIntent} skipped (disabled in config)`);
         return { handled: false };

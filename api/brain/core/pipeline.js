@@ -24,6 +24,16 @@ import {
 import { renderSurface, detectSurface } from '../dialog/SurfaceRenderer.js';
 import { dialogNavGuard, pushDialogStack } from '../dialog/DialogNavGuard.js';
 
+// 🧠 Passive Memory Layer (read-only context, no FSM impact)
+import { initTurnBuffer, pushUserTurn, pushAssistantTurn } from '../memory/TurnBuffer.js';
+import { initEntityCache, cacheRestaurants, cacheItems } from '../memory/EntityCache.js';
+
+// 🎙️ Phrase Generator (optional LLM paraphrasing, fallback to templates)
+import { generatePhrase } from '../dialog/PhraseGenerator.js';
+
+// 🔊 TTS Chunking (stream first sentence, barge-in support)
+import { getFirstChunk, createBargeInController } from '../tts/TtsChunker.js';
+
 // Mapa handlerów domenowych (Bezpośrednie mapowanie)
 // Kluczem jest "domain", a wewnątrz "intent"
 
@@ -154,11 +164,11 @@ export class BrainPipeline {
         const sessionResult = getOrCreateActiveSession(sessionId);
         let activeSessionId = sessionResult.sessionId;
         const session = sessionResult.session;
-        
+
         if (sessionResult.isNew && sessionId !== activeSessionId) {
             BrainLogger.pipeline(`🔄 NEW CONVERSATION: ${sessionId} was closed, using ${activeSessionId}`);
         }
-        
+
         // Deep copy session for shadow mode simulation
         const sessionContext = IS_SHADOW ? JSON.parse(JSON.stringify(session || {})) : session;
 
@@ -171,6 +181,10 @@ export class BrainPipeline {
             meta: { conversationNew: sessionResult.isNew }
         };
 
+        // 🧠 Initialize Passive Memory (no FSM impact)
+        initTurnBuffer(sessionContext);
+        initEntityCache(sessionContext);
+
         try {
             // ═══════════════════════════════════════════════════════════════════
             // 1. DIALOG NAVIGATION GUARD (Meta-Intent Layer)
@@ -179,24 +193,24 @@ export class BrainPipeline {
             // Config-aware: respects dialog_navigation_enabled and fallback_mode
             // ═══════════════════════════════════════════════════════════════════
             const navResult = dialogNavGuard(text, sessionContext, config);
-            
+
             if (navResult.handled) {
                 BrainLogger.pipeline(`🔀 DIALOG NAV: ${navResult.response.intent} - skipping NLU/FSM`);
-                
+
                 // --- Event Logging: Dialog Navigation ---
                 if (EXPERT_MODE && !IS_SHADOW) {
                     EventLogger.logEvent(activeSessionId, 'dialog_nav', {
                         navIntent: navResult.response.intent,
                         reply: navResult.response.reply?.substring(0, 100),
                         stopTTS: navResult.response.stopTTS
-                    }, null, 'nav').catch(() => {});
+                    }, null, 'nav').catch(() => { });
                 }
-                
+
                 // Apply context updates if any (e.g., dialogStackIndex)
                 if (navResult.response.contextUpdates && !IS_SHADOW) {
                     updateSession(activeSessionId, navResult.response.contextUpdates);
                 }
-                
+
                 return {
                     ok: true,
                     session_id: activeSessionId,
@@ -218,7 +232,12 @@ export class BrainPipeline {
                 EventLogger.logEvent(activeSessionId, 'nlu_result', {
                     intent, domain, confidence, source,
                     entities: entities ? Object.keys(entities) : []
-                }, confidence, 'nlu').catch(() => {});
+                }, confidence, 'nlu').catch(() => { });
+            }
+
+            // 🧠 Record user turn (passive memory, no FSM impact)
+            if (!IS_SHADOW) {
+                pushUserTurn(sessionContext, text, { intent, entities });
             }
 
             // ═══════════════════════════════════════════════════════════════════
@@ -302,16 +321,16 @@ export class BrainPipeline {
                 // Standard fallback for other cases
                 const fallbackIntent = getFallbackIntent(originalIntent);
                 BrainLogger.pipeline(`🛡️ ICM GATE: ${originalIntent} blocked (${stateCheck.reason}). Fallback → ${fallbackIntent}`);
-                
+
                 // --- Event Logging: ICM Blocked ---
                 if (EXPERT_MODE && !IS_SHADOW) {
                     EventLogger.logEvent(activeSessionId, 'icm_blocked', {
                         originalIntent,
                         blockedReason: stateCheck.reason,
                         fallbackIntent
-                    }, null, 'icm').catch(() => {});
+                    }, null, 'icm').catch(() => { });
                 }
-                
+
                 intent = fallbackIntent;
                 source = 'icm_fallback';
             }
@@ -555,18 +574,43 @@ export class BrainPipeline {
             if (detectedSurface) {
                 const surfaceResult = renderSurface(detectedSurface);
 
-                // Override reply with rendered text, keep structured data
-                domainResponse.reply = surfaceResult.reply;
+                // 🎙️ PhraseGenerator: LLM paraphrasing with template fallback
+                // Constraint: no session access, no intent change, only {spokenText, ssml}
+                let finalReply = surfaceResult.reply;
+                let ssml = null;
+
+                if (EXPERT_MODE && !IS_SHADOW && config?.phrase_generator_enabled !== false) {
+                    try {
+                        const phraseResult = await generatePhrase({
+                            surfaceKey: detectedSurface.key,
+                            facts: detectedSurface.facts,
+                            templateText: surfaceResult.reply
+                        });
+                        if (phraseResult?.spokenText) {
+                            finalReply = phraseResult.spokenText;
+                            ssml = phraseResult.ssml;
+                            BrainLogger.pipeline(`🎙️ PhraseGenerator: paraphrased to "${finalReply.substring(0, 50)}..."`);
+                        }
+                    } catch (phraseErr) {
+                        // Fallback to template (determinism preserved)
+                        BrainLogger.pipeline(`🎙️ PhraseGenerator fallback: ${phraseErr.message}`);
+                    }
+                }
+
+                // Override reply with rendered/paraphrased text, keep structured data
+                domainResponse.reply = finalReply;
+                domainResponse.ssml = ssml;
                 domainResponse.uiHints = surfaceResult.uiHints;
 
-                BrainLogger.pipeline(`🎨 SurfaceRenderer: ${detectedSurface.key} → "${surfaceResult.reply.substring(0, 50)}..."`);
+                BrainLogger.pipeline(`🎨 SurfaceRenderer: ${detectedSurface.key} → "${finalReply.substring(0, 50)}..."`);
 
                 // --- Event Logging: Surface Rendered ---
                 if (EXPERT_MODE && !IS_SHADOW) {
                     EventLogger.logEvent(activeSessionId, 'surface_rendered', {
                         surfaceKey: detectedSurface.key,
-                        replyPreview: surfaceResult.reply?.substring(0, 100)
-                    }, null, 'dialog').catch(() => {});
+                        replyPreview: finalReply?.substring(0, 100),
+                        usedPhraseGenerator: finalReply !== surfaceResult.reply
+                    }, null, 'dialog').catch(() => { });
                 }
 
                 // ═══════════════════════════════════════════════════════════════════
@@ -642,10 +686,15 @@ export class BrainPipeline {
             if (hasReply && (wantsTTS || EXPERT_MODE) && ttsEnabled) {
                 if (speechPartForTTS) {
                     try {
+                        // 🔊 TTS Chunking: Stream first sentence immediately
+                        const { chunk: firstChunk, remaining } = getFirstChunk(speechPartForTTS);
+                        const ttsText = firstChunk?.text || speechPartForTTS;
+
                         const t0 = Date.now();
-                        audioContent = await playTTS(speechPartForTTS, options.ttsOptions || {});
+                        audioContent = await playTTS(ttsText, options.ttsOptions || {});
                         ttsMs = Date.now() - t0;
-                        BrainLogger.pipeline(`🔊 TTS Generated in ${ttsMs}ms (Length: ${speechPartForTTS.length})`);
+
+                        BrainLogger.pipeline(`🔊 TTS Chunked: first="${ttsText.substring(0, 30)}..." (${ttsMs}ms)${remaining ? ` +${remaining.length} chars remaining` : ''}`);
                     } catch (err) {
                         BrainLogger.pipeline(`❌ TTS failed: ${err.message}`);
                     }
@@ -711,6 +760,13 @@ export class BrainPipeline {
                 this.persistAnalytics({
                     intent, reply: speechText, durationMs: totalLatency, confidence, ttsMs
                 }).catch(() => { });
+            }
+
+            // 🧠 Record assistant turn + cache entities (passive memory)
+            if (!IS_SHADOW) {
+                pushAssistantTurn(sessionContext, speechText, detectedSurface?.key, { restaurants, menuItems });
+                if (restaurants?.length) cacheRestaurants(sessionContext, restaurants);
+                if (menuItems?.length) cacheItems(sessionContext, menuItems);
             }
 
             return response;

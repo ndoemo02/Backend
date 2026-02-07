@@ -1,3 +1,14 @@
+/**
+ * @deprecated This file is LEGACY and NOT used in production.
+ * 
+ * Production pipeline: brainV2.js → core/pipeline.js
+ * 
+ * This file is preserved for reference only.
+ * DO NOT modify, DO NOT import, DO NOT use for new features.
+ * 
+ * Moved to _legacy/ on 2026-01-20
+ */
+
 // /api/brain/brainRouter.js
 import { detectIntent, normalizeTxt, resolveIntent } from "./intents/intentRouterGlue.js";
 import { supabase } from "../_supabase.js";
