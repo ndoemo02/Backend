@@ -34,6 +34,15 @@ import { generatePhrase } from '../dialog/PhraseGenerator.js';
 // 🔊 TTS Chunking (stream first sentence, barge-in support)
 import { getFirstChunk, createBargeInController } from '../tts/TtsChunker.js';
 
+// 🛡️ Conversation Guards (UX improvements, no FSM changes)
+import {
+    hasLockedRestaurant,
+    isOrderingContext,
+    containsDishLikePhrase,
+    recoverRestaurantFromFullText,
+    calculatePhase
+} from './ConversationGuards.js';
+
 // Mapa handlerów domenowych (Bezpośrednie mapowanie)
 // Kluczem jest "domain", a wewnątrz "intent"
 
@@ -241,6 +250,24 @@ export class BrainPipeline {
             }
 
             // ═══════════════════════════════════════════════════════════════════
+            // FIX 2: RESTAURANT SEMANTIC RECOVERY
+            // Recover restaurant from full text if NLU missed the entity
+            // ═══════════════════════════════════════════════════════════════════
+            if (!entities?.restaurant && text && sessionContext.entityCache?.restaurants) {
+                const recovered = await recoverRestaurantFromFullText(
+                    text,
+                    sessionContext.entityCache.restaurants
+                );
+
+                if (recovered) {
+                    entities = entities || {};
+                    entities.restaurant = recovered.name;
+                    entities.restaurantId = recovered.id;
+                    BrainLogger.nlu(`🧠 SEMANTIC_RESTAURANT_RECOVERY: Detected "${recovered.name}" from full text`);
+                }
+            }
+
+            // ═══════════════════════════════════════════════════════════════════
             // ICM GATE: Validate FSM state requirements BEFORE executing intent
             // This ensures NO intent (regex/legacy/LLM) can bypass FSM
             // ═══════════════════════════════════════════════════════════════════
@@ -342,6 +369,45 @@ export class BrainPipeline {
                 BrainLogger.pipeline(`🛡️ CART GUARD: ${intent} tried to mutate cart - BLOCKED`);
                 intent = 'find_nearby';
                 source = 'cart_mutation_blocked';
+            }
+
+            // ═══════════════════════════════════════════════════════════════════
+            // FIX 1: CONTEXT-AWARE LEGACY UNLOCK (SMART SAFE)
+            // If restaurant context exists, allow ordering even from legacy source
+            // ═══════════════════════════════════════════════════════════════════
+            if (source === 'legacy_hard_blocked') {
+                if (hasLockedRestaurant(sessionContext)) {
+                    BrainLogger.pipeline('🟢 SMART_SAFE_UNLOCK: Legacy ordering allowed (restaurant locked)');
+                    intent = 'create_order';
+                    source = 'smart_safe_unlock';
+                } else {
+                    BrainLogger.pipeline('🛡️ HARD_BLOCK: No restaurant context → fallback discovery');
+                    intent = 'find_nearby';
+                }
+            }
+
+            // ═══════════════════════════════════════════════════════════════════
+            // FIX 3: CONVERSATION CONTINUITY GUARD
+            // Prevent discovery reset when user mentions dish in ordering context
+            // ═══════════════════════════════════════════════════════════════════
+            if (
+                intent === 'find_nearby' &&
+                isOrderingContext(sessionContext) &&
+                containsDishLikePhrase(text)
+            ) {
+                BrainLogger.pipeline('🟢 CONTINUITY_GUARD_TRIGGERED: Preventing discovery reset → create_order');
+                intent = 'create_order';
+                source = 'continuity_guard';
+            }
+
+            // ═══════════════════════════════════════════════════════════════════
+            // FIX 4: LIGHT PHASE TRACKING
+            // Track conversation phase without FSM changes
+            // ═══════════════════════════════════════════════════════════════════
+            const newPhase = calculatePhase(intent, sessionContext.conversationPhase || 'discovery', source);
+            if (!IS_SHADOW && newPhase !== sessionContext.conversationPhase) {
+                updateSession(sessionId, { conversationPhase: newPhase });
+                BrainLogger.pipeline(`📍 PHASE_TRANSITION: ${sessionContext.conversationPhase || 'discovery'} → ${newPhase}`);
             }
 
             // ═══════════════════════════════════════════════════════════════════
