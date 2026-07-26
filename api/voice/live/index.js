@@ -4,6 +4,11 @@ import { GeminiLiveGateway } from './GeminiLiveGateway.js';
 import { validateLiveInternalKey, validateLiveOrigin } from './liveSecurity.js';
 import { buildInitialTurnTrace } from './liveTurnLedger.js';
 import openAIRealtimeSessionHandler, { getOpenAIRealtimeFallbackConfig } from './openai-session.js';
+import { updateSession } from '../../brain/session/sessionStore.js';
+import {
+    buildDemoSessionPatch,
+    resolveDemoContextFromRequest,
+} from '../../demo/demoContext.js';
 
 let gateway = null;
 const toolRouter = new ToolRouter();
@@ -149,6 +154,8 @@ export function registerLiveRoutes(app) {
         }
 
         try {
+      const demoContext = resolveDemoContextFromRequest(body);
+      updateSession(String(sessionId), buildDemoSessionPatch(demoContext));
       const turnTrace = buildInitialTurnTrace({
         sessionId: String(sessionId),
         turnId,
@@ -180,6 +187,13 @@ export function registerLiveRoutes(app) {
             const status = result.ok ? 200 : 400;
             return res.status(status).json(result);
         } catch (error) {
+            if (error?.statusCode === 400) {
+                return res.status(400).json({
+                    ok: false,
+                    error: 'invalid_demo_context',
+                    detail: error.message,
+                });
+            }
             return res.status(500).json({
                 ok: false,
                 error: 'live_tool_router_error',

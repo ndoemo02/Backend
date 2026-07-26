@@ -8,6 +8,42 @@
 
 export const RESTAURANT_CATALOG = [
     {
+        id: 'fad7a624-619f-468e-86d7-6c6859e9f094',
+        name: 'Smok i Piec',
+        aliases: ['smok i piec', 'smok', 'w smoku i piecu'],
+        city: 'Kraków',
+        cuisine: 'Nowoczesna kuchnia małopolska',
+        datasetId: 'krakow-v1',
+        demo: true
+    },
+    {
+        id: 'd02e89f6-c35b-4ca7-ad2a-3d79eab21d5f',
+        name: 'Zaułek Kazimierza',
+        aliases: ['zaułek kazimierza', 'zaulek kazimierza', 'zaułek', 'na kazimierzu'],
+        city: 'Kraków',
+        cuisine: 'Kuchnia polsko-żydowska',
+        datasetId: 'krakow-v1',
+        demo: true
+    },
+    {
+        id: 'f5a05b98-eda6-47f3-84bd-b470b02f2558',
+        name: 'Okrąglak 12',
+        aliases: ['okrąglak 12', 'okraglak 12', 'okrąglak', 'okraglak'],
+        city: 'Kraków',
+        cuisine: 'Krakowski street food',
+        datasetId: 'krakow-v1',
+        demo: true
+    },
+    {
+        id: '27313088-c278-4bd5-a1da-27192c15f53d',
+        name: 'Obwarzanek i Spółka',
+        aliases: ['obwarzanek i spółka', 'obwarzanek i spolka', 'obwarzanek', 'obwarzanki'],
+        city: 'Kraków',
+        cuisine: 'Piekarnia i śniadania',
+        datasetId: 'krakow-v1',
+        demo: true
+    },
+    {
         id: 'acced74f-ddac-43a0-9f78-016c397f4b8e',
         name: 'Silesiana Italiana',
         aliases: [
@@ -18,6 +54,7 @@ export const RESTAURANT_CATALOG = [
         ],
         city: 'Piekary Śląskie',
         cuisine: 'Nowoczesna kuchnia włosko-śląska',
+        datasetId: 'piekary-v1',
         demo: true
     },
     {
@@ -31,6 +68,7 @@ export const RESTAURANT_CATALOG = [
         ],
         city: 'Piekary Śląskie',
         cuisine: 'Grill i kuchnia ognia',
+        datasetId: 'piekary-v1',
         demo: true
     },
     {
@@ -43,6 +81,7 @@ export const RESTAURANT_CATALOG = [
         ],
         city: 'Piekary Śląskie',
         cuisine: 'Domowa kuchnia śląska i polska',
+        datasetId: 'piekary-v1',
         demo: true
     },
     {
@@ -59,6 +98,7 @@ export const RESTAURANT_CATALOG = [
         ],
         city: 'Piekary Śląskie',
         cuisine: 'Nowoczesny kebab i street food',
+        datasetId: 'piekary-v1',
         demo: true
     },
     {
@@ -75,6 +115,7 @@ export const RESTAURANT_CATALOG = [
         ],
         city: 'Piekary Śląskie',
         cuisine: 'Nowoczesna kuchnia śląska',
+        datasetId: 'piekary-v1',
         demo: true
     },
     {
@@ -153,19 +194,45 @@ export const DEMO_RESTAURANT_IDS = new Set(
     RESTAURANT_CATALOG.filter((restaurant) => restaurant.demo === true).map((restaurant) => restaurant.id)
 );
 
+export const DEMO_RESTAURANT_IDS_BY_DATASET = new Map(
+    [...new Set(
+        RESTAURANT_CATALOG
+            .filter((restaurant) => restaurant.demo === true && restaurant.datasetId)
+            .map((restaurant) => restaurant.datasetId)
+    )].map((datasetId) => [
+        datasetId,
+        new Set(
+            RESTAURANT_CATALOG
+                .filter((restaurant) => restaurant.demo === true && restaurant.datasetId === datasetId)
+                .map((restaurant) => restaurant.id)
+        )
+    ])
+);
+
 export function isPublicDemoCatalogOnly(env = process.env) {
     return /^(1|true|yes|on)$/i.test(String(env?.FREEFLOW_DEMO_CATALOG_ONLY || '').trim());
 }
 
-export function filterRestaurantsForPublicDemo(restaurants, demoOnly = isPublicDemoCatalogOnly()) {
+export function filterRestaurantsForPublicDemo(
+    restaurants,
+    demoOnly = isPublicDemoCatalogOnly(),
+    datasetId = null
+) {
     if (!Array.isArray(restaurants)) return [];
     if (!demoOnly) return restaurants;
-    return restaurants.filter((restaurant) => DEMO_RESTAURANT_IDS.has(String(restaurant?.id || '')));
+    const allowedIds = datasetId
+        ? DEMO_RESTAURANT_IDS_BY_DATASET.get(datasetId)
+        : DEMO_RESTAURANT_IDS;
+    if (!allowedIds) return [];
+    return restaurants.filter((restaurant) => allowedIds.has(String(restaurant?.id || '')));
 }
 
 import { normalizeTxt } from '../intents/intentRouterGlue.js';
 
-export function findRestaurantInText(text, { demoOnly = isPublicDemoCatalogOnly() } = {}) {
+export function findRestaurantInText(
+    text,
+    { demoOnly = isPublicDemoCatalogOnly(), datasetId = null } = {}
+) {
     const normalized = normalizeTxt(text);
     console.log(`🔍 findRestaurantInText: normalized input="${normalized}"`);
 
@@ -181,7 +248,7 @@ export function findRestaurantInText(text, { demoOnly = isPublicDemoCatalogOnly(
     };
 
     // Sort by name length descending to match longest alias first
-    const candidates = filterRestaurantsForPublicDemo(RESTAURANT_CATALOG, demoOnly)
+    const candidates = filterRestaurantsForPublicDemo(RESTAURANT_CATALOG, demoOnly, datasetId)
         .sort((a, b) => b.name.length - a.name.length);
 
     for (const rest of candidates) {

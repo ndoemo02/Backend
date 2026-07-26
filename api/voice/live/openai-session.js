@@ -1,6 +1,11 @@
 import { createHash } from 'node:crypto';
 import { LIVE_TOOL_SCHEMAS } from './ToolSchemas.js';
 import { validateLiveOrigin } from './liveSecurity.js';
+import { updateSession } from '../../brain/session/sessionStore.js';
+import {
+  buildDemoSessionPatch,
+  resolveDemoContextFromRequest,
+} from '../../demo/demoContext.js';
 
 const DEFAULT_MODEL = 'gpt-realtime-2.1-mini';
 const DEFAULT_VOICE = 'coral';
@@ -31,8 +36,11 @@ const ALLOWED_VOICES = new Set([
 const SERVER_GROUNDING_GUARD = [
   'FreeFlow demo safety rules:',
   'Never claim that a restaurant, dish, drink, ingredient, price, allergen, or availability exists without a matching backend tool result.',
+  'When a tool result contains restaurant cards but no menu items, do not name dishes. Fetch the menu first.',
   'Use the provided tools for every menu lookup and order mutation.',
   'If the cart contains items, search companions such as drinks and desserts only in the cart restaurant unless the user explicitly asks to switch restaurants.',
+  'Act as a concise local culinary guide: describe only cuisine traits and representative dishes explicitly present in the latest tool result.',
+  'Reply in the dominant language of the latest user turn, Polish or English. A language change never changes the selected city or demo dataset.',
   'Never mention internal tool names to the user.',
 ].join(' ');
 
@@ -82,10 +90,24 @@ function safetyIdentifier(sessionId) {
     .digest('hex');
 }
 
-function buildSessionConfig(instructions) {
+function buildServerDemoGuard(demoContext) {
+  const city = String(demoContext?.city || 'Piekary Śląskie').trim();
+  const initialLanguage = demoContext?.preferredLocale === 'en' ? 'English' : 'Polish';
+  return [
+    `Active demo city: ${city}. Use only the backend dataset selected for this scenario.`,
+    `Start in ${initialLanguage}, then follow the dominant language of each user turn.`,
+    'If the user struggles with a word or mixes languages, give the missing term briefly and offer English once.',
+  ].join(' ');
+}
+
+export function buildSessionConfig(instructions, demoContext) {
   const config = getOpenAIRealtimeFallbackConfig();
   const clientInstructions = String(instructions || '').trim().slice(0, MAX_INSTRUCTIONS_LENGTH);
-  const combinedInstructions = [clientInstructions, SERVER_GROUNDING_GUARD]
+  const combinedInstructions = [
+    clientInstructions,
+    SERVER_GROUNDING_GUARD,
+    buildServerDemoGuard(demoContext),
+  ]
     .filter(Boolean)
     .join('\n\n');
 
@@ -98,7 +120,6 @@ function buildSessionConfig(instructions) {
       input: {
         transcription: {
           model: 'gpt-4o-mini-transcribe',
-          language: 'pl',
         },
         turn_detection: {
           type: 'semantic_vad',
@@ -139,7 +160,22 @@ export default async function openAIRealtimeSessionHandler(req, res) {
   }
 
   const body = req.body && typeof req.body === 'object' ? req.body : {};
-  const sessionConfig = buildSessionConfig(body.instructions);
+  const sessionId = typeof body.session_id === 'string' ? body.session_id.trim() : '';
+  if (!sessionId) {
+    return res.status(400).json({ ok: false, error: 'missing_session_id' });
+  }
+  let demoContext;
+  try {
+    demoContext = resolveDemoContextFromRequest(body);
+  } catch (error) {
+    return res.status(400).json({
+      ok: false,
+      error: 'invalid_demo_context',
+      detail: error?.message || 'invalid_demo_context',
+    });
+  }
+  updateSession(sessionId, buildDemoSessionPatch(demoContext));
+  const sessionConfig = buildSessionConfig(body.instructions, demoContext);
 
   try {
     const upstream = await fetch('https://api.openai.com/v1/realtime/client_secrets', {

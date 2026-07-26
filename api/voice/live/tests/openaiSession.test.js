@@ -1,5 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import handler, { getOpenAIRealtimeFallbackConfig } from '../openai-session.js';
+import handler, {
+  buildSessionConfig,
+  getOpenAIRealtimeFallbackConfig,
+} from '../openai-session.js';
 
 function makeReq(body = {}, method = 'POST') {
   return {
@@ -69,6 +72,11 @@ describe('OpenAI Realtime fallback session', () => {
     await handler(makeReq({
       instructions: 'Jesteś Amber.',
       session_id: 'demo-session',
+      demo_context: {
+        scenario_id: 'krakow-tourist',
+        preferred_locale: 'pl',
+        source: 'query',
+      },
     }), res);
 
     expect(res.statusCode).toBe(200);
@@ -85,7 +93,22 @@ describe('OpenAI Realtime fallback session', () => {
     expect(session.audio.output.voice).toBe('coral');
     expect(session.instructions).toContain('Jesteś Amber.');
     expect(session.instructions).toContain('Never claim');
+    expect(session.instructions).toContain('Active demo city: Kraków');
+    expect(session.instructions).toContain('dominant language');
+    expect(session.audio.input.transcription).not.toHaveProperty('language');
     expect(session.tools.some((tool) => tool.name === 'search_menu_items')).toBe(true);
+  });
+
+  it('keeps the initial language independent from the active city', () => {
+    const session = buildSessionConfig('Amber base.', {
+      city: 'Piekary Śląskie',
+      preferredLocale: 'en',
+    });
+
+    expect(session.instructions).toContain('Active demo city: Piekary Śląskie');
+    expect(session.instructions).toContain('Start in English');
+    expect(session.instructions).toContain('language change never changes');
+    expect(session.audio.input.transcription).not.toHaveProperty('language');
   });
 
   it('maps upstream quota failures to a stable application error', async () => {
@@ -93,7 +116,7 @@ describe('OpenAI Realtime fallback session', () => {
       new Response('{"error":{"message":"quota"}}', { status: 429 }),
     );
     const res = makeRes();
-    await handler(makeReq({ sdp: 'v=0' }), res);
+    await handler(makeReq({ session_id: 'quota-test-session' }), res);
     expect(res.statusCode).toBe(429);
     expect(res.body).toEqual({ ok: false, error: 'openai_realtime_quota_exceeded' });
   });

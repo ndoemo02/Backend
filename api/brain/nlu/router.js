@@ -407,8 +407,12 @@ export class NLURouter {
         const quantity = extractQuantity(text);
 
         // 2. Static Catalog Lookup (Fast Match)
-        // Instant 0ms check against known 9 restaurants
-        const matchedRestaurant = findRestaurantInText(text);
+        // Instant catalog match, scoped to the active public-demo dataset.
+        const demoDatasetId = session?.demoDatasetId || session?.demoContext?.datasetId || null;
+        const matchedRestaurant = findRestaurantInText(text, {
+            demoOnly: Boolean(demoDatasetId),
+            datasetId: demoDatasetId,
+        });
         const explicitDiscoverySignal = hasDiscoverySignal(text, normalizedLoose, location);
 
         if (session?.currentRestaurant && explicitDiscoverySignal && !matchedRestaurant) {

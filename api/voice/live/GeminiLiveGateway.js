@@ -18,6 +18,10 @@ import {
     validateLiveOrigin,
 } from './liveSecurity.js';
 import { getSession } from '../../brain/session/sessionStore.js';
+import {
+    buildDemoSessionPatch,
+    resolveDemoContextFromRequest,
+} from '../../demo/demoContext.js';
 
 const TOOL_EXECUTION_TIMEOUT_MS = 12000;
 const DEFAULT_LIVE_MODEL = process.env.GEMINI_LIVE_MODEL || process.env.LIVE_MODEL || 'gemini-2.5-flash-native-audio-preview-12-2025';
@@ -228,6 +232,17 @@ export class GeminiLiveGateway {
                         return;
                     }
                     if (parsed.type === 'session_init') {
+                        try {
+                            const demoContext = resolveDemoContextFromRequest(parsed);
+                            updateSession(sessionId, buildDemoSessionPatch(demoContext));
+                        } catch (error) {
+                            socket.send(JSON.stringify({
+                                type: 'tool_error',
+                                error: 'invalid_demo_context',
+                                detail: error?.message || 'invalid_demo_context',
+                            }));
+                            return;
+                        }
                         const lat = typeof parsed.lat === 'number' ? parsed.lat : null;
                         const lng = typeof parsed.lng === 'number' ? parsed.lng : null;
                         if (Number.isFinite(lat) && Number.isFinite(lng)) {

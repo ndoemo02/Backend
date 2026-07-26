@@ -6,6 +6,11 @@
 import { BrainPipeline } from './core/pipeline.js';
 import { NLURouter } from './nlu/router.js';
 import { sanitizeAssistantResponse } from './core/securityGuards.js';
+import { updateSession } from './session/sessionStore.js';
+import {
+    buildDemoSessionPatch,
+    resolveDemoContextFromRequest,
+} from '../demo/demoContext.js';
 
 // Singleton Initialization (Warm Start)
 const nlu = new NLURouter();
@@ -32,6 +37,9 @@ export default async function handler(req, res) {
         if (!text && !body.text) {
             return res.status(400).json({ ok: false, error: 'missing_input' });
         }
+
+        const demoContext = resolveDemoContextFromRequest(body);
+        updateSession(sessionId.trim(), buildDemoSessionPatch(demoContext));
 
         console.log(`[BrainV2] Request: ${sessionId} -> "${text}" (Channel: ${meta.channel || 'unknown'})`);
 

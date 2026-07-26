@@ -242,6 +242,7 @@ export class MenuHandler {
                     meta: {
                         source: 'cache_menu_focus',
                         latency_total_ms: 0,
+                        menuPresentationMode: focusResult.focusedMenuItemId ? 'discovery' : 'full',
                         focusedMenuItemId: focusResult.focusedMenuItemId,
                         menuFocusQuery: focusResult.query.kind,
                     },
@@ -258,7 +259,11 @@ export class MenuHandler {
                     reply: 'Liste dan masz na ekranie. Czy cos wpadlo Ci w oko?',
                     menuItems: items,
                     restaurants: [],
-                    meta: { source: 'cache_anti_loop', latency_total_ms: 0 },
+                    meta: {
+                        source: 'cache_anti_loop',
+                        latency_total_ms: 0,
+                        menuPresentationMode: 'full',
+                    },
                     contextUpdates: { ...baseContextUpdates },
                 };
             }
@@ -268,7 +273,11 @@ export class MenuHandler {
                 reply: `Wybrano restauracje ${sessionRestaurant.name}. ${menuSummary.summaryLine} ${menuSummary.followUpQuestion}`,
                 menuItems: items,
                 restaurants: [],
-                meta: { source: 'cache', latency_total_ms: 0 },
+                meta: {
+                    source: 'cache',
+                    latency_total_ms: 0,
+                    menuPresentationMode: 'full',
+                },
                 contextUpdates: { ...baseContextUpdates },
             };
         }
@@ -305,6 +314,7 @@ export class MenuHandler {
                 meta: {
                     source: 'db_menu_focus',
                     menuScope: 'full_menu',
+                    menuPresentationMode: focusResult.focusedMenuItemId ? 'discovery' : 'full',
                     focusedMenuItemId: focusResult.focusedMenuItemId,
                     menuFocusQuery: focusResult.query.kind,
                 },
@@ -333,7 +343,11 @@ export class MenuHandler {
                 last_menu: preview.menu,
                 last_menu_restaurant_id: restaurant.id,
             },
-            meta: { source: 'db', menuScope: 'full_menu' },
+            meta: {
+                source: 'db',
+                menuScope: 'full_menu',
+                menuPresentationMode: 'full',
+            },
         };
     }
 }

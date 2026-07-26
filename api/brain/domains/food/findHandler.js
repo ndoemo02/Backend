@@ -10,6 +10,7 @@ import { calculateDistance } from '../../helpers.js';
 import { supabase } from '../../../_supabase.js';
 import { normalizeGroundedMenuQuery, scoreGroundedMenuItem } from '../../grounding/menuGrounding.js';
 import { filterRestaurantsForPublicDemo, isPublicDemoCatalogOnly } from '../../data/restaurantCatalog.js';
+import { DEMO_SCENARIOS, DEFAULT_DEMO_SCENARIO_ID } from '../../../demo/demoContext.js';
 
 // ── Discovery Ranking Layer (additive, non-breaking) ──────────
 // Lazy import — jeśli moduł nie istnieje (stare środowisko), discovery po
@@ -47,7 +48,6 @@ async function loadDiscoveryEngine() {
 // --- Configuration & Constants ---
 
 const SERVICE_CITY = 'Piekary Śląskie';
-const SERVICE_CITY_KEYWORD = 'piekar';
 const ALLOW_NEARBY_CITY_FALLBACK = false;
 
 const KNOWN_CITIES = [SERVICE_CITY, 'Bytom', 'Radzionków', 'Chorzów', 'Katowice', 'Siemianowice Śląskie', 'Świerklaniec', 'Zabrze', 'Tarnowskie Góry', 'Świętochłowice', 'Mysłowice'];
@@ -62,24 +62,46 @@ const NEARBY_CITY_MAP = {
 
 // --- Helper Functions (Pure Logic) ---
 
-function isSupportedServiceCity(value) {
+function resolveServiceProfile(session = {}) {
+    const hasExplicitDemoContext = Boolean(
+        session?.demoScenarioId
+        || session?.demoDatasetId
+        || session?.demoContext
+    );
+    const scenarioId = session?.demoScenarioId
+        || session?.demoContext?.scenarioId
+        || DEFAULT_DEMO_SCENARIO_ID;
+    const scenario = DEMO_SCENARIOS[scenarioId] || DEMO_SCENARIOS[DEFAULT_DEMO_SCENARIO_ID];
+    return {
+        scenarioId: scenario.id,
+        city: scenario.city,
+        datasetId: scenario.datasetId,
+        cityKeyword: scenario.id === 'krakow-tourist' ? 'krakow' : 'piekar',
+        ignoreDeviceGps: scenario.id === 'krakow-tourist',
+        hasExplicitDemoContext,
+    };
+}
+
+function isSupportedServiceCity(value, serviceProfile = resolveServiceProfile()) {
     const normalized = normalizeLooseText(value);
-    return normalized.includes(SERVICE_CITY_KEYWORD);
+    return normalized.includes(serviceProfile.cityKeyword);
 }
 
-function buildServiceCityOnlyReply(requestedCity = null) {
+function buildServiceCityOnlyReply(requestedCity = null, serviceProfile = resolveServiceProfile()) {
     if (requestedCity) {
-        return `Na razie działamy tylko w ${SERVICE_CITY}. Dla "${requestedCity}" nie mam jeszcze restauracji.`;
+        return `Na razie działamy tylko w ${serviceProfile.city}. Dla "${requestedCity}" nie mam danych.`;
     }
-    return `Na razie działamy tylko w ${SERVICE_CITY}.`;
+    return `Na razie działamy tylko w ${serviceProfile.city}.`;
 }
 
-function filterRestaurantsToServiceCity(restaurants) {
+function filterRestaurantsToServiceCity(restaurants, serviceProfile = resolveServiceProfile()) {
     if (!Array.isArray(restaurants) || restaurants.length === 0) return [];
-    return restaurants.filter((restaurant) => isSupportedServiceCity(restaurant?.city || ''));
+    return restaurants.filter((restaurant) => (
+        isSupportedServiceCity(restaurant?.city || '', serviceProfile)
+    ));
 }
 
-function normalizeLocation(loc) {
+function normalizeLocation(loc, serviceProfile = resolveServiceProfile()) {
     if (!loc) return null;
     const l = loc.toLowerCase().trim();
     if (
@@ -91,7 +113,9 @@ function normalizeLocation(loc) {
     ) {
         return null;
     }
+    if (normalizeLooseText(l).includes(serviceProfile.cityKeyword)) return serviceProfile.city;
     if (l.includes('piekar')) return 'Piekary Śląskie';
+    if (normalizeLooseText(l).includes('krakow')) return 'Kraków';
     if (l.includes('katow')) return 'Katowice';
     if (l.includes('bytom')) return 'Bytom';
     // Fallback for known cities check
@@ -131,13 +155,13 @@ function isAddressLikeLocation(value) {
     return hasStreetHint || (hasStreetNumber && endsWithStreetNumber);
 }
 
-function resolveSessionCityFallback(session) {
+function resolveSessionCityFallback(session, serviceProfile = resolveServiceProfile(session)) {
     const candidate = session?.last_location || session?.default_city || null;
     if (!candidate) return null;
     if (isAddressLikeLocation(candidate)) return null;
-    const normalized = normalizeLocation(candidate) || candidate;
-    if (!isSupportedServiceCity(normalized)) return null;
-    return SERVICE_CITY;
+    const normalized = normalizeLocation(candidate, serviceProfile) || candidate;
+    if (!isSupportedServiceCity(normalized, serviceProfile)) return null;
+    return serviceProfile.city;
 }
 
 const CUISINE_NORMALIZATION_RULES = [
@@ -731,6 +755,7 @@ async function searchNearbyWithCuisineVariants(repo, lat, lng, radiusKm, cuisine
 
 function resolveDiscoveryMode(ctx) {
     const { text, session, entities, body } = ctx;
+    const serviceProfile = resolveServiceProfile(session);
 
     // Parse coordinates first so live tool calls can force GPS path when available.
     const bodyLat = body?.lat != null ? parseFloat(body.lat) : null;
@@ -754,9 +779,11 @@ function resolveDiscoveryMode(ctx) {
     // Live: session GPS is source of truth. Gemini hallucinates coordinates (often Warsaw 52.23/21.01),
     // so prefer sessionCoords over bodyCoords from tool args.
     // Non-live: bodyCoords take priority (user-provided location).
-    const coords = (isLiveFindNearbyCall && sessionCoords)
-        ? sessionCoords
-        : (bodyCoords || ctxCoords || sessionCoords || null);
+    const coords = serviceProfile.ignoreDeviceGps
+        ? null
+        : ((isLiveFindNearbyCall && sessionCoords)
+            ? sessionCoords
+            : (bodyCoords || ctxCoords || sessionCoords || null));
 
     const hasAnyGpsInput = Boolean(coords);
     const preferGpsForLiveNearby = isLiveFindNearbyCall && hasAnyGpsInput;
@@ -795,7 +822,7 @@ function resolveDiscoveryMode(ctx) {
     }
 
     if (rawLocation && isAddressLikeLocation(rawLocation)) {
-        const fallbackCity = resolveSessionCityFallback(session);
+        const fallbackCity = resolveSessionCityFallback(session, serviceProfile);
         console.log('[DISCOVERY_LOCATION_SANITIZED]', JSON.stringify({
             rawLocation,
             fallbackCity,
@@ -806,10 +833,10 @@ function resolveDiscoveryMode(ctx) {
     // Fallback to session city only when GPS is unavailable.
     // If coordinates exist, keep location empty so resolver can use GPS mode and distance ranking.
     if (!rawLocation && !preferGpsForLiveNearby && !coords) {
-        rawLocation = resolveSessionCityFallback(session);
+        rawLocation = resolveSessionCityFallback(session, serviceProfile);
     }
 
-    const normalizedLoc = normalizeLocation(rawLocation);
+    const normalizedLoc = normalizeLocation(rawLocation, serviceProfile);
     const normalizedText = normalizeLooseText(text);
     const nearbyCueFromMeta = Boolean(ctx?.body?.meta?.nearbyCue);
     const hasNearbyIntentSignal =
@@ -820,7 +847,7 @@ function resolveDiscoveryMode(ctx) {
         || normalizedText.includes('obok')
         || normalizedText.includes('w okolicy');
     const locationLooksLikePlaceholder = rawLocation
-        ? normalizeLocation(rawLocation) === null
+        ? normalizeLocation(rawLocation, serviceProfile) === null
         : false;
 
     const shouldForceGpsForLive =
@@ -843,7 +870,8 @@ function resolveDiscoveryMode(ctx) {
         return {
             mode: 'GPS',
             coords,
-            cuisine: cuisineType
+            cuisine: cuisineType,
+            serviceProfile
         };
     }
 
@@ -861,13 +889,14 @@ function resolveDiscoveryMode(ctx) {
         return {
             mode: 'GPS',
             coords,
-            cuisine: cuisineType
+            cuisine: cuisineType,
+            serviceProfile
         };
     }
 
     // 2. Determine Mode
     if (normalizedLoc) {
-        if (!isSupportedServiceCity(normalizedLoc)) {
+        if (!isSupportedServiceCity(normalizedLoc, serviceProfile)) {
             // When GPS is available, silently fall back to GPS instead of rejecting.
             // Gemini ASR often mishears supported city names (e.g. "Piekary" → "Poznań", "piekarnie").
             // The user is almost certainly in the supported city — GPS will find the right restaurants.
@@ -876,23 +905,26 @@ function resolveDiscoveryMode(ctx) {
                 return {
                     mode: 'GPS',
                     coords,
-                    cuisine: null  // drop cuisine — likely also from ASR mishear
+                    cuisine: null,  // drop cuisine — likely also from ASR mishear
+                    serviceProfile
                 };
             }
             return {
                 mode: 'UNSUPPORTED_CITY',
                 requestedLocation: normalizedLoc,
                 cuisine: cuisineType,
-                coords
+                coords,
+                serviceProfile
             };
         }
 
         return {
             mode: 'CITY',
-            location: SERVICE_CITY,
+            location: serviceProfile.city,
             cuisine: cuisineType,
             originalLocation: rawLocation,
-            coords
+            coords,
+            serviceProfile
         };
     }
 
@@ -900,7 +932,8 @@ function resolveDiscoveryMode(ctx) {
         return {
             mode: 'GPS',
             coords,
-            cuisine: cuisineType
+            cuisine: cuisineType,
+            serviceProfile
         };
     }
 
@@ -909,11 +942,12 @@ function resolveDiscoveryMode(ctx) {
     // instead of asking for location again.
     return {
         mode: 'CITY',
-        location: SERVICE_CITY,
+        location: serviceProfile.city,
         cuisine: cuisineType,
         originalLocation: null,
         coords: null,
-        inferredServiceCity: true
+        inferredServiceCity: true,
+        serviceProfile
     };
 
     // 3. Fallback Analysis (Implicit Order vs General)
@@ -980,6 +1014,7 @@ export class FindRestaurantHandler {
         // 1. Resolve Mode & Context
         const discoveryParams = resolveDiscoveryMode(ctx);
         const { mode, location, cuisine, coords, isImplicitOrder } = discoveryParams;
+        const serviceProfile = discoveryParams.serviceProfile || resolveServiceProfile(ctx?.session);
         const dishEntity = discoveryParams.dishEntity
             || ctx?.entities?.dish
             || ctx?.entities?.items?.[0]?.name
@@ -1017,7 +1052,7 @@ export class FindRestaurantHandler {
 
         if (mode === 'UNSUPPORTED_CITY') {
             return {
-                reply: `${buildServiceCityOnlyReply(discoveryParams.requestedLocation)} Powiedz proszę "${SERVICE_CITY}", a pokażę dostępne restauracje.`,
+                reply: `${buildServiceCityOnlyReply(discoveryParams.requestedLocation, serviceProfile)} Powiedz proszę "${serviceProfile.city}", a pokażę dostępne restauracje.`,
                 contextUpdates: {
                     expectedContext: 'find_nearby_ask_location',
                     awaiting: 'location',
@@ -1123,7 +1158,7 @@ export class FindRestaurantHandler {
                     }
                 }
 
-                restaurants = filterRestaurantsToServiceCity(restaurants);
+                restaurants = filterRestaurantsToServiceCity(restaurants, serviceProfile);
             } catch (error) {
                 console.error('Repo Error (City):', error);
                 gpsPromise = null;
@@ -1194,7 +1229,10 @@ export class FindRestaurantHandler {
             // If GPS+cuisine returns too few hits, enrich with city+cuisine candidates from
             // session context. This helps include restaurants missing valid lat/lng.
             if (cuisine && Array.isArray(restaurants) && restaurants.length < 2) {
-                const cityHint = normalizeLocation(ctx?.session?.last_location || null);
+                const cityHint = normalizeLocation(
+                    ctx?.session?.last_location || null,
+                    serviceProfile
+                );
                 if (cityHint) {
                     try {
                         const cityCandidates = await searchRestaurantsWithCuisineVariants(this.repo, cityHint, cuisine);
@@ -1235,7 +1273,7 @@ export class FindRestaurantHandler {
                 }
             }
 
-            restaurants = filterRestaurantsToServiceCity(restaurants);
+            restaurants = filterRestaurantsToServiceCity(restaurants, serviceProfile);
 
             if (!usedItemLedDiscovery && Array.isArray(restaurants) && restaurants.length > 0) {
                 const itemQueryCandidate = extractItemQueryCandidate(ctx, discoveryParams);
@@ -1262,7 +1300,7 @@ export class FindRestaurantHandler {
                             }));
                         } else if (requiresMenuLedDiscovery(itemQueryCandidate)) {
                             const cityFallbackMatches = await searchRestaurantsByItemInCity({
-                                location: resolveSessionCityFallback(ctx?.session) || SERVICE_CITY,
+                                location: resolveSessionCityFallback(ctx?.session, serviceProfile) || serviceProfile.city,
                                 coords,
                                 itemQuery: itemQueryCandidate,
                             });
@@ -1306,8 +1344,8 @@ export class FindRestaurantHandler {
         } else {
             // FALLBACK MODE
             const prompt = (isImplicitOrder && dishEntity)
-                ? `Chętnie przyjmę zamówienie ${dishEntity}, ale najpierw podaj miasto. Obecnie obsługuję tylko ${SERVICE_CITY}.`
-                : `Gdzie mam szukać? Podaj miasto lub powiedz 'w pobliżu'. Obecnie obsługuję tylko ${SERVICE_CITY}.`;
+                ? `Chętnie przyjmę zamówienie ${dishEntity}, ale najpierw podaj miasto. W tym demo obsługuję ${serviceProfile.city}.`
+                : `Gdzie mam szukać? Podaj miasto. W tym demo obsługuję ${serviceProfile.city}.`;
 
             return {
                 reply: prompt,
@@ -1395,8 +1433,15 @@ export class FindRestaurantHandler {
 
         // ── END DISCOVERY LAYER ───────────────────────────────────────
 
-        restaurants = filterRestaurantsForPublicDemo(restaurants);
-        if (isPublicDemoCatalogOnly() && restaurants.length === 0) {
+        restaurants = filterRestaurantsForPublicDemo(
+            restaurants,
+            isPublicDemoCatalogOnly() || serviceProfile.hasExplicitDemoContext,
+            serviceProfile.datasetId
+        );
+        if (
+            (isPublicDemoCatalogOnly() || serviceProfile.hasExplicitDemoContext)
+            && restaurants.length === 0
+        ) {
             return {
                 reply: 'W publicznym demo pokazuję wyłącznie fikcyjne lokale FreeFlow. Spróbuj innej kuchni albo pokaż wszystkie miejsca demo.',
                 restaurants: [],

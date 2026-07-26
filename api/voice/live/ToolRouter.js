@@ -16,6 +16,7 @@ import { ORDER_MODE_EVENT, ORDER_MODE_STATE, transitionOrderMode } from '../../b
 import { RESTAURANT_CATALOG, findRestaurantInText } from '../../brain/data/restaurantCatalog.js';
 import { sanitizeLocation } from '../../brain/core/ConversationGuards.js';
 import { verifyToolCall } from './IntentVerificationLayer.js';
+import { verifyCartMutationIntent } from './CartMutationIntentGuard.js';
 import { compareRestaurantsForLive } from './restaurantCompareService.js';
 import { searchGroundedMenuItems } from '../../brain/grounding/menuGrounding.js';
 import { loadMenuPreview } from '../../brain/menuService.js';
@@ -490,10 +491,13 @@ function transcriptMentionsLocation(transcriptText = '', locationCandidate = '')
     return locationTokens.some((token) => transcript.includes(token));
 }
 
-function findCatalogRestaurantById(restaurantId) {
+function findCatalogRestaurantById(restaurantId, datasetId = null) {
     const id = String(restaurantId || '').trim();
     if (!id) return null;
-    return RESTAURANT_CATALOG.find((restaurant) => String(restaurant?.id || '') === id) || null;
+    return RESTAURANT_CATALOG.find((restaurant) => (
+        String(restaurant?.id || '') === id
+        && (!datasetId || restaurant?.datasetId === datasetId)
+    )) || null;
 }
 
 function getExplicitRestaurantArgs(args = {}, entities = {}) {
@@ -503,10 +507,12 @@ function getExplicitRestaurantArgs(args = {}, entities = {}) {
     };
 }
 
-function resolveCatalogRestaurantFromArgs(args = {}, entities = {}) {
+function resolveCatalogRestaurantFromArgs(args = {}, entities = {}, { datasetId = null } = {}) {
     const { restaurantId, restaurantName } = getExplicitRestaurantArgs(args, entities);
-    const byId = findCatalogRestaurantById(restaurantId);
-    const byName = restaurantName ? findRestaurantInText(restaurantName) : null;
+    const byId = findCatalogRestaurantById(restaurantId, datasetId);
+    const byName = restaurantName
+        ? findRestaurantInText(restaurantName, { demoOnly: Boolean(datasetId), datasetId })
+        : null;
 
     if (restaurantId && !byId) {
         return {
@@ -1266,8 +1272,12 @@ export class ToolRouter {
                             removable: Array.isArray(x.safety_data.removable_ingredients) ? x.safety_data.removable_ingredients : [],
                         } : null,
                     })),
+                    // Keep the complete restaurant card available to the UI while
+                    // exposing only grounded matches as the assistant shortlist.
+                    menu: menuItems,
                     meta: {
                         source: 'live_tool:search_menu_items',
+                        menuPresentationMode: focusedMenuItemId ? 'discovery' : 'full',
                         focusedMenuItemId,
                         restaurantId: scopedRestaurantId,
                         restaurantName: selectedRestaurant.restaurantName || null,
@@ -1282,11 +1292,20 @@ export class ToolRouter {
         }
 
         const trace = [`tool:${toolName}`, `intent:${intent}`];
-        const transcriptText = String(transcript || userText || '').trim();
+        const transcriptText = String(
+            transcript
+            || userText
+            || debugLiveFlow?.finalTranscript
+            || debugLiveFlow?.userText
+            || ''
+        ).trim();
         const mapped = mapToolPayload(toolName, args, { transcriptText });
         const entities = mapped.entities || {};
         const textCameFromTranscript = Boolean(transcriptText && mapped.text === transcriptText);
         const sessionSnapshotForIVL = this.getSession(sessionId) || {};
+        const catalogDatasetId = sessionSnapshotForIVL?.demoDatasetId
+            || sessionSnapshotForIVL?.demoContext?.datasetId
+            || null;
         const cartScope = getCartRestaurantScope(sessionSnapshotForIVL);
         const discoveryQuery = String(args?.query || args?.dish || transcriptText || '').trim();
         if (toolName === 'find_nearby' && cartScope && isCartCompanionQuery(discoveryQuery)) {
@@ -1325,7 +1344,11 @@ export class ToolRouter {
                 && !!restaurantName
                 && looksLikeOrderLocationPhrase(restaurantName);
             if ((restaurantId || restaurantName) && !allowOrderLocationRecovery) {
-                const catalogScope = resolveCatalogRestaurantFromArgs(args, entities);
+                const catalogScope = resolveCatalogRestaurantFromArgs(
+                    args,
+                    entities,
+                    { datasetId: catalogDatasetId }
+                );
                 if (!catalogScope.ok) {
                     const guardReason = catalogScope.reason || 'restaurant_not_in_catalog';
                     trace.push(`catalog_guard_blocked:${guardReason}`);
@@ -1389,7 +1412,10 @@ export class ToolRouter {
         if (isAddToCartTool && transcriptText) {
             const explicitRestaurantName = String(args?.restaurant_name || entities?.restaurant || '').trim();
             const explicitRestaurantId = String(args?.restaurant_id || entities?.restaurantId || '').trim();
-            const transcriptRestaurant = findRestaurantInText(transcriptText);
+            const transcriptRestaurant = findRestaurantInText(transcriptText, {
+                demoOnly: Boolean(catalogDatasetId),
+                datasetId: catalogDatasetId,
+            });
             let restaurantFromArgs = null;
 
             if (explicitRestaurantId) {
@@ -1398,7 +1424,10 @@ export class ToolRouter {
                     name: explicitRestaurantName || null,
                 };
             } else if (explicitRestaurantName) {
-                restaurantFromArgs = findRestaurantInText(explicitRestaurantName);
+                restaurantFromArgs = findRestaurantInText(explicitRestaurantName, {
+                    demoOnly: Boolean(catalogDatasetId),
+                    datasetId: catalogDatasetId,
+                });
             }
 
             if (!restaurantFromArgs && transcriptRestaurant) {
@@ -1427,7 +1456,10 @@ export class ToolRouter {
             && !args?.restaurant_id
             && !!transcriptText;
         if (canInferOrderRestaurant) {
-            const inferredRestaurant = findRestaurantInText(transcriptText);
+            const inferredRestaurant = findRestaurantInText(transcriptText, {
+                demoOnly: Boolean(catalogDatasetId),
+                datasetId: catalogDatasetId,
+            });
             if (inferredRestaurant) {
                 if (inferredRestaurant.name) {
                     entities.restaurant = inferredRestaurant.name;
@@ -1446,7 +1478,12 @@ export class ToolRouter {
         // reroute to show_menu instead of forcing create_order with an invalid dish.
         if (toolName === 'add_item_to_cart') {
             const dishCandidate = String(args?.dish || entities?.dish || '').trim();
-            const dishRestaurantMatch = dishCandidate ? findRestaurantInText(dishCandidate) : null;
+            const dishRestaurantMatch = dishCandidate
+                ? findRestaurantInText(dishCandidate, {
+                    demoOnly: Boolean(catalogDatasetId),
+                    datasetId: catalogDatasetId,
+                })
+                : null;
             const scopedRestaurantId = String(args?.restaurant_id || entities?.restaurantId || '').trim();
             const menuContextPresent = hasLastMenuContext(sessionSnapshotForIVL);
             const dishLooksLikeRestaurant = Boolean(dishRestaurantMatch)
@@ -1471,6 +1508,72 @@ export class ToolRouter {
                 });
                 rerouted.trace = [...trace, ...(Array.isArray(rerouted?.trace) ? rerouted.trace : [])];
                 return rerouted;
+            }
+        }
+
+        // A coherent catalog item is not evidence that the user wanted to buy it.
+        // Keep this after catalog/menu reroutes, but before IVL, FSM and handlers.
+        if (isAddToCartTool) {
+            const mutationIntent = verifyCartMutationIntent({
+                text: transcriptText,
+                session: sessionSnapshotForIVL,
+            });
+            trace.push(`cart_intent_guard:${mutationIntent.reason}`);
+
+            if (!mutationIntent.allowed) {
+                const guardReply = mutationIntent.informationalQuestion
+                    ? 'Pytasz o tę pozycję, więc nie dodaję jej do koszyka. Odpowiem na podstawie aktualnego menu.'
+                    : 'Nie usłyszałam wyraźnej prośby o dodanie tej pozycji. Nic nie zmieniłam w koszyku.';
+                const clarify = buildClarifyResponse(
+                    sessionId,
+                    'clarify_order',
+                    mutationIntent.reason,
+                    trace,
+                );
+                clarify.reply = guardReply;
+                clarify.text = guardReply;
+                clarify.meta = {
+                    ...(clarify.meta || {}),
+                    cartMutationIntentGuard: {
+                        blocked: true,
+                        reason: mutationIntent.reason,
+                        informationalQuestion: mutationIntent.informationalQuestion,
+                    },
+                };
+                turnTrace = applyRouterDecision(turnTrace, {
+                    mappedText: transcriptText,
+                    mappedIntent: intent,
+                    runtimeIntent: 'clarify_order',
+                    runtimeDomain: getIntentDomain('clarify_order'),
+                    args,
+                    session: sessionSnapshotForIVL,
+                });
+                turnTrace = applyHandlerDecision(turnTrace, {
+                    domainResponse: clarify,
+                    guardedDomainResponse: clarify,
+                    cartBefore: sessionSnapshotForIVL?.cart || {},
+                    cartAfter: sessionSnapshotForIVL?.cart || {},
+                    cartChanged: false,
+                    cartMutationPath: true,
+                    responseSuggestsSuccess: false,
+                });
+                const finalizedTrace = finalizeTurnTrace(turnTrace);
+                if (finalizedTrace) {
+                    clarify.meta = {
+                        ...(clarify.meta || {}),
+                        liveTool: {
+                            ...(clarify.meta?.liveTool || {}),
+                            turnTrace: finalizedTrace,
+                        },
+                    };
+                }
+                return {
+                    ok: true,
+                    tool: toolName,
+                    request_id: requestId,
+                    response: clarify,
+                    trace,
+                };
             }
         }
 
@@ -1757,14 +1860,20 @@ export class ToolRouter {
         const hasGeoArgs = Number.isFinite(latArg) && Number.isFinite(lngArg);
         const locationCandidate = String(args?.location || '').trim();
         const locationLooksLikeRestaurant = locationCandidate
-            ? findRestaurantInText(locationCandidate)
+            ? findRestaurantInText(locationCandidate, {
+                demoOnly: Boolean(catalogDatasetId),
+                datasetId: catalogDatasetId,
+            })
             : null;
         const canPromoteRestaurantSelection =
             runtimeIntent === 'find_nearby'
             && !!transcriptText
             && (!args?.location || !!locationLooksLikeRestaurant || hasGeoArgs);
         const transcriptRestaurantMatch = canPromoteRestaurantSelection
-            ? (findRestaurantInText(transcriptText) || locationLooksLikeRestaurant)
+            ? (findRestaurantInText(transcriptText, {
+                demoOnly: Boolean(catalogDatasetId),
+                datasetId: catalogDatasetId,
+            }) || locationLooksLikeRestaurant)
             : null;
         if (transcriptRestaurantMatch) {
             runtimeIntent = 'select_restaurant';

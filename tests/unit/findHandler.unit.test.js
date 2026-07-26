@@ -2,6 +2,29 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { FindRestaurantHandler } from '../../api/brain/domains/food/findHandler.js';
 
+// FindRestaurantHandler may enrich discovery results with menu rows. Unit tests
+// must not reach the real Supabase project: the injected restaurant repository
+// is the only data source under test in this file.
+vi.mock('../../api/_supabase.js', () => {
+    const createEmptyQuery = () => {
+        const query = {
+            select: vi.fn(() => query),
+            eq: vi.fn(() => query),
+            ilike: vi.fn(() => query),
+            in: vi.fn(() => query),
+            limit: vi.fn(async () => ({ data: [], error: null })),
+            range: vi.fn(async () => ({ data: [], error: null }))
+        };
+        return query;
+    };
+
+    return {
+        supabase: {
+            from: vi.fn(() => createEmptyQuery())
+        }
+    };
+});
+
 // Mock NLU extractors to control inputs completely
 vi.mock('../../api/brain/nlu/extractors.js', () => ({
     extractLocation: vi.fn(() => null),

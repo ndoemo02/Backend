@@ -118,6 +118,7 @@ describe('Live ToolRouter', () => {
             sessionId: 'sess_icm_test',
             toolName: 'add_item_to_cart',
             args: { dish: 'Pierogi', quantity: 1 },
+            transcript: 'dodaj pierogi',
         });
 
         // Router falls back to find_nearby — still returns ok=true (it handled it)
@@ -224,6 +225,7 @@ describe('Live ToolRouter', () => {
             toolName: 'add_item_to_cart',
             args: { dish: 'Pierogi', quantity: 2 },
             requestId: 'req-1',
+            transcript: 'dodaj dwa pierogi',
         });
 
         expect(result.ok).toBe(true);
@@ -233,6 +235,55 @@ describe('Live ToolRouter', () => {
         expect(result.response.meta.liveTool.toolName).toBe('add_item_to_cart');
         expect(Array.isArray(result.response.actions)).toBe(true);
         expect(Array.isArray(result.trace)).toBe(true);
+    });
+
+    it.each([
+        ['Kołocz to je tako drożdżówka?', 'cart_mutation_informational_question'],
+        ['Beijo, tá chegando.', 'cart_mutation_without_explicit_action'],
+    ])('does not mutate cart when add_item_to_cart lacks purchase evidence: %s', async (transcript, reason) => {
+        const sessionId = `sess_cart_intent_guard_${reason}`;
+        const sessions = new Map([
+            [sessionId, {
+                conversationPhase: 'ordering',
+                currentRestaurant: { id: 'r1', name: 'Śląski Szynk' },
+                lastMenu: [{ id: 'm1', name: 'Kołocz śląski z makiem', price_pln: 17 }],
+                cart: { items: [], total: 0 },
+                orderMode: 'restaurant_selected',
+            }],
+        ]);
+        let orderHandlerCalled = false;
+        const handlers = makeFakeHandlers();
+        handlers.ordering.create_order.execute = async () => {
+            orderHandlerCalled = true;
+            return {
+                reply: 'Nie powinno się wykonać.',
+                contextUpdates: { cart: { items: [{ name: 'Kołocz', qty: 1 }], total: 17 } },
+            };
+        };
+        const getSession = (id) => sessions.get(id) || {};
+        const updateSession = (id, patch) => {
+            const next = { ...(sessions.get(id) || {}), ...patch };
+            sessions.set(id, next);
+            return next;
+        };
+        const router = new ToolRouter({ handlers, getSession, updateSession });
+
+        const result = await router.executeToolCall({
+            sessionId,
+            toolName: 'add_item_to_cart',
+            args: { dish: 'Kołocz śląski z makiem', quantity: 1 },
+            requestId: `req-${reason}`,
+            transcript,
+        });
+
+        expect(result.ok).toBe(true);
+        expect(result.response.intent).toBe('clarify_order');
+        expect(result.response.meta?.cartMutationIntentGuard).toMatchObject({
+            blocked: true,
+            reason,
+        });
+        expect(orderHandlerCalled).toBe(false);
+        expect(sessions.get(sessionId)?.cart?.items).toHaveLength(0);
     });
 
     it('for clarify_order from add_item tool, marks not-added and uses explicit no-add reply', async () => {
@@ -274,6 +325,7 @@ describe('Live ToolRouter', () => {
             toolName: 'add_item_to_cart',
             args: { dish: 'Pierogi', quantity: 1 },
             requestId: 'req-clarify-1',
+            transcript: 'dodaj pierogi',
         });
 
         expect(result.ok).toBe(false);
@@ -315,6 +367,8 @@ describe('Live ToolRouter', () => {
 
         expect(result.ok).toBe(true);
         expect(result.response.menuItems[0].id).toBe('menu-1');
+        expect(result.response.menu).toHaveLength(2);
+        expect(result.response.meta?.menuPresentationMode).toBe('discovery');
         expect(result.response.meta?.focusedMenuItemId).toBe('menu-1');
     });
 

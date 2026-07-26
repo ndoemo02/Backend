@@ -58,6 +58,7 @@ describe('MenuHandler full menu scope', () => {
         expect(result.menu).toHaveLength(4);
         expect(result.menuItems.map((item) => item.id)).toEqual(result.menu.map((item) => item.id));
         expect(result.meta?.menuScope).toBe('full_menu');
+        expect(result.meta?.menuPresentationMode).toBe('full');
     });
 
     it('cache hit path still keeps full menu in menuItems', async () => {
@@ -108,6 +109,7 @@ describe('MenuHandler full menu scope', () => {
         expect(result.intent).toBe('menu_request');
         expect(result.meta?.focusedMenuItemId).toBe('m4');
         expect(result.meta?.menuFocusQuery).toBe('dessert');
+        expect(result.meta?.menuPresentationMode).toBe('discovery');
         expect(result.reply).toContain('Sernik');
         expect(result.reply).not.toContain('Pierogi Ruskie');
     });
@@ -136,6 +138,7 @@ describe('MenuHandler full menu scope', () => {
         expect(loadMenuPreview).not.toHaveBeenCalled();
         expect(result.meta?.menuFocusQuery).toBe('drink');
         expect(result.meta?.focusedMenuItemId).toBeNull();
+        expect(result.meta?.menuPresentationMode).toBe('full');
         expect(result.reply).toContain('Nie widze');
         expect(result.reply).toContain('napojow');
     });

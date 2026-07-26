@@ -1,5 +1,10 @@
 import { GoogleGenAI } from '@google/genai';
 import { isLiveOriginAllowed } from './liveSecurity.js';
+import { updateSession } from '../../brain/session/sessionStore.js';
+import {
+    buildDemoSessionPatch,
+    resolveDemoContextFromRequest,
+} from '../../demo/demoContext.js';
 
 const DEFAULT_LIVE_MODEL =
     process.env.GEMINI_LIVE_MODEL
@@ -97,6 +102,23 @@ export default async function handler(req, res) {
         return res.status(400).json({ ok: false, error: 'live_model_not_allowed' });
     }
 
+    const sessionId = typeof req.body?.session_id === 'string' ? req.body.session_id.trim() : '';
+    if (!sessionId) {
+        return res.status(400).json({ ok: false, error: 'missing_session_id' });
+    }
+
+    let demoContext;
+    try {
+        demoContext = resolveDemoContextFromRequest(req.body);
+    } catch (error) {
+        return res.status(400).json({
+            ok: false,
+            error: 'invalid_demo_context',
+            detail: error?.message || 'invalid_demo_context',
+        });
+    }
+    updateSession(sessionId, buildDemoSessionPatch(demoContext));
+
     const now = Date.now();
     const expireTime = new Date(now + 30 * 60_000).toISOString();
     const newSessionExpireTime = new Date(now + 60_000).toISOString();
@@ -133,6 +155,7 @@ export default async function handler(req, res) {
             model,
             expires_at: expireTime,
             new_session_expires_at: newSessionExpireTime,
+            demo_context: demoContext,
         });
     } catch {
         console.error('[LIVE_TOKEN_ISSUE_FAILED]');
