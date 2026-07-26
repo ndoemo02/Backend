@@ -1279,6 +1279,48 @@ describe('Live ToolRouter', () => {
         expect(sessions.get('sess_live_unknown_restaurant_menu')?.orderMode).toBe('neutral');
     });
 
+    it('allows Śląski Szynk through the live show_menu catalog guard', async () => {
+        const sessions = new Map([
+            ['sess_live_slaski_szynk_menu', {
+                conversationPhase: 'neutral',
+                orderMode: 'neutral',
+            }],
+        ]);
+        const getSession = (id) => sessions.get(id) || {};
+        const updateSession = (id, patch) => {
+            const next = { ...(sessions.get(id) || {}), ...patch };
+            sessions.set(id, next);
+            return next;
+        };
+
+        let capturedEntities = null;
+        const handlers = makeFakeHandlers();
+        handlers.food.menu_request = {
+            execute: async (ctx) => {
+                capturedEntities = ctx.entities;
+                return {
+                    reply: 'Pokazuję menu Śląskiego Szynku.',
+                    menuItems: [{ id: 'szynk-1', name: 'Rolada wołowa' }],
+                    contextUpdates: { expectedContext: 'create_order' },
+                };
+            },
+        };
+
+        const router = new ToolRouter({ handlers, getSession, updateSession });
+        const result = await router.executeToolCall({
+            sessionId: 'sess_live_slaski_szynk_menu',
+            toolName: 'show_menu',
+            args: { restaurant_name: 'Śląski Szynk' },
+            transcript: 'pokaż menu śląski szynk',
+        });
+
+        expect(result.ok).toBe(true);
+        expect(result.response.intent).toBe('menu_request');
+        expect(capturedEntities?.restaurant).toBe('Śląski Szynk');
+        expect(capturedEntities?.restaurantId).toBe('4ad6b301-671b-4343-bf91-9bab7cda37b4');
+        expect(result.trace.some((entry) => entry.includes('catalog_guard_ok:4ad6b301-671b-4343-bf91-9bab7cda37b4'))).toBe(true);
+    });
+
     it('blocks add_items_to_cart when model mixes a known restaurant id with an unknown restaurant name', async () => {
         const sessions = new Map([
             ['sess_live_mismatched_restaurant_order', {

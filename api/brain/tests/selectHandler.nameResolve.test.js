@@ -28,13 +28,15 @@ vi.mock('../../_supabase.js', () => ({
             if (table === 'restaurants') {
                 return {
                     select: vi.fn(() => ({
-                        ilike: vi.fn((_col, _pattern) => ({
-                            limit: vi.fn(() =>
-                                Promise.resolve({
-                                    data: [{ id: 'sk1', name: 'Restauracja Stara Kamienica' }],
-                                    error: null,
-                                })
-                            ),
+                        eq: vi.fn(() => ({
+                            ilike: vi.fn((_col, _pattern) => ({
+                                limit: vi.fn(() =>
+                                    Promise.resolve({
+                                        data: [{ id: 'sk1', name: 'Restauracja Stara Kamienica' }],
+                                        error: null,
+                                    })
+                                ),
+                            })),
                         })),
                     })),
                 };
@@ -96,8 +98,10 @@ describe('SelectRestaurantHandler — name-only resolution', () => {
         const { supabase } = await import('../../_supabase.js');
         supabase.from.mockImplementationOnce(() => ({
             select: vi.fn(() => ({
-                ilike: vi.fn(() => ({
-                    limit: vi.fn(() => Promise.resolve({ data: [], error: null })),
+                eq: vi.fn(() => ({
+                    ilike: vi.fn(() => ({
+                        limit: vi.fn(() => Promise.resolve({ data: [], error: null })),
+                    })),
                 })),
             })),
         }));
@@ -118,5 +122,19 @@ describe('SelectRestaurantHandler — name-only resolution', () => {
         expect(result?.contextUpdates?.currentRestaurant?.id).toBe('sk1');
         // Direct path source
         expect(result?.meta?.source).toBe('entity_direct_selection_auto_menu');
+    });
+
+    it('UI action reopens the current restaurant menu instead of returning the already-selected guard', async () => {
+        const handler = new SelectRestaurantHandler();
+        const ctx = makeCtx({ restaurantName: 'Restauracja Stara Kamienica', restaurantId: 'sk1' });
+        ctx.session.currentRestaurant = { id: 'sk1', name: 'Restauracja Stara Kamienica' };
+        ctx.body.meta = {
+            ui_action: { type: 'select_restaurant', restaurant_id: 'sk1' },
+        };
+
+        const result = await handler.execute(ctx);
+
+        expect(result?.meta?.source).toBe('entity_direct_selection_auto_menu');
+        expect(result?.contextUpdates?.currentRestaurant?.id).toBe('sk1');
     });
 });

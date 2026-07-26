@@ -14,9 +14,11 @@ vi.mock('../liveSecurity.js', () => ({
 }));
 
 vi.mock('../ToolRouter.js', () => ({
-    ToolRouter: vi.fn().mockImplementation(() => ({
-        executeToolCall: mocks.executeToolCall,
-    })),
+    ToolRouter: class ToolRouterMock {
+        executeToolCall(...args) {
+            return mocks.executeToolCall(...args);
+        }
+    },
 }));
 
 const { default: handler } = await import('../tool-call.js');

@@ -9,6 +9,30 @@ import { calculateDistance } from '../helpers.js';
 // }
 
 export class SupabaseRestaurantRepository {
+    async getRestaurantByName(name) {
+        const { data, error } = await supabase
+            .from('restaurants')
+            .select('id, name, address, city, cuisine_type, lat, lng, delivery_available, price_level, taxonomy_groups, taxonomy_cats, taxonomy_tags, maps_rating, maps_ratings_total, opening_hours, phone, website, image_url, photo_gallery')
+            .eq('name', name)
+            .eq('is_active', true)
+            .limit(1);
+
+        if (error) throw error;
+        return data?.[0] || null;
+    }
+
+    async getRestaurantById(restaurantId) {
+        const { data, error } = await supabase
+            .from('restaurants')
+            .select('id, name, address, city, cuisine_type, lat, lng, delivery_available, price_level, taxonomy_groups, taxonomy_cats, taxonomy_tags, maps_rating, maps_ratings_total, opening_hours, phone, website, image_url, photo_gallery')
+            .eq('id', restaurantId)
+            .eq('is_active', true)
+            .maybeSingle();
+
+        if (error) throw error;
+        return data || null;
+    }
+
     async searchRestaurants(city, cuisine) {
         let query = supabase
             .from('restaurants')
@@ -97,6 +121,20 @@ export class InMemoryRestaurantRepository {
         });
 
         return matches.slice(0, 30);
+    }
+
+    async getRestaurantById(restaurantId) {
+        return this.restaurants.find((restaurant) => (
+            restaurant.is_active !== false && String(restaurant.id) === String(restaurantId)
+        )) || null;
+    }
+
+    async getRestaurantByName(name) {
+        const normalizedName = String(name || '').trim().toLocaleLowerCase('pl');
+        return this.restaurants.find((restaurant) => (
+            restaurant.is_active !== false
+            && String(restaurant.name || '').trim().toLocaleLowerCase('pl') === normalizedName
+        )) || null;
     }
 
     async searchNearby(lat, lng, radiusKm = 10, cuisine = null) {

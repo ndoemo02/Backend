@@ -725,6 +725,43 @@ export class BrainPipeline {
                 return intentContext;
             };
             const hasList = sessionContext?.last_restaurants_list?.length > 0;
+            const uiAction = requestBody?.meta?.ui_action;
+            const isUiRestaurantSelection = uiAction?.type === 'select_restaurant';
+            const uiRestaurantId = String(uiAction?.restaurant_id ?? '').trim();
+            const uiRestaurantName = String(uiAction?.restaurant_name ?? '').trim().slice(0, 160);
+            let uiSelectedRestaurant = isUiRestaurantSelection && hasList
+                ? sessionContext.last_restaurants_list.find((restaurant) => String(restaurant?.id ?? '') === uiRestaurantId)
+                : null;
+            if (
+                isUiRestaurantSelection
+                && !uiSelectedRestaurant
+                && uiRestaurantId
+                && typeof this.repository?.getRestaurantById === 'function'
+            ) {
+                try {
+                    uiSelectedRestaurant = await this.repository.getRestaurantById(uiRestaurantId);
+                    if (uiSelectedRestaurant) {
+                        BrainLogger.pipeline(` UI ACTION: Revalidated active restaurant after session-list cache miss (${uiRestaurantId})`);
+                    }
+                } catch (error) {
+                    BrainLogger.pipeline(` UI ACTION: Restaurant revalidation failed (${error?.message || 'unknown error'})`);
+                }
+            }
+            if (
+                isUiRestaurantSelection
+                && !uiSelectedRestaurant
+                && uiRestaurantName
+                && typeof this.repository?.getRestaurantByName === 'function'
+            ) {
+                try {
+                    uiSelectedRestaurant = await this.repository.getRestaurantByName(uiRestaurantName);
+                    if (uiSelectedRestaurant) {
+                        BrainLogger.pipeline(` UI ACTION: Revalidated active restaurant by exact card name after cache miss (${uiRestaurantName})`);
+                    }
+                } catch (error) {
+                    BrainLogger.pipeline(` UI ACTION: Restaurant name revalidation failed (${error?.message || 'unknown error'})`);
+                }
+            }
             const normOverrideText = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
             const isDigitObj = /^\d+$/.test(normOverrideText) || /^wybieram\s+\d+$/.test(normOverrideText);
             const isOrdinalObj = /^(pierwsza|druga|trzecia|czwarta|piata|szosta|siodma|osma|dziewiata|dziesiata|jedynka|dwojka|trojka|czworka|piatka|szostka|siodemka|osemka|dziewiatka|dziesiatka|pierwszy|drugi|trzeci|czwarty|piaty|szosty|siodmy|osmy|dziewiaty|dziesiaty)$/.test(normOverrideText);
@@ -733,7 +770,29 @@ export class BrainPipeline {
                 : [];
             const isFragmentSelection = hasList && normOverrideText.length >= 4 && !normOverrideText.includes(' ') && listNorm.some((n) => n.includes(normOverrideText) || n.split(' ').some((w) => w.startsWith(normOverrideText)));
 
-            if (hasList && (isDigitObj || isOrdinalObj || isFragmentSelection)) {
+            if (isUiRestaurantSelection && !uiSelectedRestaurant) {
+                BrainLogger.pipeline(`[UI_ACTION_BLOCKED] stale or invalid restaurant id="${uiRestaurantId || 'missing'}"`);
+                if (!IS_SHADOW) BrainPipeline._inFlight.delete(inflightKey);
+                return this.createErrorResponse(
+                    'invalid_restaurant_selection',
+                    'Ta lista restauracji jest już nieaktualna. Pokaż miejsca w pobliżu jeszcze raz.',
+                );
+            }
+
+            if (uiSelectedRestaurant) {
+                BrainLogger.pipeline(` UI ACTION: Exact restaurant selection -> ${uiSelectedRestaurant.name} (${uiSelectedRestaurant.id})`);
+                intentResult = {
+                    intent: 'select_restaurant',
+                    domain: 'food',
+                    confidence: 1.0,
+                    source: 'ui_action',
+                    entities: {
+                        restaurant: uiSelectedRestaurant.name,
+                        restaurantId: uiSelectedRestaurant.id,
+                        location: uiSelectedRestaurant.city || null,
+                    },
+                };
+            } else if (hasList && (isDigitObj || isOrdinalObj || isFragmentSelection)) {
                 BrainLogger.pipeline(` PRE-NLU OVERRIDE: Bypassing NLU for list selection -> select_restaurant`);
                 intentResult = {
                     intent: 'select_restaurant',

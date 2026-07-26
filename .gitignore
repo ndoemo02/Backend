@@ -35,6 +35,26 @@ all_fails.txt
 fails*.json
 nlu_test_results.json
 tmp_vercel_logs*.jsonl
+data_coverage_failures.json
+nlu_real_data_failures.json
+test_results.json
+test_intent_fails.json
+temp-res.json
+brain_fails.txt
+clean_fails.txt
+fails*.txt
+diff*.txt
+error_log.txt
+rc*.txt
+rpr*.txt
+test-out*.txt
+test_out*.txt
+test-output*.txt
+hubertus.txt
+klaps.txt
+vien.txt
+rezydencja.txt
+rest_ids.txt
 
 # Generated analysis caches
 graphify-out/cache/
@@ -52,6 +72,11 @@ graphify-out/.delta_info.json
 .gemini/
 .cursor/
 .impeccable/
+.CURSOR_DEV_NOTE
+.cursorrules
+cursor.json
+.git_commit_msg.txt
+.git-force-save
 *.code-workspace
 
 # Local archives

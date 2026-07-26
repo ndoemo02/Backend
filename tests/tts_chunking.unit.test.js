@@ -31,7 +31,7 @@ describe('TTSChunker', () => {
 
         it('should handle empty text', () => {
             expect(splitIntoChunks('')).toEqual([]);
-            expect(splitIntoChunks(null as any)).toEqual([]);
+            expect(splitIntoChunks(null)).toEqual([]);
         });
 
         it('should keep short text as single chunk', () => {
@@ -83,7 +83,7 @@ describe('TTSChunker', () => {
 
         it('should handle empty input', () => {
             expect(polishForSpeech('')).toBe('');
-            expect(polishForSpeech(null as any)).toBe('');
+            expect(polishForSpeech(null)).toBe('');
         });
     });
 

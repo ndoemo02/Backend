@@ -1,9 +1,0 @@
-Restauracja Stara Kamienica: 1fc1e782-bac6-47b2-978a-f6f2b38000cd
-Rezydencja Luxury Hotel: 4d27fbe3-20d0-4eb4-b003-1935be53af25
-Klaps Burgers: 569a7d29-57be-4224-bdf3-09c483415cea
-Vien-Thien: 70842598-1632-43f6-8015-706d5adf182f
-Bar Praha: 8b00b05e-72f7-4a5f-b50c-5630a75d6312
-Callzone: bd9f2244-7618-4071-aa96-52616a7b4c70
-Dwór Hubertus: af8448ef-974b-46c8-a4ae-b04b8dc7c9f8
-Tasty King Kebab: fc844513-2869-4f42-b04f-c21e1e4cceb7
-Pizzeria Monte Carlo: 83566974-1017-4408-90ee-2571ccc06978

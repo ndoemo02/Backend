@@ -3,6 +3,7 @@ import { LIVE_TOOL_SCHEMAS, toGeminiFunctionDeclarations } from './ToolSchemas.j
 import { GeminiLiveGateway } from './GeminiLiveGateway.js';
 import { validateLiveInternalKey, validateLiveOrigin } from './liveSecurity.js';
 import { buildInitialTurnTrace } from './liveTurnLedger.js';
+import openAIRealtimeSessionHandler, { getOpenAIRealtimeFallbackConfig } from './openai-session.js';
 
 let gateway = null;
 const toolRouter = new ToolRouter();
@@ -12,6 +13,9 @@ export function isLiveModeEnabled() {
 }
 
 export function registerLiveRoutes(app) {
+    app.post('/api/voice/live/openai-session', openAIRealtimeSessionHandler);
+    app.options('/api/voice/live/openai-session', openAIRealtimeSessionHandler);
+
     app.post('/api/voice/live/token', async (req, res) => {
         try {
             const { default: tokenHandler } = await import('./token.js');
@@ -66,6 +70,7 @@ export function registerLiveRoutes(app) {
                 speech_style: speechStyle,
                 amber_prompt: amberPrompt,
                 prompt_source: amberPrompt ? 'system_config:amber_prompt' : `speech_style:${speechStyle}`,
+                openai_fallback: getOpenAIRealtimeFallbackConfig(),
             });
         } catch (error) {
             return res.status(200).json({
@@ -76,6 +81,7 @@ export function registerLiveRoutes(app) {
                 speech_style: 'standard',
                 amber_prompt: '',
                 prompt_source: 'fallback',
+                openai_fallback: getOpenAIRealtimeFallbackConfig(),
                 error: error?.message || 'runtime_config_unavailable',
             });
         }
@@ -86,6 +92,7 @@ export function registerLiveRoutes(app) {
             ok: true,
             live_mode: isLiveModeEnabled(),
             fallback: '/api/brain/v2',
+            openai_realtime: getOpenAIRealtimeFallbackConfig(),
         });
     });
 

@@ -9,6 +9,7 @@ import { pluralPl } from '../../utils/formatter.js';
 import { calculateDistance } from '../../helpers.js';
 import { supabase } from '../../../_supabase.js';
 import { normalizeGroundedMenuQuery, scoreGroundedMenuItem } from '../../grounding/menuGrounding.js';
+import { filterRestaurantsForPublicDemo, isPublicDemoCatalogOnly } from '../../data/restaurantCatalog.js';
 
 // ── Discovery Ranking Layer (additive, non-breaking) ──────────
 // Lazy import — jeśli moduł nie istnieje (stare środowisko), discovery po
@@ -1393,6 +1394,19 @@ export class FindRestaurantHandler {
         }
 
         // ── END DISCOVERY LAYER ───────────────────────────────────────
+
+        restaurants = filterRestaurantsForPublicDemo(restaurants);
+        if (isPublicDemoCatalogOnly() && restaurants.length === 0) {
+            return {
+                reply: 'W publicznym demo pokazuję wyłącznie fikcyjne lokale FreeFlow. Spróbuj innej kuchni albo pokaż wszystkie miejsca demo.',
+                restaurants: [],
+                menuItems: [],
+                contextUpdates: {
+                    expectedContext: 'find_nearby',
+                    awaiting: null,
+                },
+            };
+        }
 
         // 3. Format Response (Standard Success Path)
         const resultData = { restaurants, foundInNearby, nearbySourceCity };

@@ -1,7 +1,0 @@
-🔧 ZASADA PATCHY FREEFLOW
-Każda zmiana kodu MUSI być opisana w logs/change-log.txt.
-Używaj logCursorPatch() lub npm run log.
-Opis ma być zrozumiały dla człowieka (nie diff techniczny).
-
-Przykład:
-logCursorPatch("TTS", "Zmieniono Wavenet → Chirp3-HD (pl-PL)")

@@ -26,11 +26,19 @@
       "use": "@vercel/node"
     },
     {
+      "src": "api/voice/live/token.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "api/voice/live/tools.js",
       "use": "@vercel/node"
     },
     {
       "src": "api/voice/live/tool-call.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/voice/live/openai-session.js",
       "use": "@vercel/node"
     },
     {
@@ -60,12 +68,20 @@
       "dest": "api/voice/live/health.js"
     },
     {
+      "src": "/api/voice/live/token",
+      "dest": "api/voice/live/token.js"
+    },
+    {
       "src": "/api/voice/live/tools",
       "dest": "api/voice/live/tools.js"
     },
     {
       "src": "/api/voice/live/tool-call",
       "dest": "api/voice/live/tool-call.js"
+    },
+    {
+      "src": "/api/voice/live/openai-session",
+      "dest": "api/voice/live/openai-session.js"
     },
     {
       "src": "/api/live/perf",

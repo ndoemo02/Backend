@@ -41,6 +41,9 @@ function createResponse() {
             this.payload = payload;
             return this;
         }),
+        end: vi.fn(function end() {
+            return this;
+        }),
     };
 }
 
@@ -86,9 +89,25 @@ describe('Gemini Live ephemeral token handler', () => {
             config: expect.objectContaining({
                 uses: 1,
                 liveConnectConstraints: { model: 'gemini-live-test' },
+                lockAdditionalFields: [],
             }),
         }));
         expect(res.headers['Cache-Control']).toBe('no-store');
+    });
+
+    it('handles trusted CORS preflight for the dedicated Vercel route', async () => {
+        const req = {
+            method: 'OPTIONS',
+            headers: { origin: 'https://freeflow-final.vercel.app' },
+        };
+        const res = createResponse();
+
+        await handler(req, res);
+
+        expect(res.statusCode).toBe(204);
+        expect(res.headers['Access-Control-Allow-Origin']).toBe('https://freeflow-final.vercel.app');
+        expect(res.end).toHaveBeenCalledOnce();
+        expect(mocks.createToken).not.toHaveBeenCalled();
     });
 
     it('rejects a model outside the runtime allowlist', async () => {

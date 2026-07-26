@@ -11,7 +11,7 @@ export class SelectRestaurantHandler {
 
         // UX Guard 3: If currentRestaurant already set and user confirms same restaurant
         // Skip re-selection, go directly to menu/order prompt
-        if (session?.currentRestaurant) {
+        if (session?.currentRestaurant && ctx.body?.meta?.ui_action?.type !== 'select_restaurant') {
             const currentName = session.currentRestaurant.name?.toLowerCase() || '';
             const inputLower = text.toLowerCase();
 

@@ -55,12 +55,23 @@ export function resetLiveTokenRateLimitForTests() {
 }
 
 export default async function handler(req, res) {
+    const origin = String(req.headers?.origin || '').trim();
+    const originAllowed = Boolean(origin) && isLiveOriginAllowed(origin);
+    if (originAllowed) {
+        res.setHeader?.('Access-Control-Allow-Origin', origin);
+        res.setHeader?.('Access-Control-Allow-Methods', 'POST,OPTIONS');
+        res.setHeader?.('Access-Control-Allow-Headers', 'Content-Type');
+        res.setHeader?.('Vary', 'Origin');
+    }
+
+    if (req.method === 'OPTIONS') {
+        return res.status(originAllowed ? 204 : 403).end();
+    }
     if (req.method !== 'POST') {
         return res.status(405).json({ ok: false, error: 'method_not_allowed' });
     }
 
-    const origin = String(req.headers?.origin || '').trim();
-    if (!origin || !isLiveOriginAllowed(origin)) {
+    if (!originAllowed) {
         return res.status(403).json({ ok: false, error: 'origin_not_allowed' });
     }
 
@@ -101,6 +112,12 @@ export default async function handler(req, res) {
                 expireTime,
                 newSessionExpireTime,
                 liveConnectConstraints: { model },
+                // An empty lock list keeps the model constraint, but allows the
+                // browser to provide the Live session config (system prompt,
+                // function tools and audio transcriptions). Without this field,
+                // Google locks the entire LiveConnectConfig and silently ignores
+                // those client-side settings.
+                lockAdditionalFields: [],
                 httpOptions: { apiVersion: 'v1alpha' },
             },
         });

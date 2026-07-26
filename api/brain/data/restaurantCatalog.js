@@ -8,6 +8,76 @@
 
 export const RESTAURANT_CATALOG = [
     {
+        id: 'acced74f-ddac-43a0-9f78-016c397f4b8e',
+        name: 'Silesiana Italiana',
+        aliases: [
+            'silesiana italiana',
+            'silesiana',
+            'w silesianie italianie',
+            'silesiany italiany'
+        ],
+        city: 'Piekary Śląskie',
+        cuisine: 'Nowoczesna kuchnia włosko-śląska',
+        demo: true
+    },
+    {
+        id: '6cce66fb-4d2d-402f-abe5-22e9784d559c',
+        name: 'Ruszt i Ogień',
+        aliases: [
+            'ruszt i ogień',
+            'ruszt i ogien',
+            'w ruszcie i ogniu',
+            'ruszt'
+        ],
+        city: 'Piekary Śląskie',
+        cuisine: 'Grill i kuchnia ognia',
+        demo: true
+    },
+    {
+        id: 'a2be7ddb-d1dd-49d6-9026-57ecd4c94d60',
+        name: 'Syto po Naszymu',
+        aliases: [
+            'syto po naszymu',
+            'w syto po naszymu',
+            'po naszymu'
+        ],
+        city: 'Piekary Śląskie',
+        cuisine: 'Domowa kuchnia śląska i polska',
+        demo: true
+    },
+    {
+        id: '72c76694-f533-46b8-b831-1965210a0cb4',
+        name: 'Kebs & Roll',
+        aliases: [
+            'kebs & roll',
+            'kebs and roll',
+            'kebs roll',
+            'cups & roll',
+            'cups and roll',
+            'keps and roll',
+            'kebs'
+        ],
+        city: 'Piekary Śląskie',
+        cuisine: 'Nowoczesny kebab i street food',
+        demo: true
+    },
+    {
+        id: '4ad6b301-671b-4343-bf91-9bab7cda37b4',
+        name: 'Śląski Szynk',
+        aliases: [
+            'śląski szynk',
+            'slaski szynk',
+            'śląskiego szynku',
+            'slaskiego szynku',
+            'w śląskim szynku',
+            'w slaskim szynku',
+            'szynk'
+        ],
+        city: 'Piekary Śląskie',
+        cuisine: 'Nowoczesna kuchnia śląska',
+        demo: true
+    },
+    {
         id: '1fc1e782-bac6-47b2-978a-f6f2b38000cd',
         name: 'Restauracja Stara Kamienica',
         aliases: ['stara kamienica', 'kamienica', 'kamienicy', 'kamienicy'],
@@ -79,9 +149,23 @@ export const RESTAURANT_CATALOG = [
     }
 ];
 
+export const DEMO_RESTAURANT_IDS = new Set(
+    RESTAURANT_CATALOG.filter((restaurant) => restaurant.demo === true).map((restaurant) => restaurant.id)
+);
+
+export function isPublicDemoCatalogOnly(env = process.env) {
+    return /^(1|true|yes|on)$/i.test(String(env?.FREEFLOW_DEMO_CATALOG_ONLY || '').trim());
+}
+
+export function filterRestaurantsForPublicDemo(restaurants, demoOnly = isPublicDemoCatalogOnly()) {
+    if (!Array.isArray(restaurants)) return [];
+    if (!demoOnly) return restaurants;
+    return restaurants.filter((restaurant) => DEMO_RESTAURANT_IDS.has(String(restaurant?.id || '')));
+}
+
 import { normalizeTxt } from '../intents/intentRouterGlue.js';
 
-export function findRestaurantInText(text) {
+export function findRestaurantInText(text, { demoOnly = isPublicDemoCatalogOnly() } = {}) {
     const normalized = normalizeTxt(text);
     console.log(`🔍 findRestaurantInText: normalized input="${normalized}"`);
 
@@ -97,7 +181,8 @@ export function findRestaurantInText(text) {
     };
 
     // Sort by name length descending to match longest alias first
-    const candidates = [...RESTAURANT_CATALOG].sort((a, b) => b.name.length - a.name.length);
+    const candidates = filterRestaurantsForPublicDemo(RESTAURANT_CATALOG, demoOnly)
+        .sort((a, b) => b.name.length - a.name.length);
 
     for (const rest of candidates) {
         // Check main name (word boundary match)

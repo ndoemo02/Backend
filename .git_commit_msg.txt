@@ -1,8 +1,0 @@
-Stabilize Brain ordering pipeline
-
-- cascade tests 30/30 PASS
-- improved dish disambiguation
-- normalized aliases
-- removed dead filters
-- stabilized transaction lock tests
-- test runner isolation (no TTS / stylization)

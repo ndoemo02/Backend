@@ -30,6 +30,14 @@ afterEach(() => {
 });
 
 describe('liveSecurity.validateLiveOrigin', () => {
+    it('allows the canonical production frontend by default', () => {
+        process.env.NODE_ENV = 'production';
+        process.env.LIVE_STRICT_ORIGIN = 'true';
+        process.env.LIVE_ALLOWED_ORIGINS = '';
+        const result = validateLiveOrigin('https://freeflow-final.vercel.app');
+        expect(result.ok).toBe(true);
+    });
+
     it('allows configured origin when strict mode enabled', () => {
         process.env.LIVE_STRICT_ORIGIN = 'true';
         process.env.LIVE_ALLOWED_ORIGINS = 'https://app.example.com';

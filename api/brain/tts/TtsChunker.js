@@ -27,7 +27,9 @@ export function splitIntoChunks(text, maxLen = 120) {
 
     // Split by sentence-ending punctuation
     // Using match instead of lookbehind for compatibility
-    const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+    const sentences = (text.match(/[^.!?]+(?:[.!?]+|$)/g) || [text])
+        .map((sentence) => sentence.trim())
+        .filter(Boolean);
     const chunks = [];
     let current = '';
 

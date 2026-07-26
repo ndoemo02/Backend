@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { BrainPipeline } from '../core/pipeline.js';
 import { NLURouter } from '../nlu/router.js';
 import { InMemoryRestaurantRepository } from '../core/repository.js';
-import { getSession } from '../session/sessionStore.js';
+import { getSession, updateSession } from '../session/sessionStore.js';
 
 vi.mock('../../_supabase.js', () => {
   const empty = { data: [], error: null };
@@ -117,6 +117,85 @@ describe('TEXT write-path safety regressions', () => {
 
     expect(['select_restaurant', 'menu_request', 'create_order']).toContain(wishResult.intent);
     expect(session3.currentRestaurant?.id).toBe(STARA_ID);
+  });
+
+  it('A2: UI restaurant selection uses the exact ID from the last discovery list', async () => {
+    const pipeline = createPipeline();
+    const sessionId = `ui_select_${Date.now()}`;
+    updateSession(sessionId, { last_restaurants_list: RESTAURANTS });
+    const nluSpy = vi.spyOn(pipeline.nlu, 'detect');
+
+    const result = await pipeline.process(sessionId, 'Restauracja Stara Kamienica', {
+      requestBody: {
+        meta: {
+          channel: 'web',
+          ui_action: { type: 'select_restaurant', restaurant_id: STARA_ID },
+        },
+      },
+    });
+
+    expect(result.ok).toBe(true);
+    expect(result.intent).toBe('select_restaurant');
+    expect(nluSpy).not.toHaveBeenCalled();
+    expect(getSession(sessionId).currentRestaurant?.id).toBe(STARA_ID);
+  });
+
+  it('A3: stale UI restaurant ID is rejected without mutating restaurant context', async () => {
+    const pipeline = createPipeline();
+    const sessionId = `ui_select_stale_${Date.now()}`;
+    updateSession(sessionId, { last_restaurants_list: RESTAURANTS });
+    const result = await pipeline.process(sessionId, 'Nieaktualna restauracja', {
+      requestBody: {
+        meta: {
+          channel: 'web',
+          ui_action: { type: 'select_restaurant', restaurant_id: 'stale-id' },
+        },
+      },
+    });
+
+    expect(result.ok).toBe(false);
+    expect(result.error).toBe('invalid_restaurant_selection');
+    expect(getSession(sessionId).currentRestaurant).toBeFalsy();
+  });
+
+  it('A4: UI restaurant selection revalidates an active ID after a session-list cache miss', async () => {
+    const pipeline = createPipeline();
+    const sessionId = `ui_select_cache_miss_${Date.now()}`;
+
+    const result = await pipeline.process(sessionId, 'Restauracja Stara Kamienica', {
+      requestBody: {
+        meta: {
+          channel: 'web',
+          ui_action: { type: 'select_restaurant', restaurant_id: STARA_ID },
+        },
+      },
+    });
+
+    expect(result.ok).toBe(true);
+    expect(result.intent).toBe('select_restaurant');
+    expect(getSession(sessionId).currentRestaurant?.id).toBe(STARA_ID);
+  });
+
+  it('A5: UI restaurant selection resolves an exact active card name when its cached ID is unusable', async () => {
+    const pipeline = createPipeline();
+    const sessionId = `ui_select_name_fallback_${Date.now()}`;
+
+    const result = await pipeline.process(sessionId, 'Restauracja Stara Kamienica', {
+      requestBody: {
+        meta: {
+          channel: 'web',
+          ui_action: {
+            type: 'select_restaurant',
+            restaurant_id: 'unusable-cached-id',
+            restaurant_name: 'Restauracja Stara Kamienica',
+          },
+        },
+      },
+    });
+
+    expect(result.ok).toBe(true);
+    expect(result.intent).toBe('select_restaurant');
+    expect(getSession(sessionId).currentRestaurant?.id).toBe(STARA_ID);
   });
 
   it('B: explicit restaurant + dish stays scoped and no cross-restaurant substitution', async () => {
