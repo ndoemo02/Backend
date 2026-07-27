@@ -119,6 +119,21 @@ describe('TEXT write-path safety regressions', () => {
     expect(session3.currentRestaurant?.id).toBe(STARA_ID);
   });
 
+  it('A1: qualified next request stays in the active menu context', async () => {
+    const pipeline = createPipeline();
+    const sessionId = `menu_next_${Date.now()}`;
+
+    await pipeline.process(sessionId, 'pokaz menu Stara Kamienica');
+    const result = await pipeline.process(sessionId, 'Jakie są kolejne dania główne?');
+    const session = getSession(sessionId);
+
+    expect(result.intent).toBe('menu_request');
+    expect(result.restaurants || []).toHaveLength(0);
+    expect(result.menuItems || result.menu || []).not.toHaveLength(0);
+    expect(session.currentRestaurant?.id).toBe(STARA_ID);
+    expect(session.last_menu).toHaveLength(STARA_MENU.length);
+  });
+
   it('A2: UI restaurant selection uses the exact ID from the last discovery list', async () => {
     const pipeline = createPipeline();
     const sessionId = `ui_select_${Date.now()}`;

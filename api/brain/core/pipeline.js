@@ -765,6 +765,13 @@ export class BrainPipeline {
             const normOverrideText = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
             const isDigitObj = /^\d+$/.test(normOverrideText) || /^wybieram\s+\d+$/.test(normOverrideText);
             const isOrdinalObj = /^(pierwsza|druga|trzecia|czwarta|piata|szosta|siodma|osma|dziewiata|dziesiata|jedynka|dwojka|trojka|czworka|piatka|szostka|siodemka|osemka|dziewiatka|dziesiatka|pierwszy|drugi|trzeci|czwarty|piaty|szosty|siodmy|osmy|dziewiaty|dziesiaty)$/.test(normOverrideText);
+            const hasActiveMenuContext = Boolean(
+                sessionContext?.last_menu?.length > 0
+                && (sessionContext?.currentRestaurant || sessionContext?.lastRestaurant)
+            );
+            const isQualifiedMenuPagination = hasActiveMenuContext
+                && /(kolejn|nastepn|wiecej|dalej)/.test(normOverrideText)
+                && /(dani|potraw|pozycj|menu|zup|deser|napo|pizz|burger|kebab|pierog|makaron|sushi|sniadan|obiad|kolacj)/.test(normOverrideText);
             const listNorm = hasList
                 ? sessionContext.last_restaurants_list.map((r) => (r?.name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim())
                 : [];
@@ -791,6 +798,15 @@ export class BrainPipeline {
                         restaurantId: uiSelectedRestaurant.id,
                         location: uiSelectedRestaurant.city || null,
                     },
+                };
+            } else if (isQualifiedMenuPagination) {
+                BrainLogger.pipeline(' PRE-NLU OVERRIDE: Qualified catalog pagination -> menu_request');
+                intentResult = {
+                    intent: 'menu_request',
+                    domain: 'food',
+                    confidence: 1.0,
+                    source: 'context_menu_pagination',
+                    entities: {},
                 };
             } else if (hasList && (isDigitObj || isOrdinalObj || isFragmentSelection)) {
                 BrainLogger.pipeline(` PRE-NLU OVERRIDE: Bypassing NLU for list selection -> select_restaurant`);
