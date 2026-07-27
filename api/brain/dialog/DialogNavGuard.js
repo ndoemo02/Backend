@@ -61,6 +61,12 @@ const NAV_PATTERNS = {
     ]
 };
 
+// "Next" is a navigation command only when it stands on its own. Phrases such
+// as "kolejne dania glowne" or "pokaz wiecej deserow" describe catalog scope
+// and must continue through the regular NLU/menu pipeline.
+const DOMAIN_NEXT_QUALIFIER_PATTERN =
+    /(dani|potraw|pozycj|menu|restaurac|lokal|zup|deser|napo|pizz|burger|kebab|pierog|makaron|sushi|sniadan|obiad|kolacj)/i;
+
 /**
  * Detect dialog navigation intent from raw text
  * @param {string} text - User input
@@ -72,9 +78,16 @@ export function detectDialogNav(text) {
     }
 
     const normalized = text.toLowerCase().trim();
+    const normalizedAscii = normalized
+        .normalize('NFD')
+        .replace(/\p{Diacritic}/gu, '');
 
     // Check each nav intent
     for (const [navType, patterns] of Object.entries(NAV_PATTERNS)) {
+        if (navType === 'NEXT' && DOMAIN_NEXT_QUALIFIER_PATTERN.test(normalizedAscii)) {
+            continue;
+        }
+
         for (const pattern of patterns) {
             if (pattern.test(normalized)) {
                 return {

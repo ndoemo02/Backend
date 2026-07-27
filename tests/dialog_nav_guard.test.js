@@ -34,6 +34,12 @@ describe('DialogNavGuard', () => {
             expect(detectDialogNav('pokaż więcej').navIntent).toBe(DIALOG_NAV_INTENTS.NEXT);
         });
 
+        it('should leave qualified catalog pagination to the menu pipeline', () => {
+            expect(detectDialogNav('Jakie są kolejne dania główne?').navIntent).toBeNull();
+            expect(detectDialogNav('Pokaż więcej deserów').navIntent).toBeNull();
+            expect(detectDialogNav('Następne restauracje').navIntent).toBeNull();
+        });
+
         it('should detect STOP intent', () => {
             expect(detectDialogNav('stop').navIntent).toBe(DIALOG_NAV_INTENTS.STOP);
             expect(detectDialogNav('wystarczy').navIntent).toBe(DIALOG_NAV_INTENTS.STOP);
