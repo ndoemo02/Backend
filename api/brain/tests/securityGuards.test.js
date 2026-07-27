@@ -53,4 +53,18 @@ describe('Security guards', () => {
         expect(sanitized.meta.debug).toContain('[redacted]');
         expect(sanitized.meta.sessionKey).toContain('[redacted]');
     });
+
+    it('preserves the top-level opaque session_id contract', () => {
+        const sessionId = 'sess_1785127504444_xs67m6';
+        const sanitized = sanitizeAssistantResponse({
+            ok: true,
+            session_id: sessionId,
+            meta: {
+                sessionKey: 'abc1234567890123456789012345',
+            },
+        });
+
+        expect(sanitized.session_id).toBe(sessionId);
+        expect(sanitized.meta.sessionKey).toBe('[redacted]');
+    });
 });

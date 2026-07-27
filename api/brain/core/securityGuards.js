@@ -177,7 +177,22 @@ function isMetaRequest(inputText = '') {
 }
 
 function sanitizeAssistantResponse(payload) {
-    return sanitizeValue(payload, '');
+    const sanitized = sanitizeValue(payload, '');
+
+    // session_id is an opaque conversation handle supplied by the client, not
+    // a credential. The generic long-token guard used to replace generated
+    // IDs (for example `sess_...`) with "[redacted]", which made the client
+    // switch to a different session after the first response.
+    if (
+        payload
+        && typeof payload === 'object'
+        && typeof payload.session_id === 'string'
+        && /^[A-Za-z0-9_-]{1,128}$/.test(payload.session_id)
+    ) {
+        sanitized.session_id = payload.session_id;
+    }
+
+    return sanitized;
 }
 
 export {
