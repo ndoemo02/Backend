@@ -59,6 +59,10 @@ export type VibeID = 'romantic' | 'cozy' | 'business' | 'loud' | 'family';
 // ─── Dietary (wymagania dietetyczne) ─────────────────────────
 
 export type DietaryID = 'vegan' | 'vegetarian' | 'gluten_free' | 'keto' | 'halal' | 'lactose_free';
+export type PriceBand = 'budget' | 'mid' | 'premium';
+export type DiscoverySort = 'distance' | 'price' | 'rating';
+export type Proximity = 'near';
+export type DiscoverySource = 'text' | 'live';
 
 // ─── Parsed Query — output parsera ───────────────────────────
 
@@ -69,6 +73,11 @@ export interface ParsedQuery {
   vibes: VibeID[];
   dietarys: DietaryID[];
   open_now: boolean;
+  priceBand: PriceBand | null;
+  sort: DiscoverySort | null;
+  proximity: Proximity | null;
+  unresolved: string[];
+  source: DiscoverySource;
   confidence: 'deterministic' | 'partial' | 'empty';
   rawText: string;
 }
@@ -249,6 +258,22 @@ export const CORE_TAG_KEYWORDS: Record<CoreTag, string[]> = {
   quick:    ['szybko', 'szybkie', 'szybki', 'na szybko', 'express', 'fast'],
   open_now: ['teraz', 'otwarte', 'otwarta', 'czynne', 'czynna', 'otwarta teraz', 'czy otwarte'],
   delivery: ['dostawa', 'dowóz', 'przynieś', 'wolt', 'uber eats', 'glovo', 'z dostawą', 'na wynos z dostawą'],
+};
+
+export const PRICE_BAND_KEYWORDS: Record<PriceBand, string[]> = {
+  budget: ['tanie', 'tanio', 'niedrogie', 'budżetowe', 'budzetowe', 'budżet', 'budzet', 'cheap'],
+  mid: ['mid', 'średnia półka', 'srednia polka', 'średni budżet', 'sredni budzet', 'umiarkowane ceny'],
+  premium: ['premium', 'fine dining', 'ekskluzywne', 'droższe', 'drozsze', 'wysoka półka', 'wysoka polka'],
+};
+
+export const SORT_KEYWORDS: Record<DiscoverySort, string[]> = {
+  distance: ['najbliżej', 'najblizej', 'blisko', 'w pobliżu', 'w poblizu', 'nearby', 'closest'],
+  price: ['najtaniej', 'najtańsze', 'najtansze', 'po cenie', 'sortuj po cenie'],
+  rating: ['najlepiej oceniane', 'najwyżej oceniane', 'najwyzej oceniane', 'top rated', 'najlepsze oceny'],
+};
+
+export const PROXIMITY_KEYWORDS: Record<Proximity, string[]> = {
+  near: ['blisko', 'w pobliżu', 'w poblizu', 'w okolicy', 'obok', 'nearby', 'closest'],
 };
 
 export const VIBE_KEYWORDS: Record<VibeID, string[]> = {
@@ -711,7 +736,23 @@ export function enrichRestaurant(r: LegacyRestaurant): EnrichedRestaurant {
 // FAST-PARSER: Query → ParsedQuery
 // ═══════════════════════════════════════════════════════════════
 
-export function matchQueryToTaxonomy(queryText: string): ParsedQuery {
+function includesDiscoveryKeyword(text: string, keyword: string): boolean {
+  if (keyword === 'mid') {
+    return /(?:^|\s)mid(?:\s|$|[.,?!])/i.test(text);
+  }
+  return text.includes(keyword);
+}
+
+function matchingKeys<T extends string>(text: string, map: Record<T, string[]>): T[] {
+  return (Object.entries(map) as [T, string[]][])
+    .filter(([, keywords]) => keywords.some(keyword => includesDiscoveryKeyword(text, keyword)))
+    .map(([id]) => id);
+}
+
+export function matchQueryToTaxonomy(
+  queryText: string,
+  source: DiscoverySource = 'text',
+): ParsedQuery {
   const text = queryText.toLowerCase().trim();
 
   const topGroups: TopGroupID[] = [];
@@ -751,14 +792,47 @@ export function matchQueryToTaxonomy(queryText: string): ParsedQuery {
   }
 
   const open_now = CORE_TAG_KEYWORDS.open_now.some(kw => text.includes(kw));
+  const matchedPriceBands = matchingKeys(text, PRICE_BAND_KEYWORDS);
+  const matchedSorts = matchingKeys(text, SORT_KEYWORDS);
+  const matchedProximities = matchingKeys(text, PROXIMITY_KEYWORDS);
+  const unresolved: string[] = [];
 
-  const signalCount = topGroups.length + categories.length + tags.length + vibes.length + dietarys.length;
+  if (matchedPriceBands.length > 1) unresolved.push('priceBand');
+  if (matchedSorts.length > 1) unresolved.push('sort');
+
+  const priceBand = matchedPriceBands.length === 1 ? matchedPriceBands[0] : null;
+  const sort = matchedSorts.length === 1 ? matchedSorts[0] : null;
+  const proximity = matchedProximities.length > 0 ? matchedProximities[0] : null;
+
+  const signalCount =
+    topGroups.length
+    + categories.length
+    + tags.length
+    + vibes.length
+    + dietarys.length
+    + (priceBand ? 1 : 0)
+    + (sort ? 1 : 0)
+    + (proximity ? 1 : 0);
   const confidence: ParsedQuery['confidence'] =
     signalCount === 0 ? 'empty'  :
     signalCount >= 2  ? 'deterministic' :
                         'partial';
 
-  return { topGroups, categories, tags, vibes, dietarys, open_now, confidence, rawText: queryText };
+  return {
+    topGroups,
+    categories,
+    tags,
+    vibes,
+    dietarys,
+    open_now,
+    priceBand,
+    sort,
+    proximity,
+    unresolved,
+    source,
+    confidence,
+    rawText: queryText,
+  };
 }
 
 

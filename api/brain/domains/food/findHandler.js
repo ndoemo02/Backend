@@ -11,6 +11,7 @@ import { supabase } from '../../../_supabase.js';
 import { normalizeGroundedMenuQuery, scoreGroundedMenuItem } from '../../grounding/menuGrounding.js';
 import { filterRestaurantsForPublicDemo, isPublicDemoCatalogOnly } from '../../data/restaurantCatalog.js';
 import { DEMO_SCENARIOS, DEFAULT_DEMO_SCENARIO_ID } from '../../../demo/demoContext.js';
+import { buildDiscoveryRawText, resolveDiscoverySource } from '../../discovery/queryContext.js';
 
 // ── Discovery Ranking Layer (additive, non-breaking) ──────────
 // Lazy import — jeśli moduł nie istnieje (stare środowisko), discovery po
@@ -1032,10 +1033,13 @@ export class FindRestaurantHandler {
         let earlyConfidence = 'empty';
         const discoveryEngineReady = await _discoveryPreload;
         if (discoveryEngineReady && _buildChips) {
-            const chipText = ctx?.text || cuisine || '';
+            const chipText = buildDiscoveryRawText(ctx, cuisine);
             if (chipText) {
                 try {
-                    const earlyParsed = _matchQueryToTaxonomy(chipText);
+                    const earlyParsed = _matchQueryToTaxonomy(
+                        chipText,
+                        resolveDiscoverySource(ctx)
+                    );
                     earlyChips = _buildChips(earlyParsed);
                     earlyConfidence = earlyParsed.confidence;
                 } catch (chipErr) {
@@ -1390,9 +1394,12 @@ export class FindRestaurantHandler {
         // Dla CITY/GPS + cuisine=null restauracje z SQL są poprawne bez filtra.
         const hasCuisineSignal = Boolean(cuisine);
         if (!usedItemLedDiscovery && discoveryEngineReady && restaurants.length > 0 && hasCuisineSignal) {
-            // Buduj query tylko z cuisine, nie z pełnego transkryptu.
-            const rawText = cuisine || ctx.text || '';
-            const parsed = _matchQueryToTaxonomy(rawText);
+            // Pełna wypowiedź ma pierwszeństwo; cuisine jest tylko dodatkiem.
+            const rawText = buildDiscoveryRawText(ctx, cuisine);
+            const parsed = _matchQueryToTaxonomy(
+                rawText,
+                resolveDiscoverySource(ctx)
+            );
 
             // ── FAZA 1: SHADOW LOG ──
             const shadowResult = _runDiscovery(parsed, restaurants);
@@ -1405,6 +1412,11 @@ export class FindRestaurantHandler {
                 vibes: parsed.vibes,
                 dietarys: parsed.dietarys,
                 open_now: parsed.open_now,
+                priceBand: parsed.priceBand,
+                sort: parsed.sort,
+                proximity: parsed.proximity,
+                unresolved: parsed.unresolved,
+                source: parsed.source,
                 fallback: shadowResult.fallback,
                 before: shadowResult.totalBeforeFilter,
                 after: shadowResult.totalAfterFilter,

@@ -88,6 +88,19 @@ export const CORE_TAG_KEYWORDS = {
     open_now: ['teraz', 'otwarte', 'otwarta', 'czynne', 'czynna', 'otwarta teraz', 'czy otwarte'],
     delivery: ['dostawa', 'dowóz', 'przynieś', 'wolt', 'uber eats', 'glovo', 'z dostawą', 'na wynos z dostawą'],
 };
+export const PRICE_BAND_KEYWORDS = {
+    budget: ['tanie', 'tanio', 'niedrogie', 'budżetowe', 'budzetowe', 'budżet', 'budzet', 'cheap'],
+    mid: ['mid', 'średnia półka', 'srednia polka', 'średni budżet', 'sredni budzet', 'umiarkowane ceny'],
+    premium: ['premium', 'fine dining', 'ekskluzywne', 'droższe', 'drozsze', 'wysoka półka', 'wysoka polka'],
+};
+export const SORT_KEYWORDS = {
+    distance: ['najbliżej', 'najblizej', 'blisko', 'w pobliżu', 'w poblizu', 'nearby', 'closest'],
+    price: ['najtaniej', 'najtańsze', 'najtansze', 'po cenie', 'sortuj po cenie'],
+    rating: ['najlepiej oceniane', 'najwyżej oceniane', 'najwyzej oceniane', 'top rated', 'najlepsze oceny'],
+};
+export const PROXIMITY_KEYWORDS = {
+    near: ['blisko', 'w pobliżu', 'w poblizu', 'w okolicy', 'obok', 'nearby', 'closest'],
+};
 export const VIBE_KEYWORDS = {
     romantic: [
         'romantyczna', 'romantyczne', 'romantyczny', 'na randkę', 'na randke',
@@ -501,7 +514,18 @@ export function enrichRestaurant(r) {
 // ═══════════════════════════════════════════════════════════════
 // FAST-PARSER: Query → ParsedQuery
 // ═══════════════════════════════════════════════════════════════
-export function matchQueryToTaxonomy(queryText) {
+function includesDiscoveryKeyword(text, keyword) {
+    if (keyword === 'mid') {
+        return /(?:^|\s)mid(?:\s|$|[.,?!])/i.test(text);
+    }
+    return text.includes(keyword);
+}
+function matchingKeys(text, map) {
+    return Object.entries(map)
+        .filter(([, keywords]) => keywords.some(keyword => includesDiscoveryKeyword(text, keyword)))
+        .map(([id]) => id);
+}
+export function matchQueryToTaxonomy(queryText, source = 'text') {
     const text = queryText.toLowerCase().trim();
     const topGroups = [];
     const categories = [];
@@ -534,11 +558,43 @@ export function matchQueryToTaxonomy(queryText) {
         }
     }
     const open_now = CORE_TAG_KEYWORDS.open_now.some(kw => text.includes(kw));
-    const signalCount = topGroups.length + categories.length + tags.length + vibes.length + dietarys.length;
+    const matchedPriceBands = matchingKeys(text, PRICE_BAND_KEYWORDS);
+    const matchedSorts = matchingKeys(text, SORT_KEYWORDS);
+    const matchedProximities = matchingKeys(text, PROXIMITY_KEYWORDS);
+    const unresolved = [];
+    if (matchedPriceBands.length > 1)
+        unresolved.push('priceBand');
+    if (matchedSorts.length > 1)
+        unresolved.push('sort');
+    const priceBand = matchedPriceBands.length === 1 ? matchedPriceBands[0] : null;
+    const sort = matchedSorts.length === 1 ? matchedSorts[0] : null;
+    const proximity = matchedProximities.length > 0 ? matchedProximities[0] : null;
+    const signalCount = topGroups.length
+        + categories.length
+        + tags.length
+        + vibes.length
+        + dietarys.length
+        + (priceBand ? 1 : 0)
+        + (sort ? 1 : 0)
+        + (proximity ? 1 : 0);
     const confidence = signalCount === 0 ? 'empty' :
         signalCount >= 2 ? 'deterministic' :
             'partial';
-    return { topGroups, categories, tags, vibes, dietarys, open_now, confidence, rawText: queryText };
+    return {
+        topGroups,
+        categories,
+        tags,
+        vibes,
+        dietarys,
+        open_now,
+        priceBand,
+        sort,
+        proximity,
+        unresolved,
+        source,
+        confidence,
+        rawText: queryText,
+    };
 }
 // ═══════════════════════════════════════════════════════════════
 // SCORING

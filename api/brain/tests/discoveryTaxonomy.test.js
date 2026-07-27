@@ -6,6 +6,13 @@ import {
     matchQueryToTaxonomy,
     runDiscovery,
 } from '../discovery/queryUnderstanding.js';
+import {
+    matchQueryToTaxonomy as matchQueryToTaxonomySource,
+} from '../discovery/queryUnderstanding.ts';
+import {
+    buildDiscoveryRawText,
+    resolveDiscoverySource,
+} from '../discovery/queryContext.js';
 
 describe('food discovery taxonomy contract', () => {
     it('parses a structured cuisine, category and delivery request deterministically', () => {
@@ -79,7 +86,64 @@ describe('food discovery taxonomy contract', () => {
         expect(p95).toBeLessThan(10);
     });
 
-    it.todo('maps "blisko" to a proximity contract');
-    it.todo('maps "mid" and equivalent phrases to a price band');
-    it.todo('preserves the full raw query when a cuisine argument is also present');
+    it('maps nearby language to proximity and distance sorting', () => {
+        const parsed = matchQueryToTaxonomy('desery wege blisko');
+
+        expect(parsed).toMatchObject({
+            proximity: 'near',
+            sort: 'distance',
+            priceBand: null,
+            source: 'text',
+            confidence: 'deterministic',
+        });
+    });
+
+    it('maps an explicit mid-range request without matching word fragments', () => {
+        const parsed = matchQueryToTaxonomy('steki mid');
+        const unrelated = matchQueryToTaxonomy('sushi midori');
+
+        expect(parsed.priceBand).toBe('mid');
+        expect(parsed.categories).toContain('steak');
+        expect(unrelated.priceBand).toBeNull();
+    });
+
+    it('recognizes price and rating sort requests', () => {
+        expect(matchQueryToTaxonomy('najtańsze burgery').sort).toBe('price');
+        expect(matchQueryToTaxonomy('najlepiej oceniane sushi').sort).toBe('rating');
+    });
+
+    it('preserves the full query when a cuisine entity is also present', () => {
+        const rawText = buildDiscoveryRawText({
+            text: 'ostre sushi blisko z dostawą',
+            entities: { cuisine: 'Sushi' },
+        }, 'Sushi');
+
+        expect(rawText).toBe('ostre sushi blisko z dostawą');
+        const parsed = matchQueryToTaxonomy(rawText);
+        expect(parsed).toMatchObject({
+            categories: ['sushi'],
+            proximity: 'near',
+            sort: 'distance',
+        });
+        expect(parsed.tags).toEqual(expect.arrayContaining(['spicy', 'delivery']));
+    });
+
+    it('marks Live and text sources without changing parsing semantics', () => {
+        const liveContext = {
+            source: 'live_tool:find_nearby',
+            body: { meta: { channel: 'live_tools' } },
+        };
+
+        expect(resolveDiscoverySource(liveContext)).toBe('live');
+        expect(resolveDiscoverySource({ source: 'brain' })).toBe('text');
+        expect(matchQueryToTaxonomy('sushi', 'live').source).toBe('live');
+    });
+
+    it('keeps the TypeScript source and runtime JavaScript artifact in sync', () => {
+        const query = 'steki mid blisko';
+
+        expect(matchQueryToTaxonomy(query, 'live')).toEqual(
+            matchQueryToTaxonomySource(query, 'live')
+        );
+    });
 });
