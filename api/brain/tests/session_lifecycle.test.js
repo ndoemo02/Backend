@@ -8,7 +8,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { 
     getSession, 
+    getSessionAsync,
+    setSession,
     updateSession, 
+    updateSessionAsync,
     closeConversation, 
     isSessionClosed, 
     getOrCreateActiveSession,
@@ -165,6 +168,27 @@ describe('SESSION LIFECYCLE: Conversation Isolation', () => {
   });
 
   describe('HELPER FUNCTIONS', () => {
+    it('async request patch preserves a hydrated serverless session snapshot', async () => {
+      const sessionId = generateNewSessionId();
+      await setSession(sessionId, {
+        status: 'active',
+        conversationPhase: 'restaurant_selected',
+        currentRestaurant: { id: 'demo-restaurant', name: 'Syto po Naszymu' },
+        last_menu: [{ id: 'dish-1', name: 'Pomidorowa z ryżem' }],
+      });
+
+      await updateSessionAsync(sessionId, {
+        demoScenarioId: 'piekary-local',
+        preferredLocale: 'pl',
+      });
+
+      const persisted = await getSessionAsync(sessionId, { createIfMissing: false });
+      expect(persisted.conversationPhase).toBe('restaurant_selected');
+      expect(persisted.currentRestaurant?.name).toBe('Syto po Naszymu');
+      expect(persisted.last_menu).toHaveLength(1);
+      expect(persisted.demoScenarioId).toBe('piekary-local');
+    });
+
     it('generateNewSessionId creates unique IDs', () => {
       const id1 = generateNewSessionId();
       const id2 = generateNewSessionId();

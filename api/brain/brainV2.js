@@ -6,7 +6,11 @@
 import { BrainPipeline } from './core/pipeline.js';
 import { NLURouter } from './nlu/router.js';
 import { sanitizeAssistantResponse } from './core/securityGuards.js';
-import { updateSession } from './session/sessionStore.js';
+import {
+    getSession,
+    setSession,
+    updateSessionAsync,
+} from './session/sessionStore.js';
 import {
     buildDemoSessionPatch,
     resolveDemoContextFromRequest,
@@ -38,8 +42,16 @@ export default async function handler(req, res) {
             return res.status(400).json({ ok: false, error: 'missing_input' });
         }
 
+        const normalizedSessionId = sessionId.trim();
         const demoContext = resolveDemoContextFromRequest(body);
-        updateSession(sessionId.trim(), buildDemoSessionPatch(demoContext));
+
+        // Serverless safety: hydrate the durable session before adding request
+        // metadata. A sync update on a cold instance would create an optimistic
+        // empty session and could overwrite the real conversation snapshot.
+        await updateSessionAsync(
+            normalizedSessionId,
+            buildDemoSessionPatch(demoContext),
+        );
 
         console.log(`[BrainV2] Request: ${sessionId} -> "${text}" (Channel: ${meta.channel || 'unknown'})`);
 
@@ -50,7 +62,16 @@ export default async function handler(req, res) {
             requestBody: body,
         };
 
-        const result = await pipeline.process(sessionId.trim(), text, options);
+        const result = await pipeline.process(normalizedSessionId, text, options);
+
+        // Vercel may freeze an invocation immediately after res.json(). Persist
+        // all mutations performed by legacy sync call-sites before responding.
+        const finalSessionId = String(result?.session_id || normalizedSessionId);
+        const finalSessionSnapshot = getSession(finalSessionId);
+        if (finalSessionSnapshot) {
+            await setSession(finalSessionId, finalSessionSnapshot);
+        }
+
         const safeResult = sanitizeAssistantResponse(result);
 
         return res.status(200).json(safeResult);

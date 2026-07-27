@@ -344,5 +344,19 @@ export function updateSession(sessionId, patch) {
     return sess;
 }
 
+/**
+ * Persistent async update for serverless request boundaries.
+ *
+ * Unlike the legacy sync updateSession(), this hydrates the durable snapshot
+ * before applying a patch and waits until the merged state is stored.
+ */
+export async function updateSessionAsync(sessionId, patch) {
+    const normalizedSessionId = ensureSessionId(sessionId);
+    const sess = await getSessionAsync(normalizedSessionId, { createIfMissing: true });
+    update(sess, patch);
+    await setSession(normalizedSessionId, sess);
+    return sess;
+}
+
 // Alias dla kompatybilności
 export const saveSession = updateSession;
