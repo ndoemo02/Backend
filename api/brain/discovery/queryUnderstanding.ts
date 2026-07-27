@@ -253,7 +253,7 @@ export const CATEGORY_KEYWORDS: Record<CategoryID, string[]> = {
 };
 
 export const CORE_TAG_KEYWORDS: Record<CoreTag, string[]> = {
-  spicy:    ['ostre', 'pikantne', 'pikantny', 'chilli', 'sriracha', 'piekące'],
+  spicy:    ['ostre', 'ostro', 'ostry', 'ostra', 'pikantne', 'pikantny', 'pikantna', 'chilli', 'sriracha', 'piekące'],
   vege:     ['wege', 'wegetariańskie', 'wegetariański', 'bez mięsa', 'wegańskie', 'vegan', 'roślinne'],
   quick:    ['szybko', 'szybkie', 'szybki', 'na szybko', 'express', 'fast'],
   open_now: ['teraz', 'otwarte', 'otwarta', 'czynne', 'czynna', 'otwarta teraz', 'czy otwarte'],
@@ -262,7 +262,7 @@ export const CORE_TAG_KEYWORDS: Record<CoreTag, string[]> = {
 
 export const PRICE_BAND_KEYWORDS: Record<PriceBand, string[]> = {
   budget: ['tanie', 'tanio', 'niedrogie', 'budżetowe', 'budzetowe', 'budżet', 'budzet', 'cheap'],
-  mid: ['mid', 'średnia półka', 'srednia polka', 'średni budżet', 'sredni budzet', 'umiarkowane ceny'],
+  mid: ['średnia półka', 'srednia polka', 'średniej półce', 'sredniej polce', 'średni budżet', 'sredni budzet', 'średnia cena', 'srednia cena', 'umiarkowane ceny', 'mid range'],
   premium: ['premium', 'fine dining', 'ekskluzywne', 'droższe', 'drozsze', 'wysoka półka', 'wysoka polka'],
 };
 
@@ -737,9 +737,6 @@ export function enrichRestaurant(r: LegacyRestaurant): EnrichedRestaurant {
 // ═══════════════════════════════════════════════════════════════
 
 function includesDiscoveryKeyword(text: string, keyword: string): boolean {
-  if (keyword === 'mid') {
-    return /(?:^|\s)mid(?:\s|$|[.,?!])/i.test(text);
-  }
   return text.includes(keyword);
 }
 
@@ -799,6 +796,11 @@ export function matchQueryToTaxonomy(
 
   if (matchedPriceBands.length > 1) unresolved.push('priceBand');
   if (matchedSorts.length > 1) unresolved.push('sort');
+  for (const token of ['mid', 'med', 'medium', 'max', 'maks']) {
+    if (new RegExp(`(?:^|\\s)${token}(?:\\s|$|[.,?!])`, 'i').test(text)) {
+      unresolved.push(`variant:${token}`);
+    }
+  }
 
   const priceBand = matchedPriceBands.length === 1 ? matchedPriceBands[0] : null;
   const sort = matchedSorts.length === 1 ? matchedSorts[0] : null;

@@ -12,6 +12,7 @@ import { normalizeGroundedMenuQuery, scoreGroundedMenuItem } from '../../groundi
 import { filterRestaurantsForPublicDemo, isPublicDemoCatalogOnly } from '../../data/restaurantCatalog.js';
 import { DEMO_SCENARIOS, DEFAULT_DEMO_SCENARIO_ID } from '../../../demo/demoContext.js';
 import { buildDiscoveryRawText, resolveDiscoverySource } from '../../discovery/queryContext.js';
+import { verifyMenuItemAgainstQuery } from '../../discovery/itemTaxonomyVerification.js';
 
 // ── Discovery Ranking Layer (additive, non-breaking) ──────────
 // Lazy import — jeśli moduł nie istnieje (stare środowisko), discovery po
@@ -481,7 +482,24 @@ function containsNormalizedPhrase(haystack, phrase) {
 }
 
 async function fetchCityMenuRows(restaurantIds) {
-    const selectColumns = 'id, name, base_name, item_family, item_aliases, restaurant_id, available';
+    const selectColumns = [
+        'id',
+        'name',
+        'base_name',
+        'item_family',
+        'item_variant',
+        'size_or_variant',
+        'item_aliases',
+        'item_tags',
+        'dietary_flags',
+        'safety_data',
+        'spicy',
+        'is_vege',
+        'price_pln',
+        'category',
+        'restaurant_id',
+        'available',
+    ].join(', ');
     const buildQuery = () => supabase
         .from('menu_items_v2')
         .select(selectColumns)
@@ -520,7 +538,12 @@ async function fetchCityMenuRows(restaurantIds) {
     return Array.isArray(data) ? data : [];
 }
 
-async function rankRestaurantsByItemFromCandidates({ restaurants, coords, itemQuery }) {
+async function rankRestaurantsByItemFromCandidates({
+    restaurants,
+    coords,
+    itemQuery,
+    parsedQuery = null,
+}) {
     const aliases = buildItemAliases(itemQuery);
     if (!aliases.length || !Array.isArray(restaurants) || restaurants.length === 0) return [];
 
@@ -539,6 +562,8 @@ async function rankRestaurantsByItemFromCandidates({ restaurants, coords, itemQu
         if (requiresGroundedQualifierMatch(itemQuery) && groundedScore < 75) continue;
         if (legacyScore < 85 && groundedScore < 75) continue;
         const score = Math.max(legacyScore, groundedScore);
+        const verification = verifyMenuItemAgainstQuery(item, parsedQuery || {});
+        if (!verification.passes) continue;
 
         const restaurantId = item?.restaurant_id;
         if (!restaurantId) continue;
@@ -546,7 +571,11 @@ async function rankRestaurantsByItemFromCandidates({ restaurants, coords, itemQu
         const existing = byRestaurant.get(restaurantId) || {
             maxScore: 0,
             hits: new Set(),
+            bestFeedback: [],
         };
+        if (score >= existing.maxScore) {
+            existing.bestFeedback = verification.feedback;
+        }
         existing.maxScore = Math.max(existing.maxScore, score);
         if (itemName) existing.hits.add(String(itemName));
         byRestaurant.set(restaurantId, existing);
@@ -565,6 +594,7 @@ async function rankRestaurantsByItemFromCandidates({ restaurants, coords, itemQu
                 distance,
                 item_match_score: match.maxScore,
                 matched_menu_items: matchedItems,
+                discovery_filter_feedback: match.bestFeedback,
             };
         })
         .filter(Boolean);
@@ -585,7 +615,12 @@ async function rankRestaurantsByItemFromCandidates({ restaurants, coords, itemQu
     return ranked.slice(0, 10);
 }
 
-async function searchRestaurantsByItemInCity({ location, coords, itemQuery }) {
+async function searchRestaurantsByItemInCity({
+    location,
+    coords,
+    itemQuery,
+    parsedQuery = null,
+}) {
     const aliases = buildItemAliases(itemQuery);
     if (!aliases.length) return [];
 
@@ -614,6 +649,8 @@ async function searchRestaurantsByItemInCity({ location, coords, itemQuery }) {
         if (requiresGroundedQualifierMatch(itemQuery) && groundedScore < 75) continue;
         if (legacyScore < 85 && groundedScore < 75) continue;
         const score = Math.max(legacyScore, groundedScore);
+        const verification = verifyMenuItemAgainstQuery(item, parsedQuery || {});
+        if (!verification.passes) continue;
 
         const restaurantId = item?.restaurant_id;
         if (!restaurantId) continue;
@@ -621,7 +658,11 @@ async function searchRestaurantsByItemInCity({ location, coords, itemQuery }) {
         const existing = byRestaurant.get(restaurantId) || {
             maxScore: 0,
             hits: new Set(),
+            bestFeedback: [],
         };
+        if (score >= existing.maxScore) {
+            existing.bestFeedback = verification.feedback;
+        }
         existing.maxScore = Math.max(existing.maxScore, score);
         if (itemName) existing.hits.add(String(itemName));
         byRestaurant.set(restaurantId, existing);
@@ -640,6 +681,7 @@ async function searchRestaurantsByItemInCity({ location, coords, itemQuery }) {
                 distance,
                 item_match_score: match.maxScore,
                 matched_menu_items: matchedItems,
+                discovery_filter_feedback: match.bestFeedback,
             };
         })
         .filter(Boolean);
@@ -1031,6 +1073,7 @@ export class FindRestaurantHandler {
         // emoji + labels above the Voice Bar alongside results.
         let earlyChips = null;
         let earlyConfidence = 'empty';
+        let parsedDiscoveryQuery = null;
         const discoveryEngineReady = await _discoveryPreload;
         if (discoveryEngineReady && _buildChips) {
             const chipText = buildDiscoveryRawText(ctx, cuisine);
@@ -1040,6 +1083,7 @@ export class FindRestaurantHandler {
                         chipText,
                         resolveDiscoverySource(ctx)
                     );
+                    parsedDiscoveryQuery = earlyParsed;
                     earlyChips = _buildChips(earlyParsed);
                     earlyConfidence = earlyParsed.confidence;
                 } catch (chipErr) {
@@ -1083,6 +1127,7 @@ export class FindRestaurantHandler {
                             location,
                             coords,
                             itemQuery: itemQueryCandidate,
+                            parsedQuery: parsedDiscoveryQuery,
                         });
 
                         if (itemLedMatches.length > 0) {
@@ -1287,6 +1332,7 @@ export class FindRestaurantHandler {
                             restaurants,
                             coords,
                             itemQuery: itemQueryCandidate,
+                            parsedQuery: parsedDiscoveryQuery,
                         });
 
                         if (itemLedMatches.length > 0) {
@@ -1307,6 +1353,7 @@ export class FindRestaurantHandler {
                                 location: resolveSessionCityFallback(ctx?.session, serviceProfile) || serviceProfile.city,
                                 coords,
                                 itemQuery: itemQueryCandidate,
+                                parsedQuery: parsedDiscoveryQuery,
                             });
 
                             if (cityFallbackMatches.length > 0) {

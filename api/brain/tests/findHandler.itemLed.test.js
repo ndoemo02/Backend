@@ -13,7 +13,7 @@ const menuRows = [
     { id: 'm4', restaurant_id: 'r_monte', name: 'Lody waniliowe', base_name: 'Lody waniliowe', available: true },
     { id: 'm5', restaurant_id: 'r_kebab', name: 'Kebab w bulce', base_name: 'Kebab w bulce', available: true },
     { id: 'm6', restaurant_id: 'r_kebab', name: 'Mlody Burger', base_name: 'Mlody Burger', available: true },
-    { id: 'm7', restaurant_id: 'r_vien', name: 'Wołowina pikantna', base_name: 'Wołowina pikantna', available: true },
+    { id: 'm7', restaurant_id: 'r_vien', name: 'Wołowina pikantna', base_name: 'Wołowina pikantna', spicy: true, item_tags: ['spicy'], available: true },
     { id: 'm8', restaurant_id: 'r_callzone', name: 'Better Than Drwal - Wołowina', base_name: 'Better Than Drwal - Wołowina', available: true },
     {
         id: 'm3',
@@ -99,6 +99,66 @@ describe('FindRestaurantHandler item-led discovery', () => {
         expect(result.restaurants?.[0]?.matched_menu_items).toContain('Wołowina pikantna');
         expect(result.restaurants?.map((restaurant) => restaurant.name)).toEqual(['Vien-Thien']);
         expect(repo.searchRestaurants).not.toHaveBeenCalled();
+    });
+
+    it('keeps only menu items with verified dietary metadata', async () => {
+        const veganRows = [
+            {
+                id: 'm-vegan',
+                restaurant_id: 'r_monte',
+                name: 'Deser czekoladowy',
+                base_name: 'Deser czekoladowy',
+                item_family: 'deser',
+                item_aliases: ['deser'],
+                dietary_flags: ['vegan'],
+                available: true,
+            },
+            {
+                id: 'm-unknown',
+                restaurant_id: 'r_callzone',
+                name: 'Deser dnia',
+                base_name: 'Deser dnia',
+                item_family: 'deser',
+                item_aliases: ['deser'],
+                available: true,
+            },
+        ];
+
+        supabaseFromMock.mockImplementation((table) => {
+            if (table === 'restaurants') {
+                const limit = vi.fn().mockResolvedValue({ data: restaurantsInCity, error: null });
+                const ilike = vi.fn().mockReturnValue({ limit });
+                const eq = vi.fn().mockReturnValue({ ilike });
+                const select = vi.fn().mockReturnValue({ eq });
+                return { select };
+            }
+            if (table === 'menu_items_v2') {
+                const limit = vi.fn().mockResolvedValue({ data: veganRows, error: null });
+                const inFn = vi.fn().mockReturnValue({ limit });
+                const select = vi.fn().mockReturnValue({ in: inFn });
+                return { select };
+            }
+            throw new Error(`Unexpected table: ${table}`);
+        });
+
+        const { FindRestaurantHandler } = await import('../domains/food/findHandler.js');
+        const handler = new FindRestaurantHandler({
+            searchRestaurants: vi.fn().mockResolvedValue([]),
+            searchNearby: vi.fn().mockResolvedValue([]),
+        });
+
+        const result = await handler.execute({
+            text: 'pokaż deser wegański',
+            entities: { dish: 'deser' },
+            session: {},
+        });
+
+        expect(result.restaurants?.map(restaurant => restaurant.id)).toEqual(['r_monte']);
+        expect(result.restaurants?.[0]?.discovery_filter_feedback).toContainEqual({
+            id: 'vegan',
+            dimension: 'dietary',
+            state: 'verified',
+        });
     });
 
     it('filters GPS discovery by nearby candidate menus for ice cream requests', async () => {

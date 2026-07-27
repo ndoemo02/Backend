@@ -82,7 +82,7 @@ export const CATEGORY_KEYWORDS = {
     ice_cream: ['lody', 'gelato', 'naleśniki', 'waffle', 'gofry'],
 };
 export const CORE_TAG_KEYWORDS = {
-    spicy: ['ostre', 'pikantne', 'pikantny', 'chilli', 'sriracha', 'piekące'],
+    spicy: ['ostre', 'ostro', 'ostry', 'ostra', 'pikantne', 'pikantny', 'pikantna', 'chilli', 'sriracha', 'piekące'],
     vege: ['wege', 'wegetariańskie', 'wegetariański', 'bez mięsa', 'wegańskie', 'vegan', 'roślinne'],
     quick: ['szybko', 'szybkie', 'szybki', 'na szybko', 'express', 'fast'],
     open_now: ['teraz', 'otwarte', 'otwarta', 'czynne', 'czynna', 'otwarta teraz', 'czy otwarte'],
@@ -90,7 +90,7 @@ export const CORE_TAG_KEYWORDS = {
 };
 export const PRICE_BAND_KEYWORDS = {
     budget: ['tanie', 'tanio', 'niedrogie', 'budżetowe', 'budzetowe', 'budżet', 'budzet', 'cheap'],
-    mid: ['mid', 'średnia półka', 'srednia polka', 'średni budżet', 'sredni budzet', 'umiarkowane ceny'],
+    mid: ['średnia półka', 'srednia polka', 'średniej półce', 'sredniej polce', 'średni budżet', 'sredni budzet', 'średnia cena', 'srednia cena', 'umiarkowane ceny', 'mid range'],
     premium: ['premium', 'fine dining', 'ekskluzywne', 'droższe', 'drozsze', 'wysoka półka', 'wysoka polka'],
 };
 export const SORT_KEYWORDS = {
@@ -515,9 +515,6 @@ export function enrichRestaurant(r) {
 // FAST-PARSER: Query → ParsedQuery
 // ═══════════════════════════════════════════════════════════════
 function includesDiscoveryKeyword(text, keyword) {
-    if (keyword === 'mid') {
-        return /(?:^|\s)mid(?:\s|$|[.,?!])/i.test(text);
-    }
     return text.includes(keyword);
 }
 function matchingKeys(text, map) {
@@ -566,6 +563,11 @@ export function matchQueryToTaxonomy(queryText, source = 'text') {
         unresolved.push('priceBand');
     if (matchedSorts.length > 1)
         unresolved.push('sort');
+    for (const token of ['mid', 'med', 'medium', 'max', 'maks']) {
+        if (new RegExp(`(?:^|\\s)${token}(?:\\s|$|[.,?!])`, 'i').test(text)) {
+            unresolved.push(`variant:${token}`);
+        }
+    }
     const priceBand = matchedPriceBands.length === 1 ? matchedPriceBands[0] : null;
     const sort = matchedSorts.length === 1 ? matchedSorts[0] : null;
     const proximity = matchedProximities.length > 0 ? matchedProximities[0] : null;

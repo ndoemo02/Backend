@@ -98,13 +98,17 @@ describe('food discovery taxonomy contract', () => {
         });
     });
 
-    it('maps an explicit mid-range request without matching word fragments', () => {
-        const parsed = matchQueryToTaxonomy('steki mid');
+    it('requires an explicit price phrase and leaves informal mid unresolved', () => {
+        const parsed = matchQueryToTaxonomy('steki w średniej półce');
+        const informal = matchQueryToTaxonomy('steki mid');
         const unrelated = matchQueryToTaxonomy('sushi midori');
 
         expect(parsed.priceBand).toBe('mid');
         expect(parsed.categories).toContain('steak');
+        expect(informal.priceBand).toBeNull();
+        expect(informal.unresolved).toContain('variant:mid');
         expect(unrelated.priceBand).toBeNull();
+        expect(unrelated.unresolved).toEqual([]);
     });
 
     it('recognizes price and rating sort requests', () => {
