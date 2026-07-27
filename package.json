@@ -30,6 +30,7 @@
     "test:brain:e2e": "vitest run api/brain/tests/brainRouter.e2e.test.js",
     "test:live:tools": "vitest run api/brain/tests/liveToolRouter.test.js",
     "test:live:cascade": "node api/brain/tests/live_tool_cascade_runner.js",
+    "test:discovery": "vitest run api/brain/tests/discoveryTaxonomy.test.js api/brain/tests/discovery_adapter_db_compat.test.js",
     "test:mc:direct": "vitest run api/brain/tests/monteCarlo_direct.e2e.test.js",
     "test:mc:std": "vitest run api/brain/tests/monteCarlo_std.e2e.test.js",
     "test:orders": "npx vitest tests/orders-api.test.js --run",
