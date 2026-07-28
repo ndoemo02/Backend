@@ -76,7 +76,10 @@ describe('Gemini Live ephemeral token handler', () => {
         const req = {
             method: 'POST',
             headers: { origin: 'https://freeflow-final.vercel.app', 'x-forwarded-for': '203.0.113.7' },
-            body: { model: 'gemini-live-test' },
+            body: {
+                model: 'gemini-live-test',
+                session_id: 'sess_token_test',
+            },
         };
         const res = createResponse();
 
