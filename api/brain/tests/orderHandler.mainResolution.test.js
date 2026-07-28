@@ -62,10 +62,10 @@ describe('OrderHandler main-item resolution', () => {
             session,
         });
 
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.length).toBe(1);
-        expect(response.contextUpdates?.cart?.items?.[0]?.id).toBe('main-bowl-1');
-        expect(response.contextUpdates?.cart?.items?.[0]?.id).not.toBe('addon-tzatziki');
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.contextUpdates?.pendingOrder?.items?.length).toBe(1);
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.id).toBe('main-bowl-1');
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.id).not.toBe('addon-tzatziki');
         expect(resolveMenuItemConflictMock).not.toHaveBeenCalled();
     });
 
@@ -178,8 +178,8 @@ describe('OrderHandler main-item resolution', () => {
         });
 
         expect(response.intent).not.toBe('clarify_order');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.[0]?.id).toBe('addon-tzatziki');
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.id).toBe('addon-tzatziki');
     });
 
     it('adds two items for multi-item candidate utterance with quantity distribution', async () => {
@@ -221,16 +221,16 @@ describe('OrderHandler main-item resolution', () => {
             session,
         });
 
-        expect(response.meta?.addedToCart).toBe(true);
+        expect(response.meta?.addedToCart).toBe(false);
         expect(response.meta?.orderMode).toBe('multi_candidate');
-        expect(response.contextUpdates?.cart?.items?.length).toBe(2);
-        const coffee = response.contextUpdates?.cart?.items?.find((item) => item.id === 'drink-kawa-czarna');
-        const pepsi = response.contextUpdates?.cart?.items?.find((item) => item.id === 'drink-pepsi');
-        expect(coffee?.qty).toBe(2);
-        expect(pepsi?.qty).toBe(1);
+        expect(response.contextUpdates?.pendingOrder?.items?.length).toBe(2);
+        const coffee = response.contextUpdates?.pendingOrder?.items?.find((item) => item.id === 'drink-kawa-czarna');
+        const pepsi = response.contextUpdates?.pendingOrder?.items?.find((item) => item.id === 'drink-pepsi');
+        expect(coffee?.quantity).toBe(2);
+        expect(pepsi?.quantity).toBe(1);
     });
 
-    it('commits valid items from multi-item batch when one item is missing in menu', async () => {
+    it('rejects the entire multi-item batch when one item is missing in menu', async () => {
         canonicalizeDishMock.mockImplementation((text) => text);
 
         const session = {
@@ -270,16 +270,13 @@ describe('OrderHandler main-item resolution', () => {
             session,
         });
 
-        expect(response.intent).not.toBe('clarify_order');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.meta?.source).toBe('order_handler_multi_partial_commit');
-        expect(response.meta?.unresolvedItems).toContain('Sushi');
+        expect(response.intent).toBe('clarify_order');
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.meta?.source).toBe('order_handler_multi_atomic_reject');
+        expect(response.meta?.clarify?.unresolvedItems).toContain('Sushi');
         expect(response.reply).toContain('Nie znalazlam w menu: Sushi');
-        expect(response.contextUpdates?.cart?.items?.length).toBe(2);
-        const wonTon = response.contextUpdates?.cart?.items?.find((item) => item.id === 'soup-won-ton');
-        const wolowina = response.contextUpdates?.cart?.items?.find((item) => item.id === 'main-wolowina-5-smakow');
-        expect(wonTon?.qty).toBe(2);
-        expect(wolowina?.qty).toBe(1);
+        expect(response.contextUpdates?.pendingOrder).toBeNull();
+        expect(session.cart.items).toEqual([]);
     });
 
     it('clamps accidental multi-item qty drift to 1 when user gave no explicit quantity', async () => {
@@ -321,11 +318,11 @@ describe('OrderHandler main-item resolution', () => {
             session,
         });
 
-        expect(response.meta?.addedToCart).toBe(true);
-        const schab = response.contextUpdates?.cart?.items?.find((item) => item.id === 'main-schab-tradycyjny');
-        const nalesnik = response.contextUpdates?.cart?.items?.find((item) => item.id === 'main-nalesnik-kurczak');
-        expect(schab?.qty).toBe(1);
-        expect(nalesnik?.qty).toBe(1);
+        expect(response.meta?.addedToCart).toBe(false);
+        const schab = response.contextUpdates?.pendingOrder?.items?.find((item) => item.id === 'main-schab-tradycyjny');
+        const nalesnik = response.contextUpdates?.pendingOrder?.items?.find((item) => item.id === 'main-nalesnik-kurczak');
+        expect(schab?.quantity).toBe(1);
+        expect(nalesnik?.quantity).toBe(1);
     });
 
     it('allows ADDON in multi-item batch when same request contains MAIN item', async () => {
@@ -368,10 +365,10 @@ describe('OrderHandler main-item resolution', () => {
         });
 
         expect(response.intent).not.toBe('clarify_order');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.length).toBe(2);
-        expect(response.contextUpdates?.cart?.items?.some((item) => item.id === 'main-schab-beskidzki')).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.some((item) => item.id === 'addon-pierogi')).toBe(true);
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.contextUpdates?.pendingOrder?.items?.length).toBe(2);
+        expect(response.contextUpdates?.pendingOrder?.items?.some((item) => item.id === 'main-schab-beskidzki')).toBe(true);
+        expect(response.contextUpdates?.pendingOrder?.items?.some((item) => item.id === 'addon-pierogi')).toBe(true);
     });
 
     it('allows Pierogi ADDON with Lody MAIN in the same add_items_to_cart batch', async () => {
@@ -413,10 +410,10 @@ describe('OrderHandler main-item resolution', () => {
         });
 
         expect(response.intent).not.toBe('clarify_order');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.length).toBe(2);
-        expect(response.contextUpdates?.cart?.items?.some((item) => item.id === 'addon-pierogi')).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.some((item) => item.id === 'main-lody')).toBe(true);
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.contextUpdates?.pendingOrder?.items?.length).toBe(2);
+        expect(response.contextUpdates?.pendingOrder?.items?.some((item) => item.id === 'addon-pierogi')).toBe(true);
+        expect(response.contextUpdates?.pendingOrder?.items?.some((item) => item.id === 'main-lody')).toBe(true);
     });
 
     it('allows single-item compound quantity drink order without clarify', async () => {
@@ -451,10 +448,10 @@ describe('OrderHandler main-item resolution', () => {
         });
 
         expect(response.intent).not.toBe('clarify_order');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.[0]?.id).toBe('drink-pepsi');
-        expect(response.contextUpdates?.cart?.items?.[0]?.qty).toBe(3);
-        expect(response.contextUpdates?.expectedContext).toBe('order_continue');
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.id).toBe('drink-pepsi');
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.quantity).toBe(3);
+        expect(response.contextUpdates?.expectedContext).toBe('confirm_add_to_cart');
     });
 
     it('prefers explicit post-dish repetition cue over stale single-qty entity', async () => {
@@ -486,9 +483,9 @@ describe('OrderHandler main-item resolution', () => {
         });
 
         expect(response.intent).not.toBe('clarify_order');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.[0]?.id).toBe('dessert-tiramisu');
-        expect(response.contextUpdates?.cart?.items?.[0]?.qty).toBe(2);
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.id).toBe('dessert-tiramisu');
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.quantity).toBe(2);
     });
 
     it('grounds a natural spicy-beef paraphrase against the scoped menu when NLU dish is null', async () => {
@@ -530,8 +527,8 @@ describe('OrderHandler main-item resolution', () => {
         });
 
         expect(response.intent).not.toBe('clarify_order');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.[0]?.id).toBe('beef-spicy');
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.id).toBe('beef-spicy');
     });
 
     it('resolves qty_2 pizza when menu item has size suffix (e.g. "33cm")', async () => {
@@ -569,9 +566,9 @@ describe('OrderHandler main-item resolution', () => {
         });
 
         expect(response.intent).not.toBe('clarify_order');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.[0]?.id).toBe('main-callzone-margherita-33');
-        expect(response.contextUpdates?.cart?.items?.[0]?.qty).toBe(2);
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.id).toBe('main-callzone-margherita-33');
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.quantity).toBe(2);
     });
 
     it('asks for variant clarification when shared base name matches multiple menu variants', async () => {
@@ -619,7 +616,7 @@ describe('OrderHandler main-item resolution', () => {
         expect(response.meta?.clarify?.clarifyReason).toBe('shared_base_ambiguity');
         expect(response.reply).toContain('Zur slaski w chlebie');
         expect(response.reply).toContain('Zur slaski na talerzu');
-        expect(response.contextUpdates?.cart?.items?.length || 0).toBe(0);
+        expect(response.contextUpdates?.pendingOrder?.items?.length || 0).toBe(0);
     });
 
     it('keeps multi-item add unresolved when one item has shared-base ambiguity', async () => {
@@ -673,7 +670,7 @@ describe('OrderHandler main-item resolution', () => {
         expect(response.meta?.clarify?.clarifyReason).toBe('shared_base_ambiguity');
         expect(response.reply).toContain('Zur slaski w chlebie');
         expect(response.reply).toContain('Zur slaski na talerzu');
-        expect(response.contextUpdates?.cart?.items?.length || 0).toBe(0);
+        expect(response.contextUpdates?.pendingOrder?.items?.length || 0).toBe(0);
     });
 
     it('applies scoped Żurek fallback in Stara Kamienica without addon context', async () => {
@@ -710,8 +707,8 @@ describe('OrderHandler main-item resolution', () => {
         });
 
         expect(response.intent).not.toBe('clarify_order');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.[0]?.id).toBe('main-zurek');
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.id).toBe('main-zurek');
     });
 
     it('does not fallback to unrelated MAIN dish when requesting pierogi', async () => {
@@ -762,7 +759,7 @@ describe('OrderHandler main-item resolution', () => {
 
         expect(response.intent).toBe('clarify_order');
         expect(response.meta?.addedToCart).not.toBe(true);
-        expect(response.contextUpdates?.cart?.items?.length || 0).toBe(0);
+        expect(response.contextUpdates?.pendingOrder?.items?.length || 0).toBe(0);
     });
 
     it('does not fallback from ice cream cup request to pancakes via shared whipped cream modifiers', async () => {
@@ -800,7 +797,7 @@ describe('OrderHandler main-item resolution', () => {
 
         expect(response.intent).toBe('clarify_order');
         expect(response.meta?.addedToCart).not.toBe(true);
-        expect(response.contextUpdates?.cart?.items?.length || 0).toBe(0);
+        expect(response.contextUpdates?.pendingOrder?.items?.length || 0).toBe(0);
         expect(session.cart.items.length).toBe(0);
     });
 
@@ -830,9 +827,9 @@ describe('OrderHandler main-item resolution', () => {
         });
 
         expect(response.intent).not.toBe('clarify_order');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.[0]?.id).toBe('addon-pierogi');
-        expect(response.contextUpdates?.cart?.items?.[0]?.qty).toBe(1);
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.id).toBe('addon-pierogi');
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.quantity).toBe(1);
     });
 
     it('resolves addon by preserved modifier for "2 x sos pikantny"', async () => {
@@ -873,9 +870,9 @@ describe('OrderHandler main-item resolution', () => {
         });
 
         expect(response.intent).not.toBe('clarify_order');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.[0]?.id).toBe('addon-sos-pikantny');
-        expect(response.contextUpdates?.cart?.items?.[0]?.qty).toBe(2);
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.id).toBe('addon-sos-pikantny');
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.quantity).toBe(2);
     });
 
     it('maps "2 razy ostry sos" modifier to pikantny variant and avoids tzatziki fallback', async () => {
@@ -916,10 +913,10 @@ describe('OrderHandler main-item resolution', () => {
         });
 
         expect(response.intent).not.toBe('clarify_order');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.[0]?.id).toBe('addon-sos-pikantny');
-        expect(response.contextUpdates?.cart?.items?.[0]?.id).not.toBe('addon-sos-tzatziki');
-        expect(response.contextUpdates?.cart?.items?.[0]?.qty).toBe(2);
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.id).toBe('addon-sos-pikantny');
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.id).not.toBe('addon-sos-tzatziki');
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.quantity).toBe(2);
     });
 
     it('maps "podwojny sos ostry" modifier to pikantny variant', async () => {
@@ -960,9 +957,9 @@ describe('OrderHandler main-item resolution', () => {
         });
 
         expect(response.intent).not.toBe('clarify_order');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.[0]?.id).toBe('addon-sos-pikantny');
-        expect(response.contextUpdates?.cart?.items?.[0]?.qty).toBe(2);
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.id).toBe('addon-sos-pikantny');
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.quantity).toBe(2);
     });
 
     it('returns MAIN clarify when ambiguous main candidates are detected', async () => {
@@ -1118,9 +1115,9 @@ describe('OrderHandler main-item resolution', () => {
         });
 
         expect(response.intent).not.toBe('clarify_order');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.[0]?.id).toBe('main-callzone-pepperoni-33');
-        expect(response.contextUpdates?.cart?.items?.[0]?.qty).toBe(2);
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.id).toBe('main-callzone-pepperoni-33');
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.quantity).toBe(2);
     });
 
     it('resolves single-item compound qty1 using parser-resolved main dish instead of raw phrase drift', async () => {
@@ -1159,7 +1156,7 @@ describe('OrderHandler main-item resolution', () => {
         });
 
         expect(response.intent).not.toBe('clarify_order');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(response.contextUpdates?.cart?.items?.[0]?.id).toBe('main-rolada');
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(response.contextUpdates?.pendingOrder?.items?.[0]?.id).toBe('main-rolada');
     });
 });

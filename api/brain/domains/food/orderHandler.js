@@ -6,7 +6,6 @@ import { canonicalizeDish } from '../../nlu/dishCanon.js';
 import { resolveMenuItemConflict, DISAMBIGUATION_RESULT } from '../../services/DisambiguationService.js';
 import { resolveRestaurantByName } from '../../services/restaurantResolver.js';
 import { loadMenuPreview } from '../../menuService.js';
-import { commitPendingOrder } from '../../session/sessionCart.js';
 import { buildClarifyOrderMessage, ORDER_REQUESTED_CATEGORY, resolveRequestedCategory } from './clarifyOrderMessage.js';
 import { resolveUniqueGroundedMenuItem } from '../../grounding/menuGrounding.js';
 
@@ -188,7 +187,6 @@ const MODIFIER_SYNONYM_GROUPS = [
     ['czosnkowy', 'czosnkowa', 'czosnkowe', 'garlic'],
 ];
 
-const ORDER_FLOW_ANCHOR_REPLY = 'DodaĹ‚am. Co dalej â€” chcesz zobaczyÄ‡ wiÄ™cej daĹ„ czy przejĹ›Ä‡ do zamĂłwienia?';
 const DISH_SIGNAL_STOPWORDS = new Set([
     'lub',
     'oraz',
@@ -1772,6 +1770,34 @@ export class OrderHandler {
                 }
             }
 
+            if (unresolvedBatchEntries.length > 0) {
+                const unresolvedList = unresolvedBatchEntries
+                    .map((entry) => String(entry.label || '').trim())
+                    .filter(Boolean);
+                const unresolvedTxt = unresolvedList.length > 0
+                    ? unresolvedList.join(', ')
+                    : 'podanych pozycji';
+                return {
+                    intent: 'clarify_order',
+                    reply: `Nie znalazlam w menu: ${unresolvedTxt}. Niczego jeszcze nie dodalam. Podaj pelne nazwy z menu albo wybierz je na ekranie.`,
+                    meta: {
+                        source: 'order_handler_multi_atomic_reject',
+                        addedToCart: false,
+                        clarify: {
+                            status: 'AMBIGUOUS',
+                            requestedCategory: ORDER_REQUESTED_CATEGORY.MULTI,
+                            expectedContext: 'clarify_order',
+                            unresolvedItems: unresolvedList,
+                        },
+                    },
+                    contextUpdates: {
+                        expectedContext: 'clarify_order',
+                        pendingOrder: null,
+                        cart: session.cart,
+                    },
+                };
+            }
+
             if (!targetRestaurant?.id || resolvedItems.length === 0) {
                 if (unresolvedBatchEntries.length > 0) {
                     const unresolvedList = unresolvedBatchEntries
@@ -1843,59 +1869,30 @@ export class OrderHandler {
                 createdAt: Date.now(),
             };
 
-            const commitResult = commitPendingOrder(session);
-            if (!commitResult.committed) {
-                return {
-                    reply: "Wystapil problem przy dodawaniu do koszyka. Sprobuj ponownie.",
-                    contextUpdates: {
-                        lastRestaurant: targetRestaurant,
-                        currentRestaurant: targetRestaurant,
-                        expectedContext: null,
-                        lastIntent: 'create_order'
-                    }
-                };
-            }
-
-            session.expectedContext = 'order_continue';
+            session.expectedContext = 'confirm_add_to_cart';
             if (Array.isArray(hydratedMenu) && hydratedMenu.length > 0) {
                 session.lastMenuItems = hydratedMenu;
                 session.last_menu = hydratedMenu;
             }
 
-            const unresolvedList = unresolvedBatchEntries
-                .map((entry) => String(entry.label || '').trim())
-                .filter(Boolean);
-            const unresolvedTxt = unresolvedList.length > 0
-                ? unresolvedList.join(', ')
-                : '';
-            const partialCommit = unresolvedList.length > 0;
-            const commitReply = partialCommit
-                ? `Dodalam ${resolvedItems.length} pozycje (${totalPieces} szt.) z ${targetRestaurant.name}. Razem ${total} zl. Nie znalazlam w menu: ${unresolvedTxt}. Chcesz podmienic brakujace pozycje?`
-                : `Dodalam ${resolvedItems.length} pozycje (${totalPieces} szt.) z ${targetRestaurant.name}. Razem ${total} zl. ${ORDER_FLOW_ANCHOR_REPLY}`;
-
             return {
-                reply: commitReply,
-                actions: [
-                    {
-                        type: 'SHOW_CART',
-                        payload: { mode: 'badge' }
-                    }
-                ],
+                reply: `Przygotowalam ${resolvedItems.length} pozycje (${totalPieces} szt.) z ${targetRestaurant.name}. Razem ${total} zl. Potwierdzasz dodanie calego zestawu do koszyka?`,
                 meta: {
-                    source: partialCommit ? 'order_handler_multi_partial_commit' : 'order_handler_multi_autocommit',
-                    addedToCart: true,
+                    source: 'order_handler_multi_pending',
+                    addedToCart: false,
                     cart: session.cart,
+                    pendingOrder: session.pendingOrder,
                     orderMode: 'multi_candidate',
                     restaurant: { id: targetRestaurant.id, name: targetRestaurant.name },
                     restaurantLockTrace,
-                    unresolvedItems: unresolvedList,
+                    unresolvedItems: [],
                     focusedMenuItemId: resolvedItems[0]?.id || null,
                 },
                 contextUpdates: {
                     lastRestaurant: targetRestaurant,
                     currentRestaurant: targetRestaurant,
-                    expectedContext: 'order_continue',
-                    pendingOrder: null,
+                    expectedContext: 'confirm_add_to_cart',
+                    pendingOrder: session.pendingOrder,
                     conversationPhase: 'ordering',
                     cart: session.cart,
                     lastIntent: 'create_order',
@@ -2476,7 +2473,7 @@ export class OrderHandler {
             };
             const total = (orderItem.price * quantity).toFixed(2);
 
-            // Build pendingOrder and commit immediately to keep backend cart + UI sync consistent.
+            // Build an atomic draft. Only ConfirmAddToCartHandler may mutate the cart.
             session.pendingOrder = {
                 restaurant_id: restaurant.id,
                 restaurant: restaurant.name,
@@ -2486,20 +2483,7 @@ export class OrderHandler {
                 createdAt: Date.now()
             };
 
-            const commitResult = commitPendingOrder(session);
-            if (!commitResult.committed) {
-                return {
-                    reply: "WystÄ…piĹ‚ problem przy dodawaniu do koszyka. SprĂłbuj ponownie.",
-                    contextUpdates: {
-                        lastRestaurant: restaurant,
-                        currentRestaurant: restaurant,
-                        expectedContext: null,
-                        lastIntent: 'create_order'
-                    }
-                };
-            }
-
-            session.expectedContext = 'order_continue';
+            session.expectedContext = 'confirm_add_to_cart';
             if (Array.isArray(hydratedMenu) && hydratedMenu.length > 0) {
                 session.lastMenuItems = hydratedMenu;
                 session.last_menu = hydratedMenu;
@@ -2507,17 +2491,12 @@ export class OrderHandler {
 
             const switchPrefix = isSwitch ? `Znaleziono "${item.name}" w ${restaurant.name}. ` : '';
             return {
-                reply: `${switchPrefix}DodaĹ‚am ${formatSzt(quantity)} ${item.name} z ${restaurant.name}. Razem ${total} zĹ‚. ${ORDER_FLOW_ANCHOR_REPLY}`,
-                actions: [
-                    {
-                        type: 'SHOW_CART',
-                        payload: { mode: 'badge' }
-                    }
-                ],
+                reply: `${switchPrefix}Przygotowalam ${formatSzt(quantity)} ${item.name} z ${restaurant.name}. Razem ${total} zl. Potwierdzasz dodanie do koszyka?`,
                 meta: {
-                    source: 'order_handler_autocommit',
-                    addedToCart: true,
+                    source: 'order_handler_pending',
+                    addedToCart: false,
                     cart: session.cart,
+                    pendingOrder: session.pendingOrder,
                     restaurant: { id: restaurant.id, name: restaurant.name },
                     restaurantLockTrace,
                     focusedMenuItemId: item.id,
@@ -2525,8 +2504,8 @@ export class OrderHandler {
                 contextUpdates: {
                     lastRestaurant: restaurant,
                     currentRestaurant: restaurant,
-                    expectedContext: 'order_continue',
-                    pendingOrder: null,
+                    expectedContext: 'confirm_add_to_cart',
+                    pendingOrder: session.pendingOrder,
                     conversationPhase: 'ordering',
                     cart: session.cart,
                     lastIntent: 'create_order',
