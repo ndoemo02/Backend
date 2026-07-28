@@ -23,8 +23,18 @@ describe('ConfirmAddToCartHandler focus metadata', () => {
             session,
             entities: {},
             sessionId: 'sess-focus-confirm',
+            services: {
+                getMenuItems: async () => [{
+                    id: 'menu-1',
+                    restaurant_id: 'rest-1',
+                    name: 'Pierogi',
+                    price_pln: 13,
+                    available: true,
+                }],
+            },
         });
 
         expect(result.meta?.focusedMenuItemId).toBe('menu-1');
+        expect(result.meta?.source).toBe('confirm_add_to_cart_handler');
     });
 });

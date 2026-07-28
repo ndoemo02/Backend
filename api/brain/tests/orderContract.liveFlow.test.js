@@ -121,7 +121,7 @@ describe('A — unambiguous dish + restaurant', () => {
         canonicalizeDishMock.mockReset();
     });
 
-    it('A1: resolves dish, emits focusedMenuItemId, adds to cart', async () => {
+    it('A1: resolves dish, emits focusedMenuItemId, and prepares confirmation', async () => {
         canonicalizeDishMock.mockReturnValue('pierogi ruskie');
 
         resolveMenuItemConflictMock.mockResolvedValue({
@@ -145,12 +145,13 @@ describe('A — unambiguous dish + restaurant', () => {
             session,
         });
 
-        // Contract assertions: intent via contextUpdates.lastIntent (handler's autocommit path)
+        // The order handler prepares a grounded draft; only confirmation may mutate the cart.
         expect(response.contextUpdates?.lastIntent).toBe('create_order');
         expect(response.meta?.focusedMenuItemId).toBe('menu-pierogi-1');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(session.cart.items.length).toBe(1);
-        expect(session.cart.items[0].name).toBe('Pierogi ruskie');
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(session.cart.items.length).toBe(0);
+        expect(session.pendingOrder?.items?.[0]?.id).toBe('menu-pierogi-1');
+        expect(session.expectedContext).toBe('confirm_add_to_cart');
     });
 
     it('A1b: response contract shape is preserved', async () => {
@@ -458,6 +459,15 @@ describe('F — confirm_add_to_cart focusedMenuItemId', () => {
             session,
             entities: {},
             sessionId: 'sess-focus-confirm',
+            services: {
+                getMenuItems: async () => [{
+                    id: 'menu-1',
+                    restaurant_id: 'rest-1',
+                    name: 'Pierogi',
+                    price_pln: 13,
+                    available: true,
+                }],
+            },
         });
 
         expect(result.meta?.focusedMenuItemId).toBe('menu-1');
@@ -487,10 +497,20 @@ describe('F — confirm_add_to_cart focusedMenuItemId', () => {
             session,
             entities: {},
             sessionId: 'sess-focus-noid',
+            services: {
+                getMenuItems: async () => [{
+                    id: 'menu-1',
+                    restaurant_id: 'rest-2',
+                    name: 'Pierogi',
+                    price_pln: 13,
+                    available: true,
+                }],
+            },
         });
 
-        // Should not crash, should return null
-        expect(result.meta?.focusedMenuItemId || null).toBeNull();
+        expect(result.meta?.source).toBe('confirm_add_to_cart_revalidation_rejected');
+        expect(result.meta?.reason).toBe('item_id_missing');
+        expect(session.cart.items).toEqual([]);
     });
 });
 
@@ -538,7 +558,7 @@ describe('G — confirm_order blocked (IVL guard)', () => {
         expect(JSON.stringify(sessions.get('sess_confirm_block'))).toBe(sessionBefore);
     });
 
-    it('G2: create_order via ToolRouter without currentRestaurant falls back to find_nearby', async () => {
+    it('G2: create_order via ToolRouter without currentRestaurant asks for grounded context', async () => {
         const sessions = new Map([
             ['sess_no_rest', {
                 conversationPhase: 'neutral',
@@ -569,9 +589,9 @@ describe('G — confirm_order blocked (IVL guard)', () => {
             requestId: 'req-no-rest',
         });
 
-        // ICM should redirect to find_nearby (no restaurant selected)
+        // No restaurant context means no safe cart mutation and no invented location search.
         expect(result.ok).toBe(true);
-        expect(result.response.intent).toBe('find_nearby');
+        expect(result.response.intent).toBe('clarify_order');
         // Cart must be empty (no item added without restaurant context)
         const session = sessions.get('sess_no_rest');
         expect(session.cart.items.length).toBe(0);
@@ -650,8 +670,9 @@ describe('H — ordinal selection after disambiguation', () => {
 
         expect(response.contextUpdates?.lastIntent).toBe('create_order');
         expect(response.meta?.focusedMenuItemId).toBe('menu-2');
-        expect(response.meta?.addedToCart).toBe(true);
-        expect(session.cart.items.length).toBe(1);
+        expect(response.meta?.addedToCart).toBe(false);
+        expect(session.cart.items.length).toBe(0);
+        expect(session.pendingOrder?.items?.[0]?.id).toBe('menu-2');
     });
 });
 
@@ -693,7 +714,8 @@ describe('I — change mind after focused item', () => {
         });
 
         expect(response1.meta?.focusedMenuItemId).toBe('menu-1');
-        expect(session.cart.items.length).toBe(1);
+        expect(session.cart.items.length).toBe(0);
+        expect(session.pendingOrder?.items?.[0]?.id).toBe('menu-1');
 
         // Turn 2: change mind → pizza
         canonicalizeDishMock.mockReturnValue('pizza margherita');
@@ -713,11 +735,8 @@ describe('I — change mind after focused item', () => {
         // Second response must have NEW focusedMenuItemId, not the old one
         expect(response2.meta?.focusedMenuItemId).toBe('menu-2');
         expect(response2.meta?.focusedMenuItemId).not.toBe('menu-1');
-        expect(session.cart.items.length).toBe(2);
-        // Both items in cart
-        const itemIds = session.cart.items.map(i => i.id);
-        expect(itemIds).toContain('menu-1');
-        expect(itemIds).toContain('menu-2');
+        expect(session.cart.items.length).toBe(0);
+        expect(session.pendingOrder?.items?.[0]?.id).toBe('menu-2');
     });
 });
 

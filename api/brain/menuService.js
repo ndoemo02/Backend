@@ -11,18 +11,21 @@ function cacheKey(restaurantId, includeUnavailable) {
   return `${restaurantId}|${includeUnavailable ? "all" : "available"}`;
 }
 
-export async function getMenuItems(restaurantId, { includeUnavailable = false, limit = null, withDb = null } = {}) {
+export async function getMenuItems(
+  restaurantId,
+  { includeUnavailable = false, limit = null, withDb = null, fresh = false } = {}
+) {
   if (!restaurantId) return [];
   const key = cacheKey(restaurantId, includeUnavailable);
   const cached = cache.get(key);
-  if (cached && Date.now() - cached.t < MENU_CACHE_TTL_MS) {
+  if (!fresh && cached && Date.now() - cached.t < MENU_CACHE_TTL_MS) {
     const data = cached.data || [];
     return limit ? data.slice(0, limit) : data;
   }
 
   let query = supabase
     .from("menu_items_v2")
-    .select("id, name, base_name, size_or_variant, price_pln, description, category, available, spicy, is_vege, item_tags, dietary_flags, section_order, safety_data, image_url")
+    .select("id, restaurant_id, name, base_name, size_or_variant, price_pln, description, category, available, spicy, is_vege, item_tags, dietary_flags, section_order, safety_data, image_url")
     .eq("restaurant_id", restaurantId);
 
   if (!includeUnavailable) {

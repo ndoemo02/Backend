@@ -85,7 +85,14 @@ vi.mock('../menuService.js', () => ({
     }
 
     return { menu: [], shortlist: [], fallbackUsed: false };
-  })
+  }),
+  getMenuItems: vi.fn(async (restaurantId) => {
+    if (restaurantId === CALLZONE_ID) return CALLZONE_MENU;
+    if (restaurantId === REZYDENCJA_ID) return REZYDENCJA_MENU;
+    if (restaurantId === STARA_ID) return STARA_MENU;
+    if (restaurantId === DWOR_ID) return DWOR_MENU;
+    return [];
+  }),
 }));
 
 const RESTAURANTS = [
@@ -116,6 +123,12 @@ async function selectCallzone(pipeline, sessionId) {
   return { result, session };
 }
 
+async function confirmPendingOrder(pipeline, sessionId) {
+  const result = await pipeline.process(sessionId, 'potwierdzam');
+  expect(result.meta?.source).toBe('confirm_add_to_cart_handler');
+  return { result, session: getSession(sessionId) };
+}
+
 describe('Golden ordering flows', () => {
   beforeEach(() => {
     global.BRAIN_DEBUG = false;
@@ -132,7 +145,8 @@ describe('Golden ordering flows', () => {
 
     expect(result.intent).toBe('create_order');
     expect(result.reply).toContain('Vege Burger');
-    expect(result.meta?.addedToCart).toBe(true);
+    expect(result.meta?.addedToCart).toBe(false);
+    await confirmPendingOrder(pipeline, sessionId);
     expect(session.cart?.items?.length).toBe(1);
     expect(session.cart.items[0].name).toBe('Vege Burger');
     expect(session.currentRestaurant?.name).toBe('Callzone');
@@ -148,7 +162,8 @@ describe('Golden ordering flows', () => {
 
     expect(result.intent).toBe('create_order');
     expect(result.reply).toContain('Bacon Burger');
-    expect(result.meta?.addedToCart).toBe(true);
+    expect(result.meta?.addedToCart).toBe(false);
+    await confirmPendingOrder(pipeline, sessionId);
     expect(session.cart?.items?.length).toBe(1);
     expect(session.cart.items[0].name).toBe('Bacon Burger');
   });
@@ -163,7 +178,8 @@ describe('Golden ordering flows', () => {
 
     expect(result.intent).toBe('create_order');
     expect(result.reply).toContain('2 sztuki Vege Burger');
-    expect(result.meta?.addedToCart).toBe(true);
+    expect(result.meta?.addedToCart).toBe(false);
+    await confirmPendingOrder(pipeline, sessionId);
     expect(session.cart?.items?.length).toBe(1);
     expect(session.cart.items[0].name).toBe('Vege Burger');
     expect(session.cart.items[0].qty || session.cart.items[0].quantity).toBe(2);
@@ -175,6 +191,7 @@ describe('Golden ordering flows', () => {
 
     await selectCallzone(pipeline, sessionId);
     await pipeline.process(sessionId, 'wege burger');
+    await confirmPendingOrder(pipeline, sessionId);
 
     updateSession(sessionId, {
       last_location: 'Piekary Slaskie'
@@ -225,6 +242,7 @@ describe('Golden ordering flows', () => {
     expect(result.reply).toContain('Vege Burger');
     expect(result.reply).not.toContain('Z ktorej restauracji');
     expect(session.currentRestaurant?.name).toBe('Callzone');
+    await confirmPendingOrder(pipeline, sessionId);
     expect(session.cart?.items?.length).toBe(1);
   });
 
@@ -268,12 +286,13 @@ describe('Golden ordering flows', () => {
 
     const result = await pipeline.process(sessionId, 'chcialbym nalesniki z nutella z restauracji Stara Kamienica');
     const session = getSession(sessionId);
-    const cartItems = session?.cart?.items || [];
-    const names = cartItems.map((item) => item.name || item.base_name || '');
 
     expect(result.intent).toBe('create_order');
-    expect(result.meta?.addedToCart).toBe(true);
+    expect(result.meta?.addedToCart).toBe(false);
     expect(session.currentRestaurant?.id).toBe(STARA_ID);
+    await confirmPendingOrder(pipeline, sessionId);
+    const cartItems = getSession(sessionId)?.cart?.items || [];
+    const names = cartItems.map((item) => item.name || item.base_name || '');
     expect(cartItems.length).toBeGreaterThan(0);
     expect(names.join(' ').toLowerCase()).toContain('nales');
   });
@@ -287,13 +306,14 @@ describe('Golden ordering flows', () => {
       'dodaj dwa nalesniki z nutella, gulasz po wegiersku, zupe dnia i dwie cole z restauracji Stara Kamienica'
     );
     const session = getSession(sessionId);
-    const cartItems = session?.cart?.items || [];
-    const normalizedNames = cartItems.map((item) => String(item.name || '').toLowerCase());
-    const totalQty = cartItems.reduce((sum, item) => sum + Number(item.qty || item.quantity || 1), 0);
 
     expect(result.intent).toBe('create_order');
-    expect(result.meta?.addedToCart).toBe(true);
+    expect(result.meta?.addedToCart).toBe(false);
     expect(session.currentRestaurant?.id).toBe(STARA_ID);
+    await confirmPendingOrder(pipeline, sessionId);
+    const cartItems = getSession(sessionId)?.cart?.items || [];
+    const normalizedNames = cartItems.map((item) => String(item.name || '').toLowerCase());
+    const totalQty = cartItems.reduce((sum, item) => sum + Number(item.qty || item.quantity || 1), 0);
     expect(cartItems.length).toBeGreaterThanOrEqual(3);
     expect(totalQty).toBeGreaterThanOrEqual(5);
     expect(normalizedNames.some((name) => name.includes('nales') || name.includes('nutell'))).toBe(true);

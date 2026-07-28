@@ -74,7 +74,13 @@ vi.mock('../menuService.js', () => ({
       return { menu: DWOR_MENU, shortlist: DWOR_MENU.slice(0, 3), fallbackUsed: false };
     }
     return { menu: [], shortlist: [], fallbackUsed: false };
-  })
+  }),
+  getMenuItems: vi.fn(async (restaurantId) => {
+    if (restaurantId === CALLZONE_ID) return CALLZONE_MENU;
+    if (restaurantId === STARA_ID) return STARA_MENU;
+    if (restaurantId === DWOR_ID) return DWOR_MENU;
+    return [];
+  }),
 }));
 
 const RESTAURANTS = [
@@ -88,6 +94,12 @@ function createPipeline() {
     nlu: new NLURouter(),
     repository: new InMemoryRestaurantRepository({ restaurants: RESTAURANTS })
   });
+}
+
+async function confirmPendingOrder(pipeline, sessionId) {
+  const result = await pipeline.process(sessionId, 'potwierdzam');
+  expect(result.meta?.source).toBe('confirm_add_to_cart_handler');
+  return getSession(sessionId);
 }
 
 describe('TEXT write-path safety regressions', () => {
@@ -243,10 +255,11 @@ describe('TEXT write-path safety regressions', () => {
     await pipeline.process(sessionId, 'pokaz menu Stara Kamienica');
     const result = await pipeline.process(sessionId, 'nalesniki z nutella');
     const session = getSession(sessionId);
+    await confirmPendingOrder(pipeline, sessionId);
     const cartItems = session?.cart?.items || [];
     const names = cartItems.map((item) => String(item.name || '').toLowerCase());
 
-    expect(result.meta?.addedToCart).toBe(true);
+    expect(result.meta?.addedToCart).toBe(false);
     expect(session.currentRestaurant?.id).toBe(STARA_ID);
     expect(names.some((name) => name.includes('nutella'))).toBe(true);
     expect(names.some((name) => name.includes('kurczak'))).toBe(false);
@@ -261,11 +274,12 @@ describe('TEXT write-path safety regressions', () => {
       'dodaj dwa nalesniki z nutella, gulasz po wegiersku, zupe dnia i dwie cole z restauracji Stara Kamienica'
     );
     const session = getSession(sessionId);
+    await confirmPendingOrder(pipeline, sessionId);
     const cartItems = session?.cart?.items || [];
     const names = cartItems.map((item) => String(item.name || '').toLowerCase());
     const totalQty = cartItems.reduce((sum, item) => sum + Number(item.qty || item.quantity || 1), 0);
 
-    expect(result.meta?.addedToCart).toBe(true);
+    expect(result.meta?.addedToCart).toBe(false);
     expect(session.currentRestaurant?.id).toBe(STARA_ID);
     expect(cartItems.length).toBeGreaterThanOrEqual(4);
     expect(totalQty).toBeGreaterThanOrEqual(6);
