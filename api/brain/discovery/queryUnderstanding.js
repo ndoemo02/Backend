@@ -236,6 +236,25 @@ export function buildChips(parsed) {
         if (entry)
             chips.push({ id, emoji: entry.emoji, labelPl: entry.labelPl, dimension: 'dietary' });
     }
+    if (parsed.priceBand) {
+        const display = {
+            budget: { emoji: '💰', labelPl: 'Budżetowo' },
+            mid: { emoji: '◐', labelPl: 'Średnia półka' },
+            premium: { emoji: '✦', labelPl: 'Premium' },
+        }[parsed.priceBand];
+        chips.push({ id: parsed.priceBand, ...display, dimension: 'priceBand' });
+    }
+    if (parsed.proximity === 'near') {
+        chips.push({ id: 'near', emoji: '⌖', labelPl: 'Blisko', dimension: 'proximity' });
+    }
+    if (parsed.sort) {
+        const display = {
+            distance: { emoji: '↗', labelPl: 'Najbliżej' },
+            price: { emoji: '↧', labelPl: 'Najtaniej' },
+            rating: { emoji: '★', labelPl: 'Najlepiej oceniane' },
+        }[parsed.sort];
+        chips.push({ id: `sort_${parsed.sort}`, ...display, dimension: 'sort' });
+    }
     return chips;
 }
 // ═══════════════════════════════════════════════════════════════

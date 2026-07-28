@@ -1531,6 +1531,8 @@ export class FindRestaurantHandler {
                 type: 'parser_chips',
                 chips: earlyChips,
                 confidence: earlyConfidence,
+                unresolved: parsedDiscoveryQuery?.unresolved || [],
+                source: parsedDiscoveryQuery?.source || resolveDiscoverySource(ctx),
             });
         }
 

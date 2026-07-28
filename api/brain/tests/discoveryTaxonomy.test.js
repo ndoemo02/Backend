@@ -88,6 +88,7 @@ describe('food discovery taxonomy contract', () => {
 
     it('maps nearby language to proximity and distance sorting', () => {
         const parsed = matchQueryToTaxonomy('desery wege blisko');
+        const chips = buildChips(parsed);
 
         expect(parsed).toMatchObject({
             proximity: 'near',
@@ -96,6 +97,10 @@ describe('food discovery taxonomy contract', () => {
             source: 'text',
             confidence: 'deterministic',
         });
+        expect(chips).toEqual(expect.arrayContaining([
+            expect.objectContaining({ id: 'near', dimension: 'proximity' }),
+            expect.objectContaining({ id: 'sort_distance', dimension: 'sort' }),
+        ]));
     });
 
     it('requires an explicit price phrase and leaves informal mid unresolved', () => {
@@ -105,6 +110,10 @@ describe('food discovery taxonomy contract', () => {
 
         expect(parsed.priceBand).toBe('mid');
         expect(parsed.categories).toContain('steak');
+        expect(buildChips(parsed)).toContainEqual(expect.objectContaining({
+            id: 'mid',
+            dimension: 'priceBand',
+        }));
         expect(informal.priceBand).toBeNull();
         expect(informal.unresolved).toContain('variant:mid');
         expect(unrelated.priceBand).toBeNull();
