@@ -237,13 +237,14 @@ describe('Live ToolRouter', () => {
         expect(Array.isArray(result.trace)).toBe(true);
     });
 
-    it('keeps a valid pending cart draft without downgrading it as a missing mutation', async () => {
+    it('commits a grounded Live draft to the reversible cart without a second voice confirmation', async () => {
         const sessionId = 'sess_pending_cart_confirmation';
+        const restaurantId = '4ad6b301-671b-4343-bf91-9bab7cda37b4';
         const sessions = new Map([[
             sessionId,
             {
                 conversationPhase: 'ordering',
-                currentRestaurant: { id: 'r1', name: 'Rest 1' },
+                currentRestaurant: { id: restaurantId, name: 'Śląski Szynk' },
                 cart: { items: [], total: 0 },
                 orderMode: 'restaurant_selected',
             },
@@ -258,13 +259,39 @@ describe('Live ToolRouter', () => {
             },
             contextUpdates: {
                 pendingOrder: {
-                    restaurant_id: 'r1',
+                    restaurant_id: restaurantId,
                     items: [{ id: 'tagliatelle', name: 'Tagliatelle', quantity: 2 }],
                     total: '114.00',
                 },
                 expectedContext: 'confirm_add_to_cart',
             },
         });
+        handlers.ordering.confirm_add_to_cart.execute = async ({ session }) => {
+            const pendingOrder = session.pendingOrder;
+            const cart = {
+                items: pendingOrder.items.map((item) => ({
+                    ...item,
+                    restaurant_id: pendingOrder.restaurant_id,
+                })),
+                total: Number(pendingOrder.total),
+            };
+            session.cart = cart;
+            session.pendingOrder = null;
+            session.expectedContext = null;
+            return {
+                intent: 'confirm_add_to_cart',
+                reply: 'Dodano 2 × Tagliatelle do koszyka.',
+                contextUpdates: {
+                    cart,
+                    pendingOrder: null,
+                    expectedContext: null,
+                },
+                meta: {
+                    source: 'confirm_add_to_cart_handler',
+                    cart,
+                },
+            };
+        };
         const getSession = (id) => sessions.get(id) || {};
         const updateSession = (id, patch) => {
             const next = { ...(sessions.get(id) || {}), ...patch };
@@ -276,21 +303,26 @@ describe('Live ToolRouter', () => {
         const result = await router.executeToolCall({
             sessionId,
             toolName: 'add_item_to_cart',
-            args: { dish: 'Tagliatelle', quantity: 2 },
-            transcript: 'dwa razy tagliatelle',
+            args: { dish: 'Tagliatelle', quantity: 2, restaurant_id: restaurantId },
+            transcript: 'Due razzi taglienti scivolati via.',
         });
 
         expect(result.ok).toBe(true);
         expect(result.response.ok).toBe(true);
-        expect(result.response.reply).toContain('Potwierdzasz');
+        expect(result.response.reply).toContain('Dodano');
         expect(result.response.meta?.liveTool).toMatchObject({
-            cartChanged: false,
-            pendingConfirmationPrepared: true,
+            cartChanged: true,
+            autoCommittedCartDraft: true,
+            pendingConfirmationPrepared: false,
             successDowngraded: false,
             clarifyNotAdded: false,
         });
-        expect(sessions.get(sessionId)?.pendingOrder?.items).toHaveLength(1);
-        expect(sessions.get(sessionId)?.cart?.items).toHaveLength(0);
+        expect(sessions.get(sessionId)?.pendingOrder).toBeNull();
+        expect(sessions.get(sessionId)?.cart?.items).toHaveLength(1);
+        expect(sessions.get(sessionId)?.cart?.items?.[0]).toMatchObject({
+            id: 'tagliatelle',
+            quantity: 2,
+        });
     });
 
     it('does not confirm a pending cart draft from unrelated transcript text', async () => {

@@ -21,6 +21,7 @@ const QUANTITY_ORDER_RE =
     /^(?:to\s+)?(?:po\s+)?(?:\d+|jedn(?:a|o|[aą])?|dwa|dwie|trzy|cztery|pi[eę][cć]|sze[sś][cć]|siedem|osiem|dziewi[eę][cć]|dziesi[eę][cć])(?:\s*x)?\s+(?:\S+\s*)+$/i;
 
 const CONFIRMATION_RE = /^(?:tak|ja|dobrze|dobra|okej|ok|zgadza\s+si[eę]|potwierdzam|dawaj|jasne|leci)$/i;
+const CART_REJECTION_RE = /^(?:nie|nie\s+(?:dodawaj|bior[eę]|chc[eę])|anuluj|odpu[sś][cć]|zostaw|rezygnuj[eę])(?:\s+.*)?$/i;
 const CONFIRMATION_CONTEXTS = new Set([
     'confirm_add_to_cart',
     'clarify_order',
@@ -48,7 +49,7 @@ export function isInformationalCartQuestion(value) {
  * Cart mutations need evidence in the user's turn, not only coherent tool args.
  * A valid menu item proves catalog grounding; it does not prove purchase intent.
  */
-export function verifyCartMutationIntent({ text, session } = {}) {
+export function verifyCartMutationIntent({ text, session, allowReversibleCartDraft = false } = {}) {
     const normalized = normalizeCartUtterance(text);
 
     if (!normalized) {
@@ -64,6 +65,15 @@ export function verifyCartMutationIntent({ text, session } = {}) {
             allowed: false,
             reason: 'cart_mutation_informational_question',
             informationalQuestion: true,
+        };
+    }
+
+    if (CART_REJECTION_RE.test(normalized)) {
+        return {
+            allowed: false,
+            reason: 'cart_mutation_explicitly_rejected',
+            informationalQuestion: false,
+            explicitRejection: true,
         };
     }
 
@@ -97,6 +107,19 @@ export function verifyCartMutationIntent({ text, session } = {}) {
             allowed: true,
             reason: 'expected_cart_confirmation',
             informationalQuestion: false,
+        };
+    }
+
+    // The cart is a reversible review surface. A grounded Live tool call may
+    // prepare and commit a validated cart draft without requiring the noisy
+    // auxiliary transcript to repeat the full dish name. Questions and
+    // explicit rejection remain blocked above.
+    if (allowReversibleCartDraft) {
+        return {
+            allowed: true,
+            reason: 'reversible_cart_draft_selection',
+            informationalQuestion: false,
+            explicitRejection: false,
         };
     }
 

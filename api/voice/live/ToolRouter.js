@@ -1515,9 +1515,20 @@ export class ToolRouter {
         // A coherent catalog item is not evidence that the user wanted to buy it.
         // Keep this after catalog/menu reroutes, but before IVL, FSM and handlers.
         if (isAddToCartTool || isConfirmAddToCartTool) {
+            const reversibleDraftHasRestaurantScope = Boolean(
+                String(args?.restaurant_id || entities?.restaurantId || '').trim()
+            );
+            const reversibleDraftHasSelection = Boolean(
+                String(args?.dish || entities?.dish || '').trim()
+                || (Array.isArray(args?.items) && args.items.length > 0)
+            );
             const mutationIntent = verifyCartMutationIntent({
                 text: transcriptText,
                 session: sessionSnapshotForIVL,
+                allowReversibleCartDraft:
+                    isAddToCartTool
+                    && reversibleDraftHasRestaurantScope
+                    && reversibleDraftHasSelection,
             });
             trace.push(`cart_intent_guard:${mutationIntent.reason}`);
 
@@ -2216,13 +2227,54 @@ export class ToolRouter {
         console.log(`[CART_GUARD] preCount=${preCartItemCount}`);
         console.log(`[CART_GUARD] preTotal=${preCartTotal}`);
 
-        const domainResponse = await HandlerDispatcher.executeTransactional({
+        let domainResponse = await HandlerDispatcher.executeTransactional({
             handler,
             context,
             applyContextUpdates,
         });
 
         sessionSnapshot = this.getSession(sessionId) || context.session || {};
+        const reversibleDraftPrepared =
+            runtimeIntent === 'create_order'
+            && domainResponse?.meta?.source === 'order_handler_pending'
+            && domainResponse?.meta?.addedToCart === false
+            && String(sessionSnapshot?.expectedContext || '') === 'confirm_add_to_cart'
+            && Array.isArray(sessionSnapshot?.pendingOrder?.items)
+            && sessionSnapshot.pendingOrder.items.length > 0;
+
+        // The cart is the user's manual review step before checkout. Once the
+        // order handler has resolved a complete, catalog-grounded draft, reuse
+        // the existing confirmation handler to revalidate and commit it
+        // atomically. No second voice turn or verbatim dish repetition is
+        // required; incomplete or stale drafts still fail closed.
+        let autoCommittedCartDraft = false;
+        if (reversibleDraftPrepared) {
+            const confirmationContext = {
+                ...context,
+                intent: 'confirm_add_to_cart',
+                session: sessionSnapshot,
+                entities: {},
+                meta: {
+                    ...(context.meta || {}),
+                    autoCommitReversibleDraft: true,
+                },
+                trace: context.trace,
+            };
+            const { handler: confirmationHandler } = HandlerDispatcher.resolve({
+                handlers: this.handlers,
+                context: confirmationContext,
+            });
+            const confirmationResponse = await HandlerDispatcher.executeTransactional({
+                handler: confirmationHandler,
+                context: confirmationContext,
+                applyContextUpdates,
+            });
+            domainResponse = confirmationResponse;
+            sessionSnapshot = this.getSession(sessionId) || confirmationContext.session || context.session || {};
+            autoCommittedCartDraft = confirmationResponse?.meta?.source === 'confirm_add_to_cart_handler';
+            context.trace.push(`cart_review:auto_commit:${autoCommittedCartDraft ? 'committed' : 'not_committed'}`);
+        }
+
         const postCart = (sessionSnapshot && sessionSnapshot.cart) || {};
         const postCartItemCount = Array.isArray(postCart.items) ? postCart.items.length : 0;
         const postCartTotal = postCart.total ?? 0;
@@ -2362,6 +2414,7 @@ export class ToolRouter {
                     total: Number(postCartTotal) || 0,
                 },
                 cartChanged,
+                autoCommittedCartDraft,
                 pendingConfirmationPrepared,
                 successDowngraded,
                 clarifyNotAdded,

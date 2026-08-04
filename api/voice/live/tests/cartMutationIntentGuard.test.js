@@ -27,6 +27,29 @@ describe('CartMutationIntentGuard', () => {
         });
     });
 
+    it('allows a reversible cart draft when Live understood the grounded selection despite noisy STT', () => {
+        const result = verifyCartMutationIntent({
+            text: 'Due razzi taglienti scivolati via.',
+            allowReversibleCartDraft: true,
+        });
+
+        expect(result).toMatchObject({
+            allowed: true,
+            reason: 'reversible_cart_draft_selection',
+        });
+    });
+
+    it.each([
+        'Czy tagliatelle zawiera krewetki?',
+        'Nie dodawaj tagliatelle',
+        'Anuluj',
+    ])('does not use reversible-cart mode to override a question or rejection: %s', (text) => {
+        expect(verifyCartMutationIntent({
+            text,
+            allowReversibleCartDraft: true,
+        }).allowed).toBe(false);
+    });
+
     it.each([
         'Dodaj kołocz',
         'Poproszę kołocz',
