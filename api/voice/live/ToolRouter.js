@@ -1321,6 +1321,7 @@ export class ToolRouter {
             });
         }
         const isAddToCartTool = toolName === 'add_item_to_cart' || toolName === 'add_items_to_cart';
+        const isConfirmAddToCartTool = toolName === 'confirm_add_to_cart';
         const catalogScopedTool = [
             'select_restaurant',
             'show_menu',
@@ -1513,7 +1514,7 @@ export class ToolRouter {
 
         // A coherent catalog item is not evidence that the user wanted to buy it.
         // Keep this after catalog/menu reroutes, but before IVL, FSM and handlers.
-        if (isAddToCartTool) {
+        if (isAddToCartTool || isConfirmAddToCartTool) {
             const mutationIntent = verifyCartMutationIntent({
                 text: transcriptText,
                 session: sessionSnapshotForIVL,
@@ -1521,9 +1522,11 @@ export class ToolRouter {
             trace.push(`cart_intent_guard:${mutationIntent.reason}`);
 
             if (!mutationIntent.allowed) {
-                const guardReply = mutationIntent.informationalQuestion
-                    ? 'Pytasz o tę pozycję, więc nie dodaję jej do koszyka. Odpowiem na podstawie aktualnego menu.'
-                    : 'Nie usłyszałam wyraźnej prośby o dodanie tej pozycji. Nic nie zmieniłam w koszyku.';
+                const guardReply = isConfirmAddToCartTool
+                    ? 'Nie potwierdziłam poprzedniej pozycji. Powiedz „potwierdzam” albo ponownie nazwij pozycję z poleceniem „dodaj”.'
+                    : mutationIntent.informationalQuestion
+                        ? 'Pytasz o tę pozycję, więc nie dodaję jej do koszyka. Odpowiem na podstawie aktualnego menu.'
+                        : 'Nie usłyszałam wyraźnej prośby o dodanie tej pozycji. Nic nie zmieniłam w koszyku.';
                 const clarify = buildClarifyResponse(
                     sessionId,
                     'clarify_order',
@@ -2228,19 +2231,34 @@ export class ToolRouter {
         const isClarifyOrderResponse =
             String(domainResponse?.intent || '').toLowerCase() === 'clarify_order'
             || Boolean(domainResponse?.meta?.clarify);
-        const responseSuggestsSuccess = domainResponse?.ok !== false && !isClarifyOrderResponse;
+        const pendingConfirmationPrepared =
+            runtimeIntent === 'create_order'
+            && !cartChanged
+            && domainResponse?.meta?.source === 'order_handler_pending'
+            && domainResponse?.meta?.addedToCart === false
+            && String(sessionSnapshot?.expectedContext || '') === 'confirm_add_to_cart'
+            && Array.isArray(sessionSnapshot?.pendingOrder?.items)
+            && sessionSnapshot.pendingOrder.items.length > 0;
+        const responseSuggestsSuccess =
+            domainResponse?.ok !== false
+            && !isClarifyOrderResponse
+            && !pendingConfirmationPrepared;
         const successDowngraded = cartMutationPath && responseSuggestsSuccess && !cartChanged;
-        const clarifyNotAdded = cartMutationPath && (isClarifyOrderResponse || successDowngraded || !cartChanged);
+        const clarifyNotAdded =
+            cartMutationPath
+            && !pendingConfirmationPrepared
+            && (isClarifyOrderResponse || successDowngraded || !cartChanged);
 
         console.log(`[CART_GUARD] postCount=${postCartItemCount}`);
         console.log(`[CART_GUARD] postTotal=${postCartTotal}`);
         console.log(`[CART_GUARD] cartChanged=${cartChanged}`);
+        console.log(`[CART_GUARD] pendingConfirmationPrepared=${pendingConfirmationPrepared}`);
         console.log(`[CART_GUARD] successDowngraded=${successDowngraded}`);
 
         if (successDowngraded) {
           recordCartSuccessDowngrade({ sessionId, reason: 'reply_suggests_success_but_cart_unchanged' });
         }
-        if (cartMutationPath && !cartChanged && !successDowngraded) {
+        if (cartMutationPath && !cartChanged && !successDowngraded && !pendingConfirmationPrepared) {
           recordCartDesync({ sessionId, preCount: preCartItemCount, postCount: postCartItemCount, preTotal: preCartTotal, postTotal: postCartTotal });
         }
 
@@ -2344,6 +2362,7 @@ export class ToolRouter {
                     total: Number(postCartTotal) || 0,
                 },
                 cartChanged,
+                pendingConfirmationPrepared,
                 successDowngraded,
                 clarifyNotAdded,
                 ...(finalizedTrace ? { turnTrace: finalizedTrace } : {}),

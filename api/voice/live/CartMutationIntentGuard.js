@@ -20,7 +20,7 @@ const INFORMATION_QUESTION_RE = [
 const QUANTITY_ORDER_RE =
     /^(?:to\s+)?(?:po\s+)?(?:\d+|jedn(?:a|o|[aą])?|dwa|dwie|trzy|cztery|pi[eę][cć]|sze[sś][cć]|siedem|osiem|dziewi[eę][cć]|dziesi[eę][cć])(?:\s*x)?\s+(?:\S+\s*)+$/i;
 
-const CONFIRMATION_RE = /^(?:tak|ja|dobrze|okej|ok|zgadza\s+si[eę]|potwierdzam)$/i;
+const CONFIRMATION_RE = /^(?:tak|ja|dobrze|dobra|okej|ok|zgadza\s+si[eę]|potwierdzam|dawaj|jasne|leci)$/i;
 const CONFIRMATION_CONTEXTS = new Set([
     'confirm_add_to_cart',
     'clarify_order',

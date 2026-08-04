@@ -46,6 +46,28 @@ describe('CartMutationIntentGuard', () => {
         expect(verifyCartMutationIntent({ text: 'ja', session: {} }).allowed).toBe(false);
     });
 
+    it.each([
+        'Pour faire un point de vue, il ne perd pas de cyclisme.',
+        'Kartacze z dzikiem',
+    ])('blocks unrelated speech from confirming a pending cart mutation: %s', (text) => {
+        const result = verifyCartMutationIntent({
+            text,
+            session: { expectedContext: 'confirm_add_to_cart' },
+        });
+
+        expect(result).toMatchObject({
+            allowed: false,
+            reason: 'cart_mutation_without_explicit_action',
+        });
+    });
+
+    it.each(['dodaj', 'potwierdzam', 'dawaj', 'jasne'])('allows explicit confirmation evidence: %s', (text) => {
+        expect(verifyCartMutationIntent({
+            text,
+            session: { expectedContext: 'confirm_add_to_cart' },
+        }).allowed).toBe(true);
+    });
+
     it('treats conditional mutation as a question requiring another turn', () => {
         const text = 'Jeśli to drożdżówka, dodaj ją';
 

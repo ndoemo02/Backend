@@ -237,6 +237,117 @@ describe('Live ToolRouter', () => {
         expect(Array.isArray(result.trace)).toBe(true);
     });
 
+    it('keeps a valid pending cart draft without downgrading it as a missing mutation', async () => {
+        const sessionId = 'sess_pending_cart_confirmation';
+        const sessions = new Map([[
+            sessionId,
+            {
+                conversationPhase: 'ordering',
+                currentRestaurant: { id: 'r1', name: 'Rest 1' },
+                cart: { items: [], total: 0 },
+                orderMode: 'restaurant_selected',
+            },
+        ]]);
+        const handlers = makeFakeHandlers();
+        handlers.ordering.create_order.execute = async () => ({
+            intent: 'create_order',
+            reply: 'Przygotowałam 2 Tagliatelle. Potwierdzasz dodanie do koszyka?',
+            meta: {
+                source: 'order_handler_pending',
+                addedToCart: false,
+            },
+            contextUpdates: {
+                pendingOrder: {
+                    restaurant_id: 'r1',
+                    items: [{ id: 'tagliatelle', name: 'Tagliatelle', quantity: 2 }],
+                    total: '114.00',
+                },
+                expectedContext: 'confirm_add_to_cart',
+            },
+        });
+        const getSession = (id) => sessions.get(id) || {};
+        const updateSession = (id, patch) => {
+            const next = { ...(sessions.get(id) || {}), ...patch };
+            sessions.set(id, next);
+            return next;
+        };
+        const router = new ToolRouter({ handlers, getSession, updateSession });
+
+        const result = await router.executeToolCall({
+            sessionId,
+            toolName: 'add_item_to_cart',
+            args: { dish: 'Tagliatelle', quantity: 2 },
+            transcript: 'dwa razy tagliatelle',
+        });
+
+        expect(result.ok).toBe(true);
+        expect(result.response.ok).toBe(true);
+        expect(result.response.reply).toContain('Potwierdzasz');
+        expect(result.response.meta?.liveTool).toMatchObject({
+            cartChanged: false,
+            pendingConfirmationPrepared: true,
+            successDowngraded: false,
+            clarifyNotAdded: false,
+        });
+        expect(sessions.get(sessionId)?.pendingOrder?.items).toHaveLength(1);
+        expect(sessions.get(sessionId)?.cart?.items).toHaveLength(0);
+    });
+
+    it('does not confirm a pending cart draft from unrelated transcript text', async () => {
+        const sessionId = 'sess_confirm_transcript_guard';
+        const sessions = new Map([[
+            sessionId,
+            {
+                conversationPhase: 'ordering',
+                currentRestaurant: { id: 'r1', name: 'Rest 1' },
+                cart: { items: [], total: 0 },
+                pendingOrder: {
+                    restaurant_id: 'r1',
+                    items: [{ id: 'tagliatelle', name: 'Tagliatelle', quantity: 2 }],
+                    total: '114.00',
+                },
+                expectedContext: 'confirm_add_to_cart',
+                orderMode: 'building',
+            },
+        ]]);
+        let confirmHandlerCalled = false;
+        const handlers = makeFakeHandlers();
+        handlers.ordering.confirm_add_to_cart.execute = async () => {
+            confirmHandlerCalled = true;
+            return {
+                reply: 'Nie powinno się wykonać.',
+                contextUpdates: {
+                    cart: { items: [{ id: 'tagliatelle', quantity: 2 }], total: 114 },
+                    pendingOrder: null,
+                },
+            };
+        };
+        const getSession = (id) => sessions.get(id) || {};
+        const updateSession = (id, patch) => {
+            const next = { ...(sessions.get(id) || {}), ...patch };
+            sessions.set(id, next);
+            return next;
+        };
+        const router = new ToolRouter({ handlers, getSession, updateSession });
+
+        const result = await router.executeToolCall({
+            sessionId,
+            toolName: 'confirm_add_to_cart',
+            args: {},
+            transcript: 'Pour faire un point de vue, il ne perd pas de cyclisme.',
+        });
+
+        expect(result.ok).toBe(true);
+        expect(result.response.intent).toBe('clarify_order');
+        expect(result.response.meta?.cartMutationIntentGuard).toMatchObject({
+            blocked: true,
+            reason: 'cart_mutation_without_explicit_action',
+        });
+        expect(confirmHandlerCalled).toBe(false);
+        expect(sessions.get(sessionId)?.cart?.items).toHaveLength(0);
+        expect(sessions.get(sessionId)?.pendingOrder?.items).toHaveLength(1);
+    });
+
     it.each([
         ['Kołocz to je tako drożdżówka?', 'cart_mutation_informational_question'],
         ['Beijo, tá chegando.', 'cart_mutation_without_explicit_action'],
