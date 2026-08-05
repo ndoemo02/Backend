@@ -38,6 +38,7 @@ import { finalizeEntities } from './pipeline/finalizeEntities.js';
 import { applyMultiItemParsing } from './pipeline/multiItemOrderParser.js';
 import { ORDER_MODE_STATE, ORDER_MODE_EVENT, transitionOrderMode } from './pipeline/OrderModeFSM.js';
 import { parseCompoundOrder } from '../nlu/compoundOrderParser.js';
+import { shouldRoutePendingDiscoveryClarification } from '../discovery/activeDiscoveryFilter.js';
 
 // Reco V1 â€” rule-based recommendation layer (no extra DB calls)
 import { getRecommendations } from '../recommendations/recoEngine.js';
@@ -1066,6 +1067,19 @@ export class BrainPipeline {
             intentResult.entities = guardedPreIntentContext.entities ?? intentResult.entities;
             text = guardedPreIntentContext.text;
             context.text = guardedPreIntentContext.text;
+
+            if (shouldRoutePendingDiscoveryClarification(sessionContext, text)) {
+                BrainLogger.pipeline(`[DISCOVERY_CLARIFICATION] Routing answer back to find_nearby (text="${text}")`);
+                intentResult.intent = 'find_nearby';
+                intentResult.domain = 'food';
+                intentResult.source = 'discovery_clarification';
+                intentResult.confidence = 1.0;
+                intentResult.entities = {
+                    ...(intentResult.entities || {}),
+                    query: text,
+                };
+            }
+
             context.trace.push(`intent_resolved:${intentResult?.intent || 'unknown'}`);
             const guardOverride = guardedPreIntentContext.intent !== preIntentContext.intent ? guardedPreIntentContext.intent : 'none';
             context.trace.push(`guard_override:${guardOverride}`);

@@ -6,6 +6,10 @@
 import { loadMenuPreview } from '../../menuService.js';
 import { findRestaurantByName, getLocationFallback } from '../../locationService.js';
 import { RESTAURANT_CATALOG } from '../../data/restaurantCatalog.js';
+import {
+    applyActiveDiscoveryFilterToMenu,
+    shouldClearActiveDiscoveryFilter,
+} from '../../discovery/activeDiscoveryFilter.js';
 
 function normalizeMenuToken(value) {
     return String(value || '')
@@ -149,6 +153,32 @@ function buildNaturalMenuReplySummary(menuItems = []) {
     return { summaryLine, followUpQuestion };
 }
 
+function buildMenuPresentation(menuItems, activeDiscoveryFilter) {
+    const filtered = applyActiveDiscoveryFilterToMenu(menuItems, activeDiscoveryFilter);
+    return {
+        ...filtered,
+        assistantItems: filtered.hasItemCriteria ? filtered.matchedItems : filtered.menu,
+        meta: {
+            activeDiscoveryFilter: activeDiscoveryFilter || null,
+            matchedMenuItemIds: filtered.matchedMenuItemIds,
+            taxonomyChips: activeDiscoveryFilter?.chips || [],
+        },
+    };
+}
+
+function buildFilteredMenuReply(restaurantName, presentation) {
+    if (!presentation.hasItemCriteria) return null;
+    if (!presentation.matchedItems.length) {
+        return `Nie mam w menu ${restaurantName} pozycji potwierdzonych dla wybranych filtrów. Pokazuję pełną kartę, ale nie oznaczam żadnego dania jako dopasowanego.`;
+    }
+
+    const names = presentation.matchedItems
+        .slice(0, 4)
+        .map(item => String(item?.base_name || item?.name || '').trim())
+        .filter(Boolean);
+    return `W menu ${restaurantName} kryteria spełniają: ${names.join(', ')}. Pełna karta pozostaje dostępna.`;
+}
+
 export class MenuHandler {
     async execute(ctx) {
         const { text, session, entities, sessionId } = ctx;
@@ -158,6 +188,11 @@ export class MenuHandler {
         console.log(`MenuHandler executing for session ${sessionId}. Text: "${text}"`);
         console.log(`MenuHandler: session lastRestaurant: ${session?.lastRestaurant?.name} (${session?.lastRestaurant?.id})`);
         console.log('MenuHandler: entities:', JSON.stringify(entities));
+
+        const clearActiveDiscoveryFilter = shouldClearActiveDiscoveryFilter(text);
+        const activeDiscoveryFilter = clearActiveDiscoveryFilter
+            ? null
+            : session?.activeDiscoveryFilter || null;
 
         // 1. Zidentyfikuj restauracje
         let restaurant = null;
@@ -208,6 +243,11 @@ export class MenuHandler {
             lastIntent: 'menu_request',
             context: 'IN_RESTAURANT',
             lockedRestaurantId: restaurant.id,
+            activeDiscoveryFilter,
+            ...(clearActiveDiscoveryFilter ? {
+                pendingDiscoveryClarification: null,
+                awaiting: null,
+            } : {}),
         };
 
         if (matchedFromText) {
@@ -231,13 +271,17 @@ export class MenuHandler {
         if (canUseCache) {
             console.log(`Cache Hit: Returning cached menu for ${sessionRestaurant.name}`);
             console.log(`[MenuCache] HIT restaurant=${restaurant.id} items=${session.last_menu.length}`);
-            const items = session.last_menu;
+            const sourceItems = session.last_menu_unfiltered || session.last_menu;
+            const presentation = buildMenuPresentation(sourceItems, activeDiscoveryFilter);
+            const items = presentation.menu;
+            const assistantItems = presentation.assistantItems;
             const focusResult = findMenuFocusForText(text, items);
             if (focusResult) {
                 return {
                     intent: 'menu_request',
                     reply: buildFocusedMenuReply(sessionRestaurant.name, focusResult),
-                    menuItems: items,
+                    menuItems: assistantItems,
+                    menu: items,
                     restaurants: [],
                     meta: {
                         source: 'cache_menu_focus',
@@ -245,40 +289,58 @@ export class MenuHandler {
                         menuPresentationMode: focusResult.focusedMenuItemId ? 'discovery' : 'full',
                         focusedMenuItemId: focusResult.focusedMenuItemId,
                         menuFocusQuery: focusResult.query.kind,
+                        ...presentation.meta,
                     },
-                    contextUpdates: { ...baseContextUpdates },
+                    contextUpdates: {
+                        ...baseContextUpdates,
+                        last_menu: items,
+                        last_menu_unfiltered: sourceItems,
+                    },
                 };
             }
 
             const menuSummary = buildNaturalMenuReplySummary(items);
+            const filteredReply = buildFilteredMenuReply(sessionRestaurant.name, presentation);
 
             // Anti-Loop for Cache
             if (session.lastIntent === 'show_menu' || session.lastIntent === 'menu_request') {
                 return {
                     intent: 'menu_request', // Standard V2
-                    reply: 'Liste dan masz na ekranie. Czy cos wpadlo Ci w oko?',
-                    menuItems: items,
+                    reply: filteredReply || 'Liste dan masz na ekranie. Czy cos wpadlo Ci w oko?',
+                    menuItems: assistantItems,
+                    menu: items,
                     restaurants: [],
                     meta: {
                         source: 'cache_anti_loop',
                         latency_total_ms: 0,
                         menuPresentationMode: 'full',
+                        ...presentation.meta,
                     },
-                    contextUpdates: { ...baseContextUpdates },
+                    contextUpdates: {
+                        ...baseContextUpdates,
+                        last_menu: items,
+                        last_menu_unfiltered: sourceItems,
+                    },
                 };
             }
 
             return {
                 intent: 'menu_request', // Standard V2
-                reply: `Wybrano restauracje ${sessionRestaurant.name}. ${menuSummary.summaryLine} ${menuSummary.followUpQuestion}`,
-                menuItems: items,
+                reply: filteredReply || `Wybrano restauracje ${sessionRestaurant.name}. ${menuSummary.summaryLine} ${menuSummary.followUpQuestion}`,
+                menuItems: assistantItems,
+                menu: items,
                 restaurants: [],
                 meta: {
                     source: 'cache',
                     latency_total_ms: 0,
                     menuPresentationMode: 'full',
+                    ...presentation.meta,
                 },
-                contextUpdates: { ...baseContextUpdates },
+                contextUpdates: {
+                    ...baseContextUpdates,
+                    last_menu: items,
+                    last_menu_unfiltered: sourceItems,
+                },
             };
         }
 
@@ -293,9 +355,11 @@ export class MenuHandler {
 
         // 4. Formatowanie odpowiedzi
         const count = preview.menu.length;
-        const menuItemsForAssistant = preview.menu;
+        const presentation = buildMenuPresentation(preview.menu, activeDiscoveryFilter);
+        const menuItemsForAssistant = presentation.assistantItems;
+        const presentedMenu = presentation.menu;
         const shown = menuItemsForAssistant.length;
-        const focusResult = findMenuFocusForText(text, preview.menu);
+        const focusResult = findMenuFocusForText(text, presentedMenu);
         if (focusResult) {
             console.log(`MenuHandler: focused ${focusResult.matches.length}/${count} items for ${restaurant.name} query=${focusResult.query.kind}`);
             return {
@@ -303,12 +367,13 @@ export class MenuHandler {
                 reply: buildFocusedMenuReply(restaurant.name, focusResult),
                 closing_question: focusResult.matches.length ? 'Co wybierasz?' : 'Mozesz wybrac cos innego z karty.',
                 menuItems: menuItemsForAssistant,
-                menu: preview.menu,
+                menu: presentedMenu,
                 restaurants: [],
                 restaurant,
                 contextUpdates: {
                     ...baseContextUpdates,
-                    last_menu: preview.menu,
+                    last_menu: presentedMenu,
+                    last_menu_unfiltered: preview.menu,
                     last_menu_restaurant_id: restaurant.id,
                 },
                 meta: {
@@ -317,14 +382,16 @@ export class MenuHandler {
                     menuPresentationMode: focusResult.focusedMenuItemId ? 'discovery' : 'full',
                     focusedMenuItemId: focusResult.focusedMenuItemId,
                     menuFocusQuery: focusResult.query.kind,
+                    ...presentation.meta,
                 },
             };
         }
 
-        const menuSummary = buildNaturalMenuReplySummary(preview.menu);
+        const menuSummary = buildNaturalMenuReplySummary(presentedMenu);
+        const filteredReply = buildFilteredMenuReply(restaurant.name, presentation);
         const intro = `Wybrano restauracje ${restaurant.name}.`;
         const closing = menuSummary.followUpQuestion;
-        const reply = `${intro} ${menuSummary.summaryLine} ${closing}`;
+        const reply = filteredReply || `${intro} ${menuSummary.summaryLine} ${closing}`;
 
         console.log(`MenuHandler: showing ${shown}/${count} items for ${restaurant.name} (assistant_scope=full_menu)`);
 
@@ -334,19 +401,21 @@ export class MenuHandler {
             closing_question: closing,
             // In target restaurant scope, assistant must see full menu for reliable dish resolution.
             menuItems: menuItemsForAssistant,
-            menu: preview.menu, // Full menu for UI rendering
+            menu: presentedMenu, // Full menu for UI rendering, matches first.
             restaurants: [],
             restaurant,
             contextUpdates: {
                 ...baseContextUpdates,
                 // Store FULL menu in context to support downstream dish matching.
-                last_menu: preview.menu,
+                last_menu: presentedMenu,
+                last_menu_unfiltered: preview.menu,
                 last_menu_restaurant_id: restaurant.id,
             },
             meta: {
                 source: 'db',
                 menuScope: 'full_menu',
                 menuPresentationMode: 'full',
+                ...presentation.meta,
             },
         };
     }

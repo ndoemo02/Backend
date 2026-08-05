@@ -29,6 +29,12 @@ const DIETARY_RULES = {
     },
 };
 
+const PREFERENCE_RULES = {
+    light: ['light', 'lighter', 'lekkie'],
+    high_protein: ['high_protein', 'protein_rich', 'wysokobialkowe'],
+    low_calorie: ['low_calorie', 'low_kcal', 'niskokaloryczne'],
+};
+
 const SIZE_ALIASES = {
     small: ['s', 'small', 'mały', 'maly', 'mała', 'mala', 'małe', 'male'],
     medium: ['m', 'medium', 'mid', 'med', 'średni', 'sredni', 'średnia', 'srednia'],
@@ -128,8 +134,31 @@ export function verifyMenuItemAgainstQuery(item = {}, parsedQuery = {}) {
         checks.push(feedback('spicy', 'tag', state));
     }
 
+    if (Array.isArray(parsedQuery.tags) && parsedQuery.tags.includes('vege')) {
+        const state = item.is_vege === true
+            || ['vegetarian', 'vege', 'vegan', 'plant_based', 'meat_free', 'bez_miesa'].some(signal => signals.has(signal))
+            ? 'verified'
+            : item.is_vege === false
+                ? 'no_match'
+                : 'unknown';
+        checks.push(feedback('vege', 'tag', state));
+    }
+
+    if (Array.isArray(parsedQuery.tags) && parsedQuery.tags.includes('quick')) {
+        const state = ['quick', 'fast', 'express'].some(signal => signals.has(signal))
+            ? 'verified'
+            : 'unknown';
+        checks.push(feedback('quick', 'tag', state));
+    }
+
     for (const dietaryId of parsedQuery.dietarys || []) {
         checks.push(verifyDietary(item, dietaryId, signals));
+    }
+
+    for (const preferenceId of parsedQuery.preferences || []) {
+        const aliases = PREFERENCE_RULES[preferenceId] || [];
+        const state = aliases.some(signal => signals.has(signal)) ? 'verified' : 'unknown';
+        checks.push(feedback(preferenceId, 'preference', state));
     }
 
     if (parsedQuery.priceBand) {
@@ -137,7 +166,9 @@ export function verifyMenuItemAgainstQuery(item = {}, parsedQuery = {}) {
     }
 
     const strictChecks = checks.filter(check =>
-        check.dimension === 'dietary' || check.id === 'spicy'
+        check.dimension === 'dietary'
+        || check.dimension === 'preference'
+        || ['spicy', 'vege', 'quick'].includes(check.id)
     );
 
     return {

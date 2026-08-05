@@ -10,6 +10,78 @@ function buildRepository(rows = []) {
 }
 
 describe('FindRestaurantHandler demo scenario boundary', () => {
+    it('asks what fit means before querying or showing restaurants', async () => {
+        const repo = buildRepository([
+            { id: 'r-1', name: 'Nie powinna się pojawić', city: 'Piekary Śląskie' },
+        ]);
+        const handler = new FindRestaurantHandler(repo);
+
+        const result = await handler.execute({
+            text: 'szybko fit',
+            entities: {},
+            session: {
+                demoScenarioId: 'piekary-local',
+                demoDatasetId: 'piekary-v1',
+            },
+            body: {},
+        });
+
+        expect(repo.searchRestaurants).not.toHaveBeenCalled();
+        expect(repo.searchNearby).not.toHaveBeenCalled();
+        expect(result).toMatchObject({
+            intent: 'clarify_discovery',
+            reply: 'Masz na myśli lekkie, wysokobiałkowe czy niskokaloryczne?',
+            restaurants: [],
+            menuItems: [],
+            contextUpdates: {
+                expectedContext: 'clarify_discovery',
+                awaiting: 'discovery_preference',
+            },
+        });
+        expect(result.events).toEqual(expect.arrayContaining([
+            expect.objectContaining({ type: 'discovery_clarification' }),
+        ]));
+    });
+
+    it('resolves the follow-up inside the same discovery filter', async () => {
+        const repo = buildRepository([
+            {
+                id: 'acced74f-ddac-43a0-9f78-016c397f4b8e',
+                name: 'Silesiana Italiana',
+                city: 'Piekary Slaskie',
+                cuisine_type: 'Wloska',
+            },
+        ]);
+        const handler = new FindRestaurantHandler(repo);
+        const result = await handler.execute({
+            text: 'lekkie',
+            entities: {},
+            session: {
+                demoScenarioId: 'piekary-local',
+                demoDatasetId: 'piekary-v1',
+                expectedContext: 'clarify_discovery',
+                awaiting: 'discovery_preference',
+                pendingDiscoveryClarification: {
+                    rawText: 'szybko fit',
+                    source: 'text',
+                    clarification: { blocking: true },
+                },
+            },
+            body: {},
+        });
+
+        expect(repo.searchRestaurants).toHaveBeenCalled();
+        expect(result.intent).not.toBe('clarify_discovery');
+        expect(result.contextUpdates?.activeDiscoveryFilter).toMatchObject({
+            source: 'text',
+            criteria: {
+                tags: expect.arrayContaining(['quick']),
+                preferences: expect.arrayContaining(['light']),
+            },
+        });
+        expect(result.contextUpdates?.pendingDiscoveryClarification).toBeNull();
+    });
+
     it('routes the tourist scenario to Kraków without relying on device GPS', async () => {
         const repo = buildRepository([
             {

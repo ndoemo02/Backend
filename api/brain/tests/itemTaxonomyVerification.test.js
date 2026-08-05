@@ -68,6 +68,31 @@ describe('menu item taxonomy verification', () => {
         expect(result.feedback[0].state).toBe('verified');
     });
 
+    it('requires explicit quick and light metadata for a quick fit result', () => {
+        const verified = verifyMenuItemAgainstQuery({
+            item_tags: ['quick', 'light'],
+        }, {
+            tags: ['quick'],
+            dietarys: [],
+            preferences: ['light'],
+        });
+        const unknown = verifyMenuItemAgainstQuery({
+            name: 'Salatka wygladajaca lekko',
+            item_tags: [],
+        }, {
+            tags: ['quick'],
+            dietarys: [],
+            preferences: ['light'],
+        });
+
+        expect(verified.passes).toBe(true);
+        expect(unknown.passes).toBe(false);
+        expect(unknown.feedback).toEqual(expect.arrayContaining([
+            { id: 'quick', dimension: 'tag', state: 'unknown' },
+            { id: 'light', dimension: 'preference', state: 'unknown' },
+        ]));
+    });
+
     it('resolves informal size aliases only against available variants', () => {
         expect(resolveContextualVariant('pizza mid', {
             availableVariants: ['S', 'M', 'L'],

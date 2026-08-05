@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('../menuService.js', () => ({
     loadMenuPreview: vi.fn(async () => ({
         menu: [
-            { id: 'm1', name: 'Pierogi Ruskie', price_pln: 22, category: 'Dania glowne', available: true },
+            { id: 'm1', name: 'Pierogi Ruskie', price_pln: 22, category: 'Dania glowne', available: true, item_tags: ['quick', 'light'] },
             { id: 'm2', name: 'Barszcz Czerwony', price_pln: 14, category: 'Zupy', available: true },
             { id: 'm3', name: 'Kompot', price_pln: 7, category: 'Napoje', available: true },
             { id: 'm4', name: 'Sernik', price_pln: 16, category: 'Desery', available: true },
@@ -141,5 +141,69 @@ describe('MenuHandler full menu scope', () => {
         expect(result.meta?.menuPresentationMode).toBe('full');
         expect(result.reply).toContain('Nie widze');
         expect(result.reply).toContain('napojow');
+    });
+
+    it('keeps the full menu for UI while grounding the assistant in matched IDs', async () => {
+        const handler = new MenuHandler();
+        const result = await handler.execute({
+            text: 'wybieram test bistro',
+            sessionId: `menu_filter_${Date.now()}`,
+            entities: {},
+            session: {
+                currentRestaurant: { id: 'rest_1', name: 'Test Bistro' },
+                lastRestaurant: { id: 'rest_1', name: 'Test Bistro' },
+                lastIntent: 'select_restaurant',
+                activeDiscoveryFilter: {
+                    version: 1,
+                    queryId: 'q_filter',
+                    rawText: 'szybko fit lekkie',
+                    source: 'text',
+                    criteria: {
+                        tags: ['quick'],
+                        categories: [],
+                        dietary: [],
+                        preferences: ['light'],
+                    },
+                    unresolved: [],
+                    chips: [{ id: 'quick', dimension: 'tag' }],
+                },
+            },
+        });
+
+        expect(result.menu).toHaveLength(4);
+        expect(result.menu.map(item => item.id)[0]).toBe('m1');
+        expect(result.menuItems.map(item => item.id)).toEqual(['m1']);
+        expect(result.meta?.matchedMenuItemIds).toEqual(['m1']);
+        expect(result.meta?.activeDiscoveryFilter?.queryId).toBe('q_filter');
+        expect(result.contextUpdates?.last_menu_unfiltered).toHaveLength(4);
+    });
+
+    it('clears the active filter only on an explicit full-menu command', async () => {
+        const handler = new MenuHandler();
+        const cachedMenu = [
+            { id: 'm1', name: 'Lekki lunch', item_tags: ['quick', 'light'] },
+            { id: 'm2', name: 'Zwykle danie', item_tags: [] },
+        ];
+        const result = await handler.execute({
+            text: 'pokaz cale menu',
+            sessionId: `menu_clear_${Date.now()}`,
+            entities: {},
+            session: {
+                currentRestaurant: { id: 'rest_1', name: 'Test Bistro' },
+                lastRestaurant: { id: 'rest_1', name: 'Test Bistro' },
+                last_menu_restaurant_id: 'rest_1',
+                last_menu: cachedMenu,
+                last_menu_unfiltered: cachedMenu,
+                lastIntent: 'select_restaurant',
+                activeDiscoveryFilter: {
+                    queryId: 'q_filter',
+                    criteria: { tags: ['quick'], preferences: ['light'] },
+                },
+            },
+        });
+
+        expect(result.menuItems).toHaveLength(2);
+        expect(result.meta?.matchedMenuItemIds).toEqual([]);
+        expect(result.contextUpdates?.activeDiscoveryFilter).toBeNull();
     });
 });

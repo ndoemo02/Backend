@@ -154,6 +154,21 @@ export const DIETARY_KEYWORDS = {
         'dla alergików', 'bez nabiału', 'bez mleka',
     ],
 };
+export const PREFERENCE_KEYWORDS = {
+    light: [
+        'lekkie', 'lekki', 'lekka', 'lekko', 'lekkiego', 'lekką', 'lekkim',
+        'lżejsze', 'lzejsze',
+        'lekki posiłek', 'lekki posilek', 'lekka kolacja', 'lekki obiad',
+    ],
+    high_protein: [
+        'wysokobiałkowe', 'wysokobialkowe', 'wysokobiałkowy', 'wysokobialkowy',
+        'wysokobiałkowa', 'wysokobialkowa', 'dużo białka', 'duzo bialka', 'high protein',
+    ],
+    low_calorie: [
+        'niskokaloryczne', 'niskokaloryczny', 'niskokaloryczna',
+        'mało kalorii', 'malo kalorii', 'low calorie',
+    ],
+};
 // ═══════════════════════════════════════════════════════════════
 // TAXONOMY DISPLAY — emoji + etykiety dla frontendowych chipsów
 // ═══════════════════════════════════════════════════════════════
@@ -206,6 +221,9 @@ export const TAXONOMY_DISPLAY = {
     keto: { emoji: '🥑', labelPl: 'Keto' },
     halal: { emoji: '🕌', labelPl: 'Halal' },
     lactose_free: { emoji: '🥛', labelPl: 'Bez laktozy' },
+    light: { emoji: '🪶', labelPl: 'Lekkie' },
+    high_protein: { emoji: '💪', labelPl: 'Wysokobiałkowe' },
+    low_calorie: { emoji: '◌', labelPl: 'Niskokaloryczne' },
 };
 export function buildChips(parsed) {
     const chips = [];
@@ -235,6 +253,11 @@ export function buildChips(parsed) {
         const entry = TAXONOMY_DISPLAY[id];
         if (entry)
             chips.push({ id, emoji: entry.emoji, labelPl: entry.labelPl, dimension: 'dietary' });
+    }
+    for (const id of parsed.preferences) {
+        const entry = TAXONOMY_DISPLAY[id];
+        if (entry)
+            chips.push({ id, emoji: entry.emoji, labelPl: entry.labelPl, dimension: 'preference' });
     }
     if (parsed.priceBand) {
         const display = {
@@ -533,8 +556,20 @@ export function enrichRestaurant(r) {
 // ═══════════════════════════════════════════════════════════════
 // FAST-PARSER: Query → ParsedQuery
 // ═══════════════════════════════════════════════════════════════
+function normalizeDiscoveryText(value) {
+    return String(value || '')
+        .toLowerCase()
+        .normalize('NFKC')
+        .replace(/[^\p{L}\p{N}]+/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
 function includesDiscoveryKeyword(text, keyword) {
-    return text.includes(keyword);
+    const normalizedText = normalizeDiscoveryText(text);
+    const normalizedKeyword = normalizeDiscoveryText(keyword);
+    if (!normalizedKeyword)
+        return false;
+    return ` ${normalizedText} `.includes(` ${normalizedKeyword} `);
 }
 function matchingKeys(text, map) {
     return Object.entries(map)
@@ -542,46 +577,68 @@ function matchingKeys(text, map) {
         .map(([id]) => id);
 }
 export function matchQueryToTaxonomy(queryText, source = 'text') {
-    const text = queryText.toLowerCase().trim();
+    const text = normalizeDiscoveryText(queryText);
     const topGroups = [];
     const categories = [];
     const tags = [];
     const vibes = [];
     const dietarys = [];
+    const preferences = [];
     for (const [group, keywords] of Object.entries(TOP_GROUP_KEYWORDS)) {
-        if (keywords.some(kw => text.includes(kw))) {
+        if (keywords.some(kw => includesDiscoveryKeyword(text, kw))) {
             topGroups.push(group);
         }
     }
     for (const [cat, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
-        if (keywords.some(kw => text.includes(kw))) {
+        if (keywords.some(kw => includesDiscoveryKeyword(text, kw))) {
             categories.push(cat);
         }
     }
     for (const [tag, keywords] of Object.entries(CORE_TAG_KEYWORDS)) {
-        if (keywords.some(kw => text.includes(kw))) {
+        if (keywords.some(kw => includesDiscoveryKeyword(text, kw))) {
             tags.push(tag);
         }
     }
     for (const [vibe, keywords] of Object.entries(VIBE_KEYWORDS)) {
-        if (keywords.some(kw => text.includes(kw))) {
+        if (keywords.some(kw => includesDiscoveryKeyword(text, kw))) {
             vibes.push(vibe);
         }
     }
     for (const [diet, keywords] of Object.entries(DIETARY_KEYWORDS)) {
-        if (keywords.some(kw => text.includes(kw))) {
+        if (keywords.some(kw => includesDiscoveryKeyword(text, kw))) {
             dietarys.push(diet);
         }
     }
-    const open_now = CORE_TAG_KEYWORDS.open_now.some(kw => text.includes(kw));
+    for (const [preference, keywords] of Object.entries(PREFERENCE_KEYWORDS)) {
+        if (keywords.some(kw => includesDiscoveryKeyword(text, kw))) {
+            preferences.push(preference);
+        }
+    }
+    const open_now = CORE_TAG_KEYWORDS.open_now.some(kw => includesDiscoveryKeyword(text, kw));
     const matchedPriceBands = matchingKeys(text, PRICE_BAND_KEYWORDS);
     const matchedSorts = matchingKeys(text, SORT_KEYWORDS);
     const matchedProximities = matchingKeys(text, PROXIMITY_KEYWORDS);
     const unresolved = [];
+    const hasFitToken = includesDiscoveryKeyword(text, 'fit');
+    const clarification = hasFitToken && preferences.length === 0
+        ? {
+            kind: 'preference',
+            token: 'fit',
+            question: 'Masz na myśli lekkie, wysokobiałkowe czy niskokaloryczne?',
+            choices: [
+                { id: 'light', labelPl: 'Lekkie' },
+                { id: 'high_protein', labelPl: 'Wysokobiałkowe' },
+                { id: 'low_calorie', labelPl: 'Niskokaloryczne' },
+            ],
+            blocking: true,
+        }
+        : null;
     if (matchedPriceBands.length > 1)
         unresolved.push('priceBand');
     if (matchedSorts.length > 1)
         unresolved.push('sort');
+    if (clarification)
+        unresolved.push('preference:fit');
     for (const token of ['mid', 'med', 'medium', 'max', 'maks']) {
         if (new RegExp(`(?:^|\\s)${token}(?:\\s|$|[.,?!])`, 'i').test(text)) {
             unresolved.push(`variant:${token}`);
@@ -595,6 +652,7 @@ export function matchQueryToTaxonomy(queryText, source = 'text') {
         + tags.length
         + vibes.length
         + dietarys.length
+        + preferences.length
         + (priceBand ? 1 : 0)
         + (sort ? 1 : 0)
         + (proximity ? 1 : 0);
@@ -607,11 +665,13 @@ export function matchQueryToTaxonomy(queryText, source = 'text') {
         tags,
         vibes,
         dietarys,
+        preferences,
         open_now,
         priceBand,
         sort,
         proximity,
         unresolved,
+        clarification,
         source,
         confidence,
         rawText: queryText,
@@ -738,6 +798,15 @@ export function rankRestaurantsByDiscovery(parsedQuery, restaurants) {
 // MAIN ORCHESTRATOR
 // ═══════════════════════════════════════════════════════════════
 export function runDiscovery(parsedQuery, restaurants) {
+    if (parsedQuery.clarification?.blocking) {
+        return {
+            items: [],
+            fallback: null,
+            fallbackReason: parsedQuery.clarification.question,
+            totalBeforeFilter: restaurants.length,
+            totalAfterFilter: 0,
+        };
+    }
     // LLM Fallback Signal — jeśli parser nic nie znalazł
     if (parsedQuery.confidence === 'empty') {
         return {

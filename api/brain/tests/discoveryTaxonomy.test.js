@@ -36,20 +36,68 @@ describe('food discovery taxonomy contract', () => {
         expect(parsed.confidence).toBe('deterministic');
     });
 
-    it('signals the language fallback without fabricating results', () => {
+    it('recognizes an explicit light preference instead of guessing from fit', () => {
         const parsed = matchQueryToTaxonomy('coś lekkiego na kolację');
+
+        expect(parsed).toMatchObject({
+            preferences: ['light'],
+            clarification: null,
+            confidence: 'partial',
+        });
+    });
+
+    it('blocks an unqualified fit request before any discovery results are returned', () => {
+        const parsed = matchQueryToTaxonomy('szybko fit');
         const result = runDiscovery(parsed, [
             { id: 'r-1', name: 'Restauracja testowa' },
         ]);
 
-        expect(parsed.confidence).toBe('empty');
+        expect(parsed.tags).toContain('quick');
+        expect(parsed.preferences).toEqual([]);
+        expect(parsed.unresolved).toContain('preference:fit');
+        expect(parsed.clarification).toMatchObject({
+            kind: 'preference',
+            token: 'fit',
+            blocking: true,
+            question: 'Masz na myśli lekkie, wysokobiałkowe czy niskokaloryczne?',
+        });
         expect(result).toMatchObject({
             items: [],
-            fallback: 'llm',
+            fallback: null,
             totalBeforeFilter: 1,
             totalAfterFilter: 0,
         });
     });
+
+    it('accepts explicit fit qualifications without inventing a meaning', () => {
+        const highProtein = matchQueryToTaxonomy('szybko fit wysokobiałkowe');
+        const lowCalorie = matchQueryToTaxonomy('fit niskokaloryczne');
+
+        expect(highProtein).toMatchObject({
+            tags: expect.arrayContaining(['quick']),
+            preferences: ['high_protein'],
+            clarification: null,
+        });
+        expect(lowCalorie).toMatchObject({
+            preferences: ['low_calorie'],
+            clarification: null,
+        });
+    });
+
+    it('matches complete aliases, not accidental substrings', () => {
+        expect(matchQueryToTaxonomy('ostre curry').tags).toContain('spicy');
+        expect(matchQueryToTaxonomy('pikantne curry').tags).toContain('spicy');
+        expect(matchQueryToTaxonomy('sushi midori').unresolved).toEqual([]);
+        expect(matchQueryToTaxonomy('profit menu').clarification).toBeNull();
+    });
+
+    it.each(['mid', 'med', 'medium', 'max', 'maks'])(
+        'keeps the informal variant token %s unresolved',
+        (token) => {
+            const parsed = matchQueryToTaxonomy(`steki ${token}`);
+            expect(parsed.unresolved).toContain(`variant:${token}`);
+        }
+    );
 
     it('builds display chips for recognized dimensions and omits open_now', () => {
         const parsed = matchQueryToTaxonomy('ostre sushi z dostawą otwarte teraz');

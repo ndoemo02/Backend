@@ -80,7 +80,10 @@ export class SelectRestaurantHandler {
                     conversationPhase: 'ordering',
                     expectedContext: 'create_order',
                 },
-                meta: { source: 'entity_direct_selection_auto_menu' }
+                meta: {
+                    ...(menuResponse.meta || {}),
+                    source: 'entity_direct_selection_auto_menu',
+                }
             };
         }
 
@@ -136,7 +139,10 @@ export class SelectRestaurantHandler {
                         conversationPhase: 'ordering',
                         expectedContext: 'create_order',
                     },
-                    meta: { source: 'select_name_resolved_auto_menu' },
+                    meta: {
+                        ...(menuResponse.meta || {}),
+                        source: 'select_name_resolved_auto_menu',
+                    },
                 };
             }
             // Name could not be resolved — fall through to list / ask
@@ -308,6 +314,7 @@ export class SelectRestaurantHandler {
                 expectedContext: 'create_order',
             },
             meta: {
+                ...(menuResponse.meta || {}),
                 source: 'selection_auto_menu',
                 debug_cart: ctx.body?.meta?.state?.cart || session?.cart
             }

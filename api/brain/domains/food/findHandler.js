@@ -13,6 +13,10 @@ import { filterRestaurantsForPublicDemo, isPublicDemoCatalogOnly } from '../../d
 import { DEMO_SCENARIOS, DEFAULT_DEMO_SCENARIO_ID } from '../../../demo/demoContext.js';
 import { buildDiscoveryRawText, resolveDiscoverySource } from '../../discovery/queryContext.js';
 import { verifyMenuItemAgainstQuery } from '../../discovery/itemTaxonomyVerification.js';
+import {
+    buildActiveDiscoveryFilter,
+    resolveDiscoveryQueryForSession,
+} from '../../discovery/activeDiscoveryFilter.js';
 
 // ── Discovery Ranking Layer (additive, non-breaking) ──────────
 // Lazy import — jeśli moduł nie istnieje (stare środowisko), discovery po
@@ -1074,15 +1078,19 @@ export class FindRestaurantHandler {
         let earlyChips = null;
         let earlyConfidence = 'empty';
         let parsedDiscoveryQuery = null;
+        let resolvedDiscoveryRawText = null;
         const discoveryEngineReady = await _discoveryPreload;
         if (discoveryEngineReady && _buildChips) {
             const chipText = buildDiscoveryRawText(ctx, cuisine);
             if (chipText) {
                 try {
-                    const earlyParsed = _matchQueryToTaxonomy(
+                    const resolvedQuery = resolveDiscoveryQueryForSession(
+                        ctx.session || {},
                         chipText,
                         resolveDiscoverySource(ctx)
                     );
+                    const earlyParsed = resolvedQuery.parsed;
+                    resolvedDiscoveryRawText = resolvedQuery.rawText;
                     parsedDiscoveryQuery = earlyParsed;
                     earlyChips = _buildChips(earlyParsed);
                     earlyConfidence = earlyParsed.confidence;
@@ -1090,6 +1098,61 @@ export class FindRestaurantHandler {
                     console.warn('[Discovery:Chips] build failed:', chipErr?.message);
                 }
             }
+        }
+
+        if (parsedDiscoveryQuery?.clarification?.blocking) {
+            const clarification = parsedDiscoveryQuery.clarification;
+            const clarificationEvent = {
+                type: 'discovery_clarification',
+                queryId: `clarify_${Date.now()}`,
+                clarification,
+                rawText: parsedDiscoveryQuery.rawText,
+                source: parsedDiscoveryQuery.source,
+            };
+            const parserEvent = {
+                type: 'parser_chips',
+                chips: earlyChips || [],
+                confidence: earlyConfidence,
+                unresolved: parsedDiscoveryQuery.unresolved || [],
+                source: parsedDiscoveryQuery.source,
+            };
+
+            return {
+                intent: 'clarify_discovery',
+                reply: clarification.question,
+                closing_question: clarification.question,
+                restaurants: [],
+                menuItems: [],
+                events: [parserEvent, clarificationEvent],
+                meta: {
+                    clarification,
+                    discovery: {
+                        rawText: parsedDiscoveryQuery.rawText,
+                        source: parsedDiscoveryQuery.source,
+                        unresolved: parsedDiscoveryQuery.unresolved || [],
+                    },
+                },
+                contextUpdates: {
+                    expectedContext: 'clarify_discovery',
+                    awaiting: 'discovery_preference',
+                    pendingDiscoveryClarification: {
+                        rawText: parsedDiscoveryQuery.rawText,
+                        source: parsedDiscoveryQuery.source,
+                        criteria: {
+                            topGroups: parsedDiscoveryQuery.topGroups,
+                            categories: parsedDiscoveryQuery.categories,
+                            tags: parsedDiscoveryQuery.tags,
+                            vibes: parsedDiscoveryQuery.vibes,
+                            dietarys: parsedDiscoveryQuery.dietarys,
+                            preferences: parsedDiscoveryQuery.preferences,
+                            priceBand: parsedDiscoveryQuery.priceBand,
+                            sort: parsedDiscoveryQuery.sort,
+                            proximity: parsedDiscoveryQuery.proximity,
+                        },
+                        clarification,
+                    },
+                },
+            };
         }
         // ─────────────────────────────────────────────────────────────
 
@@ -1442,8 +1505,8 @@ export class FindRestaurantHandler {
         const hasCuisineSignal = Boolean(cuisine);
         if (!usedItemLedDiscovery && discoveryEngineReady && restaurants.length > 0 && hasCuisineSignal) {
             // Pełna wypowiedź ma pierwszeństwo; cuisine jest tylko dodatkiem.
-            const rawText = buildDiscoveryRawText(ctx, cuisine);
-            const parsed = _matchQueryToTaxonomy(
+            const rawText = resolvedDiscoveryRawText || buildDiscoveryRawText(ctx, cuisine);
+            const parsed = parsedDiscoveryQuery || _matchQueryToTaxonomy(
                 rawText,
                 resolveDiscoverySource(ctx)
             );
@@ -1536,6 +1599,13 @@ export class FindRestaurantHandler {
             });
         }
 
+        const activeDiscoveryFilter = parsedDiscoveryQuery
+            ? buildActiveDiscoveryFilter(parsedDiscoveryQuery, {
+                rawText: resolvedDiscoveryRawText || parsedDiscoveryQuery.rawText,
+                source: parsedDiscoveryQuery.source || resolveDiscoverySource(ctx),
+            })
+            : null;
+
         return {
             reply,
             closing_question: "Którą wybierasz?",
@@ -1548,6 +1618,8 @@ export class FindRestaurantHandler {
                 lastRestaurants: suggestedRestaurants,
                 expectedContext: 'select_restaurant',
                 awaiting: null,
+                activeDiscoveryFilter,
+                pendingDiscoveryClarification: null,
                 pendingDish: dishEntity || ctx.entities?.pendingDish || null
             }
         };

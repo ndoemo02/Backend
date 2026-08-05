@@ -26,6 +26,7 @@ import {
     buildToolRouterTrace,
     finalizeTurnTrace,
 } from './liveTurnLedger.js';
+import { shouldRoutePendingDiscoveryClarification } from '../../brain/discovery/activeDiscoveryFilter.js';
 
 const TOOL_TO_INTENT = Object.freeze({
     find_nearby: 'find_nearby',
@@ -2019,6 +2020,14 @@ export class ToolRouter {
                 }
             }
         }
+
+        if (shouldRoutePendingDiscoveryClarification(sessionSnapshot, mapped.text || transcriptText || '')) {
+            runtimeIntent = 'find_nearby';
+            runtimeDomain = getIntentDomain(runtimeIntent);
+            entities.query = mapped.text || transcriptText || '';
+            trace.push('discovery_clarification:routed_to_find_nearby');
+        }
+
         const stateCheck = checkRequiredState(runtimeIntent, sessionSnapshot, entities);
         let fallbackIntentForTrace = null;
 
