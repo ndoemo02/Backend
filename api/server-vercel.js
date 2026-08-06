@@ -8,7 +8,16 @@ try { config(); } catch (e) { console.warn('dotenv missing, assuming env vars pr
 import express from 'express';
 import cors from 'cors';
 // import morgan from 'morgan'; // Disabled for stability debugging
-import { createClient } from '@supabase/supabase-js';
+import {
+  privateServerClient,
+  assertPrivateServerConfig,
+  describePrivateServerConfig,
+} from './_supabase.js';
+import {
+  publicCatalogClient,
+  assertPublicCatalogConfig,
+  describePublicCatalogConfig,
+} from './_supabaseCatalog.js';
 import fs from 'fs';
 import { verifyAmberAdmin } from './middleware/verifyAmberAdmin.js';
 import adminRouter from './admin/adminRouter.js';
@@ -103,14 +112,14 @@ async function runStartupHealthReport() {
     checks.push({ module: name, status: ok ? 'OK' : 'FAIL', detail });
   };
 
-  const requestSupabaseKey =
-    process.env.SUPABASE_ANON_KEY ||
-    process.env.SUPABASE_KEY ||
-    process.env.SUPABASE_SERVICE_ROLE_KEY;
-  pushCheck('env.SUPABASE_URL', Boolean(process.env.SUPABASE_URL), process.env.SUPABASE_URL ? 'set' : 'missing');
-  pushCheck('env.SUPABASE request key', Boolean(requestSupabaseKey), requestSupabaseKey ? 'set' : 'missing');
-  pushCheck('supabase.requestClient', Boolean(supabase), supabase ? 'initialized' : 'missing');
-  pushCheck('supabase.adminClient', Boolean(supabaseAdmin), supabaseAdmin ? 'initialized' : 'disabled (no service role)');
+  // T2: raportuj OBA klienty osobno. Wczesniej jeden wpis "requestClient" nie
+  // mowil, czy dziala na kluczu anon czy service_role - a to byla cala roznica.
+  // describe*() zwraca wylacznie flagi obecnosci, nigdy wartosci sekretow.
+  const privateCfg = describePrivateServerConfig();
+  const catalogCfg = describePublicCatalogConfig();
+  pushCheck('env.SUPABASE_URL', privateCfg.url, privateCfg.url ? 'set' : 'missing');
+  pushCheck('supabase.catalogClient (anon)', catalogCfg.catalogKey, catalogCfg.catalogKey ? 'configured' : 'missing anon key');
+  pushCheck('supabase.privateClient (service_role)', privateCfg.serviceKey, privateCfg.serviceKey ? 'configured' : 'missing service role key');
 
   const googleCredPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
   const gcpProjectId =
@@ -167,27 +176,37 @@ async function runStartupHealthReport() {
 }
 
 // --- Supabase client ---
-let supabase;
-let supabaseAdmin;
-try {
-  if (!process.env.SUPABASE_URL) {
-    throw new Error('Missing SUPABASE_URL');
-  }
-  const requestKey = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!requestKey) {
-    throw new Error('Missing Supabase request key');
-  }
-  supabase = createClient(process.env.SUPABASE_URL, requestKey);
-  supabaseAdmin = process.env.SUPABASE_SERVICE_ROLE_KEY
-    ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY)
-    : null;
-  console.log('✅ Supabase request client initialized');
-} catch (err) {
-  console.error('❌ Supabase init failed:', err);
-  supabase = { from: () => ({ select: () => ({ limit: () => ({ data: [], error: { message: 'Supabase Not Initialized' } }) }) }) };
-  supabaseAdmin = null;
+// ===========================================================================
+// T2 (etap 2 z SS9): dwa jawne klienty Supabase zamiast jednego anon-first.
+//
+// Przed zmiana ten modul budowal JEDEN klient w kolejnosci
+//   SUPABASE_ANON_KEY || SUPABASE_KEY || SUPABASE_SERVICE_ROLE_KEY
+// czyli anon-first, i uzywal go zarowno do katalogu, jak i do orders oraz
+// amber_intents. Rownolegle tworzyl `supabaseAdmin`, ktorego NIC w repo nie
+// importowalo - martwy kod. Blok catch podmienial klienta na zaslepke
+// zwracajaca pusta tablice, wiec awaria konfiguracji wygladala jak
+// "brak danych" zamiast jak blad.
+//
+// Teraz:
+//   publicCatalogClient  (klucz anon)   -> wylacznie restaurants / menu
+//   privateServerClient  (service_role) -> orders, RPC, amber_intents
+// Zaslepki nie ma: blad konfiguracji ma byc bledem, nie pusta lista.
+// ===========================================================================
+
+const IS_TEST_RUNTIME = process.env.NODE_ENV === 'test' || Boolean(process.env.VITEST);
+
+if (!IS_TEST_RUNTIME) {
+  // Fail-fast przy starcie procesu serwujacego. Na Vercelu (serverless) nie ma
+  // innego momentu startu niz zaladowanie tego modulu, wiec asercja stoi tutaj.
+  // Sciezka testowa jest pominieta SWIADOMIE: dziewiec plikow testowych
+  // importuje `app` z tego modulu, a vitest.config.js ma setupFiles: [] i nie
+  // dostarcza zmiennych Supabase. Pominiecie nie oslabia produkcji - tam
+  // NODE_ENV=production i VITEST jest nieustawione.
+  assertPrivateServerConfig();
+  assertPublicCatalogConfig();
 }
-export { supabase, supabaseAdmin };
+
+export { privateServerClient, publicCatalogClient };
 
 // --- Health check ---
 app.get('/api/health', async (req, res) => {
@@ -201,7 +220,8 @@ app.get('/api/health', async (req, res) => {
   };
   try {
     const t0 = performance.now();
-    const { data, error } = await supabase.from('restaurants').select('id').limit(1);
+    // Health probe dotyka wylacznie katalogu publicznego -> klient anon.
+    const { data, error } = await publicCatalogClient.from('restaurants').select('id').limit(1);
     const t1 = performance.now();
     if (error) throw error;
     health.supabase.ok = true;
@@ -540,25 +560,27 @@ app.get('/api/admin/orders/stats', async (req, res) => {
   try {
     // Try RPC first
     try {
-      const { data, error } = await supabase.rpc('get_order_stats');
+      // SS13.7 pozostaje otwarte (czy get_order_stats ma byc publicznym agregatem).
+      // Do czasu decyzji wolamy przez klienta prywatnego - zawezenie, nie rozszerzenie.
+      const { data, error } = await privateServerClient.rpc('get_order_stats');
       if (!error && data) return res.status(200).json({ ok: true, stats: data });
     } catch { }
 
     // Fallback: compute with aggregations (snake_case friendly)
     let totalOrders = 0;
     try {
-      const { count } = await supabase.from('orders').select('id', { count: 'exact', head: true });
+      const { count } = await privateServerClient.from('orders').select('id', { count: 'exact', head: true });
       totalOrders = count || 0;
     } catch { }
 
     let totalRevenue = 0;
     try {
       // Prefer total_price, then total_cents/100
-      const { data: sumPrice } = await supabase.from('orders').select('sum:total_price');
+      const { data: sumPrice } = await privateServerClient.from('orders').select('sum:total_price');
       if (Array.isArray(sumPrice) && sumPrice[0] && typeof sumPrice[0].sum === 'number') {
         totalRevenue = sumPrice[0].sum;
       } else {
-        const { data: sumCents } = await supabase.from('orders').select('sum:total_cents');
+        const { data: sumCents } = await privateServerClient.from('orders').select('sum:total_cents');
         if (Array.isArray(sumCents) && sumCents[0] && sumCents[0].sum != null) {
           const v = Number(sumCents[0].sum);
           if (!isNaN(v)) totalRevenue = v / 100;
@@ -691,7 +713,8 @@ app.get('/api/amber/live', async (req, res) => {
     const push = async () => {
       if (closed) return;
       try {
-        const { data } = await supabase
+        // amber_intents to klaster runtime/log (SS7) - nigdy klient anon.
+        const { data } = await privateServerClient
           .from('amber_intents')
           .select('*')
           .order('created_at', { ascending: false })
@@ -757,7 +780,9 @@ app.post("/api/tts", async (req, res) => {
 // === RESTAURANTS ===
 app.get("/api/restaurants", async (req, res) => {
   try {
-    const { data, error } = await supabase
+    // Katalog publiczny -> klient anon. Uwaga: select("*") pozostaje bez zmian,
+    // zawezenie kolumn nalezy do T5/SS3 i zmienialoby ksztalt odpowiedzi API.
+    const { data, error } = await publicCatalogClient
       .from("restaurants")
       .select("*")
       .eq("is_active", true);
