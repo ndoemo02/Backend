@@ -14,7 +14,9 @@ import { DEMO_SCENARIOS, DEFAULT_DEMO_SCENARIO_ID } from '../../../demo/demoCont
 import { buildDiscoveryRawText, resolveDiscoverySource } from '../../discovery/queryContext.js';
 import { verifyMenuItemAgainstQuery } from '../../discovery/itemTaxonomyVerification.js';
 import {
+    applyActiveDiscoveryFilterToMenu,
     buildActiveDiscoveryFilter,
+    hasMenuItemDiscoveryCriteria,
     resolveDiscoveryQueryForSession,
 } from '../../discovery/activeDiscoveryFilter.js';
 
@@ -549,7 +551,9 @@ async function rankRestaurantsByItemFromCandidates({
     parsedQuery = null,
 }) {
     const aliases = buildItemAliases(itemQuery);
-    if (!aliases.length || !Array.isArray(restaurants) || restaurants.length === 0) return [];
+    const activeFilter = parsedQuery ? buildActiveDiscoveryFilter(parsedQuery) : null;
+    const hasTaxonomyCriteria = hasMenuItemDiscoveryCriteria(activeFilter);
+    if ((!aliases.length && !hasTaxonomyCriteria) || !Array.isArray(restaurants) || restaurants.length === 0) return [];
 
     const restaurantIds = restaurants.map((restaurant) => restaurant?.id).filter(Boolean);
     if (!restaurantIds.length) return [];
@@ -557,15 +561,20 @@ async function rankRestaurantsByItemFromCandidates({
     const menuRows = await fetchCityMenuRows(restaurantIds);
     if (!Array.isArray(menuRows) || menuRows.length === 0) return [];
 
+    const taxonomyMatchIds = hasTaxonomyCriteria
+        ? new Set(applyActiveDiscoveryFilterToMenu(menuRows, activeFilter).matchedMenuItemIds.map(String))
+        : null;
+
     const byRestaurant = new Map();
     for (const item of menuRows) {
         if (item?.available === false) continue;
+        if (taxonomyMatchIds && !taxonomyMatchIds.has(String(item?.id))) continue;
         const itemName = item?.base_name || item?.name || '';
-        const legacyScore = scoreMenuItemMatch(item, aliases);
-        const groundedScore = scoreGroundedMenuItem(item, itemQuery);
-        if (requiresGroundedQualifierMatch(itemQuery) && groundedScore < 75) continue;
-        if (legacyScore < 85 && groundedScore < 75) continue;
-        const score = Math.max(legacyScore, groundedScore);
+        const legacyScore = aliases.length ? scoreMenuItemMatch(item, aliases) : 0;
+        const groundedScore = aliases.length ? scoreGroundedMenuItem(item, itemQuery) : 0;
+        if (aliases.length && requiresGroundedQualifierMatch(itemQuery) && groundedScore < 75) continue;
+        if (aliases.length && legacyScore < 85 && groundedScore < 75) continue;
+        const score = aliases.length ? Math.max(legacyScore, groundedScore) : 100;
         const verification = verifyMenuItemAgainstQuery(item, parsedQuery || {});
         if (!verification.passes) continue;
 
@@ -574,14 +583,21 @@ async function rankRestaurantsByItemFromCandidates({
 
         const existing = byRestaurant.get(restaurantId) || {
             maxScore: 0,
-            hits: new Set(),
+            hits: new Map(),
             bestFeedback: [],
         };
         if (score >= existing.maxScore) {
             existing.bestFeedback = verification.feedback;
         }
         existing.maxScore = Math.max(existing.maxScore, score);
-        if (itemName) existing.hits.add(String(itemName));
+        if (itemName && item?.id) {
+            existing.hits.set(String(item.id), {
+                id: String(item.id),
+                name: String(itemName),
+                category: item?.category || null,
+                price_pln: item?.price_pln ?? null,
+            });
+        }
         byRestaurant.set(restaurantId, existing);
     }
 
@@ -589,7 +605,7 @@ async function rankRestaurantsByItemFromCandidates({
         .map((restaurant) => {
             const match = byRestaurant.get(restaurant.id);
             if (!match) return null;
-            const matchedItems = Array.from(match.hits).slice(0, 3);
+            const matchedItemDetails = Array.from(match.hits.values()).slice(0, 3);
             const distance = (coords && Number.isFinite(restaurant.lat) && Number.isFinite(restaurant.lng))
                 ? calculateDistance(coords.lat, coords.lng, restaurant.lat, restaurant.lng)
                 : restaurant.distance;
@@ -597,7 +613,9 @@ async function rankRestaurantsByItemFromCandidates({
                 ...restaurant,
                 distance,
                 item_match_score: match.maxScore,
-                matched_menu_items: matchedItems,
+                matched_menu_items: matchedItemDetails.map(item => item.name),
+                matched_menu_item_ids: matchedItemDetails.map(item => item.id),
+                matched_menu_item_details: matchedItemDetails,
                 discovery_filter_feedback: match.bestFeedback,
             };
         })
@@ -626,7 +644,9 @@ async function searchRestaurantsByItemInCity({
     parsedQuery = null,
 }) {
     const aliases = buildItemAliases(itemQuery);
-    if (!aliases.length) return [];
+    const activeFilter = parsedQuery ? buildActiveDiscoveryFilter(parsedQuery) : null;
+    const hasTaxonomyCriteria = hasMenuItemDiscoveryCriteria(activeFilter);
+    if (!aliases.length && !hasTaxonomyCriteria) return [];
 
     const { data: cityRestaurants, error: restErr } = await supabase
         .from('restaurants')
@@ -644,15 +664,20 @@ async function searchRestaurantsByItemInCity({
     const menuRows = await fetchCityMenuRows(restaurantIds);
     if (!Array.isArray(menuRows) || menuRows.length === 0) return [];
 
+    const taxonomyMatchIds = hasTaxonomyCriteria
+        ? new Set(applyActiveDiscoveryFilterToMenu(menuRows, activeFilter).matchedMenuItemIds.map(String))
+        : null;
+
     const byRestaurant = new Map();
     for (const item of menuRows) {
         if (item?.available === false) continue;
+        if (taxonomyMatchIds && !taxonomyMatchIds.has(String(item?.id))) continue;
         const itemName = item?.base_name || item?.name || '';
-        const legacyScore = scoreMenuItemMatch(item, aliases);
-        const groundedScore = scoreGroundedMenuItem(item, itemQuery);
-        if (requiresGroundedQualifierMatch(itemQuery) && groundedScore < 75) continue;
-        if (legacyScore < 85 && groundedScore < 75) continue;
-        const score = Math.max(legacyScore, groundedScore);
+        const legacyScore = aliases.length ? scoreMenuItemMatch(item, aliases) : 0;
+        const groundedScore = aliases.length ? scoreGroundedMenuItem(item, itemQuery) : 0;
+        if (aliases.length && requiresGroundedQualifierMatch(itemQuery) && groundedScore < 75) continue;
+        if (aliases.length && legacyScore < 85 && groundedScore < 75) continue;
+        const score = aliases.length ? Math.max(legacyScore, groundedScore) : 100;
         const verification = verifyMenuItemAgainstQuery(item, parsedQuery || {});
         if (!verification.passes) continue;
 
@@ -661,14 +686,21 @@ async function searchRestaurantsByItemInCity({
 
         const existing = byRestaurant.get(restaurantId) || {
             maxScore: 0,
-            hits: new Set(),
+            hits: new Map(),
             bestFeedback: [],
         };
         if (score >= existing.maxScore) {
             existing.bestFeedback = verification.feedback;
         }
         existing.maxScore = Math.max(existing.maxScore, score);
-        if (itemName) existing.hits.add(String(itemName));
+        if (itemName && item?.id) {
+            existing.hits.set(String(item.id), {
+                id: String(item.id),
+                name: String(itemName),
+                category: item?.category || null,
+                price_pln: item?.price_pln ?? null,
+            });
+        }
         byRestaurant.set(restaurantId, existing);
     }
 
@@ -676,7 +708,7 @@ async function searchRestaurantsByItemInCity({
         .map((restaurant) => {
             const match = byRestaurant.get(restaurant.id);
             if (!match) return null;
-            const matchedItems = Array.from(match.hits).slice(0, 3);
+            const matchedItemDetails = Array.from(match.hits.values()).slice(0, 3);
             const distance = (coords && Number.isFinite(restaurant.lat) && Number.isFinite(restaurant.lng))
                 ? calculateDistance(coords.lat, coords.lng, restaurant.lat, restaurant.lng)
                 : restaurant.distance;
@@ -684,7 +716,9 @@ async function searchRestaurantsByItemInCity({
                 ...restaurant,
                 distance,
                 item_match_score: match.maxScore,
-                matched_menu_items: matchedItems,
+                matched_menu_items: matchedItemDetails.map(item => item.name),
+                matched_menu_item_ids: matchedItemDetails.map(item => item.id),
+                matched_menu_item_details: matchedItemDetails,
                 discovery_filter_feedback: match.bestFeedback,
             };
         })
@@ -1032,7 +1066,13 @@ function formatDiscoveryReply(result, modeParams) {
         } else {
             extra = ` (${r.cuisine_type || 'Restauracja'})`;
         }
-        return `${i + 1}. ${r.name}${extra}`;
+        const matchedItems = Array.isArray(r.matched_menu_items)
+            ? r.matched_menu_items.filter(Boolean).slice(0, 3)
+            : [];
+        const groundedItems = matchedItems.length > 0
+            ? ` — pasują: ${matchedItems.join(', ')}`
+            : '';
+        return `${i + 1}. ${r.name}${extra}${groundedItems}`;
     }).join('\n');
 
     let intro = '';
@@ -1154,6 +1194,27 @@ export class FindRestaurantHandler {
                 },
             };
         }
+
+        const normalizedDiscoveryText = normalizeLooseText(
+            resolvedDiscoveryRawText || parsedDiscoveryQuery?.rawText || ctx?.text || ''
+        );
+        const quickIsFastFoodCuisineArtifact = cuisine === 'Fast Food'
+            && parsedDiscoveryQuery?.tags?.includes('quick')
+            && !/(?:^|\s)(szybk\w*|ekspres\w*)(?:\s|$)/.test(normalizedDiscoveryText)
+            && !normalizedDiscoveryText.includes('na szybko');
+        const parsedMenuDiscoveryQuery = quickIsFastFoodCuisineArtifact
+            ? {
+                ...parsedDiscoveryQuery,
+                tags: parsedDiscoveryQuery.tags.filter(tag => tag !== 'quick'),
+            }
+            : parsedDiscoveryQuery;
+        const parsedMenuFilter = parsedMenuDiscoveryQuery
+            ? buildActiveDiscoveryFilter(parsedMenuDiscoveryQuery, {
+                rawText: resolvedDiscoveryRawText || parsedDiscoveryQuery.rawText,
+                source: parsedDiscoveryQuery.source || resolveDiscoverySource(ctx),
+            })
+            : null;
+        const hasTaxonomyMenuCriteria = hasMenuItemDiscoveryCriteria(parsedMenuFilter);
         // ─────────────────────────────────────────────────────────────
 
         // 2. Execute Strategy
@@ -1184,13 +1245,13 @@ export class FindRestaurantHandler {
 
             try {
                 const itemQueryCandidate = extractItemQueryCandidate(ctx, discoveryParams);
-                if (itemQueryCandidate) {
+                if (itemQueryCandidate || hasTaxonomyMenuCriteria) {
                     try {
                         const itemLedMatches = await searchRestaurantsByItemInCity({
                             location,
                             coords,
-                            itemQuery: itemQueryCandidate,
-                            parsedQuery: parsedDiscoveryQuery,
+                            itemQuery: itemQueryCandidate || '',
+                            parsedQuery: parsedMenuDiscoveryQuery,
                         });
 
                         if (itemLedMatches.length > 0) {
@@ -1208,7 +1269,7 @@ export class FindRestaurantHandler {
                                     items: restaurant.matched_menu_items,
                                 })),
                             }));
-                        } else if (requiresMenuLedDiscovery(itemQueryCandidate)) {
+                        } else if (hasTaxonomyMenuCriteria || requiresMenuLedDiscovery(itemQueryCandidate)) {
                             restaurants = [];
                             usedItemLedDiscovery = true;
                             gpsPromise = null; // strict menu-led query: no menu hit means no broad fallback
@@ -1389,13 +1450,13 @@ export class FindRestaurantHandler {
 
             if (!usedItemLedDiscovery && Array.isArray(restaurants) && restaurants.length > 0) {
                 const itemQueryCandidate = extractItemQueryCandidate(ctx, discoveryParams);
-                if (itemQueryCandidate) {
+                if (itemQueryCandidate || hasTaxonomyMenuCriteria) {
                     try {
                         const itemLedMatches = await rankRestaurantsByItemFromCandidates({
                             restaurants,
                             coords,
-                            itemQuery: itemQueryCandidate,
-                            parsedQuery: parsedDiscoveryQuery,
+                            itemQuery: itemQueryCandidate || '',
+                            parsedQuery: parsedMenuDiscoveryQuery,
                         });
 
                         if (itemLedMatches.length > 0) {
@@ -1411,12 +1472,12 @@ export class FindRestaurantHandler {
                                     items: restaurant.matched_menu_items,
                                 })),
                             }));
-                        } else if (requiresMenuLedDiscovery(itemQueryCandidate)) {
+                        } else if (hasTaxonomyMenuCriteria || requiresMenuLedDiscovery(itemQueryCandidate)) {
                             const cityFallbackMatches = await searchRestaurantsByItemInCity({
                                 location: resolveSessionCityFallback(ctx?.session, serviceProfile) || serviceProfile.city,
                                 coords,
-                                itemQuery: itemQueryCandidate,
-                                parsedQuery: parsedDiscoveryQuery,
+                                itemQuery: itemQueryCandidate || '',
+                                parsedQuery: parsedMenuDiscoveryQuery,
                             });
 
                             if (cityFallbackMatches.length > 0) {
@@ -1599,12 +1660,13 @@ export class FindRestaurantHandler {
             });
         }
 
-        const activeDiscoveryFilter = parsedDiscoveryQuery
-            ? buildActiveDiscoveryFilter(parsedDiscoveryQuery, {
-                rawText: resolvedDiscoveryRawText || parsedDiscoveryQuery.rawText,
-                source: parsedDiscoveryQuery.source || resolveDiscoverySource(ctx),
-            })
-            : null;
+        const activeDiscoveryFilter = parsedMenuFilter;
+        const matchedRestaurantIds = restaurants.map(restaurant => restaurant?.id).filter(Boolean);
+        const matchedMenuItemIds = [...new Set(restaurants.flatMap(restaurant =>
+            Array.isArray(restaurant?.matched_menu_item_ids)
+                ? restaurant.matched_menu_item_ids
+                : []
+        ))];
 
         return {
             reply,
@@ -1612,6 +1674,16 @@ export class FindRestaurantHandler {
             restaurants: restaurants,
             menuItems: [],
             events: events.length > 0 ? events : undefined,
+            meta: {
+                discoveryPresentation: {
+                    queryId: activeDiscoveryFilter?.queryId || null,
+                    scope: 'restaurants',
+                    matchedRestaurantIds,
+                    matchedMenuItemIds,
+                    focusPolicy: 'preserve',
+                    chips: activeDiscoveryFilter?.chips || [],
+                },
+            },
             contextUpdates: {
                 last_location: finalLocation !== 'GPS' ? finalLocation : null, // Don't save "GPS" string as city
                 last_restaurants_list: restaurants,

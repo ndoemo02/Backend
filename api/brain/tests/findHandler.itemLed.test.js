@@ -161,6 +161,70 @@ describe('FindRestaurantHandler item-led discovery', () => {
         });
     });
 
+    it('grounds taxonomy-only discovery in matching menu rows instead of broad restaurants', async () => {
+        const taxonomyRows = [
+            {
+                id: 'm-quick-gluten-free',
+                restaurant_id: 'r_monte',
+                name: 'Lekka miska dnia',
+                base_name: 'Lekka miska dnia',
+                item_tags: ['quick'],
+                dietary_flags: ['gluten_free'],
+                available: true,
+            },
+            {
+                id: 'm-quick-unknown',
+                restaurant_id: 'r_callzone',
+                name: 'Szybki lunch',
+                base_name: 'Szybki lunch',
+                item_tags: ['quick'],
+                available: true,
+            },
+        ];
+
+        supabaseFromMock.mockImplementation((table) => {
+            if (table === 'restaurants') {
+                const limit = vi.fn().mockResolvedValue({ data: restaurantsInCity, error: null });
+                const ilike = vi.fn().mockReturnValue({ limit });
+                const eq = vi.fn().mockReturnValue({ ilike });
+                const select = vi.fn().mockReturnValue({ eq });
+                return { select };
+            }
+            if (table === 'menu_items_v2') {
+                const limit = vi.fn().mockResolvedValue({ data: taxonomyRows, error: null });
+                const inFn = vi.fn().mockReturnValue({ limit });
+                const select = vi.fn().mockReturnValue({ in: inFn });
+                return { select };
+            }
+            throw new Error(`Unexpected table: ${table}`);
+        });
+
+        const { FindRestaurantHandler } = await import('../domains/food/findHandler.js');
+        const handler = new FindRestaurantHandler({
+            searchRestaurants: vi.fn().mockResolvedValue(restaurantsInCity),
+            searchNearby: vi.fn().mockResolvedValue([]),
+        });
+
+        const result = await handler.execute({
+            text: 'szybki obiad bez glutenu',
+            entities: { location: 'Piekary Slaskie' },
+            session: {},
+            source: 'text',
+        });
+
+        expect(result.restaurants?.map(restaurant => restaurant.id)).toEqual(['r_monte']);
+        expect(result.restaurants?.[0]?.matched_menu_items).toEqual(['Lekka miska dnia']);
+        expect(result.restaurants?.[0]?.matched_menu_item_ids).toEqual(['m-quick-gluten-free']);
+        expect(result.meta?.discoveryPresentation).toMatchObject({
+            scope: 'restaurants',
+            matchedRestaurantIds: ['r_monte'],
+            matchedMenuItemIds: ['m-quick-gluten-free'],
+            focusPolicy: 'preserve',
+        });
+        expect(result.reply).toContain('Lekka miska dnia');
+        expect(handler.repo.searchRestaurants).not.toHaveBeenCalled();
+    });
+
     it('filters GPS discovery by nearby candidate menus for ice cream requests', async () => {
         const { FindRestaurantHandler } = await import('../domains/food/findHandler.js');
 

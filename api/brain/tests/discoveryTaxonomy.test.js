@@ -36,6 +36,12 @@ describe('food discovery taxonomy contract', () => {
         expect(parsed.confidence).toBe('deterministic');
     });
 
+    it('recognizes common Polish gluten-free inflections', () => {
+        expect(matchQueryToTaxonomy('coś bezglutenowego').dietarys).toContain('gluten_free');
+        expect(matchQueryToTaxonomy('szukam bezglutenowej przekąski').dietarys).toContain('gluten_free');
+        expect(matchQueryToTaxonomy('lista bezglutenowych dań').dietarys).toContain('gluten_free');
+    });
+
     it('recognizes an explicit light preference instead of guessing from fit', () => {
         const parsed = matchQueryToTaxonomy('coś lekkiego na kolację');
 

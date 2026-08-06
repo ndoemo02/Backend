@@ -139,6 +139,7 @@ export const DIETARY_KEYWORDS = {
     ],
     gluten_free: [
         'bezglutenowe', 'bez glutenu', 'gluten free', 'bezglutenowa', 'bezglutenowy',
+        'bezglutenowego', 'bezglutenowej', 'bezglutenowych',
         'dieta bezglutenowa', 'dla celiaków', 'celiakia',
     ],
     keto: [
