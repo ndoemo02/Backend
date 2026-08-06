@@ -18,6 +18,7 @@
 import { supabase } from "./_supabase.js";
 import { applyCORS } from "./_cors.js";
 import { normalizeTxt, levenshtein } from "./brain/helpers.js";
+import { isAdminRequest, requireAdmin } from "./_auth.js";
 
 /**
  * @DEPRECATED - Używaj ConfirmOrderHandler dla Voice flow
@@ -161,11 +162,79 @@ export async function createOrder(restaurantId, userId = "guest") {
   }
 }
 
+// ===========================================================================
+// T1 - kontrakt PATCH /api/orders/:id
+// ===========================================================================
+
+/**
+ * Pola, ktore ogolny PATCH wolno zapisac.
+ *
+ * user_id jest CELOWO poza lista i nie moze do niej wrocic: pozwalalo
+ * przepiac dowolne zamowienie na dowolnego uzytkownika bez jakiegokolwiek
+ * dowodu wlasnosci. Powiazanie zamowienia z kontem po platnosci wymaga
+ * osobnego, serwerowego kontraktu claim/finalize (dowod sesji albo tracking
+ * token) - zaleznosc T5/T6, nie tego endpointu.
+ */
+const PATCH_ALLOWED_FIELDS = new Set(['status', 'notes']);
+
+/**
+ * allowed_status_values - domena wyprowadzona z KODU, nie z bazy.
+ *
+ * LIVE_SCHEMA_VERIFICATION_REQUIRED: definicja CHECK `orders_status_check`
+ * nie zostala odczytana - konektor Supabase nie ma dostepu do projektu
+ * ezemaacyyvbpjlagchds. Ta lista moze byc SZERSZA niz to, co dopuszcza baza;
+ * wtedy wartosc przejdzie walidacje aplikacji i zostanie odrzucona dopiero
+ * przez Postgresa. Po odczycie CHECK-a liste nalezy ZAWEZIC do przeciecia.
+ *
+ * Zrodla - kazda wartosc ma dowod w kodzie, zadna nie jest wymyslona:
+ *   pending    orders.js POST insert + createOrder(), ai/tools/order.js:126
+ *   confirmed  orders/finalizeOrder.js:44, OrderPersistence.js:107
+ *   cancelled  whitelist POST w orders.js
+ *   preparing  KDS startOrder()      -> frontend/src/lib/kdsApi.ts:355
+ *   completed  KDS markOrderReady()  -> kdsApi.ts:378 (pierwsza proba)
+ *   accepted   KDS markOrderReady()  -> kdsApi.ts:378 (fallback po orders_status_check)
+ *   delivered  KDS completeOrder()   -> kdsApi.ts:428
+ *
+ * Swiadomie NIEobecne: 'new' i 'ready' zyja wylacznie w UI KDS
+ * (kdsApi.ts:306 mapuje pending->new przy renderze) i nigdy nie sa zapisywane.
+ *
+ * CONTRACT_DECISION_REQUIRED: to jest domena WARTOSCI, nie graf PRZEJSC.
+ * Walidator dozwolonych przejsc (ktory status wolno zmienic na ktory)
+ * swiadomie nie jest tu zaimplementowany - wymaga osobnej decyzji kontraktowej.
+ */
+const ALLOWED_STATUS_VALUES = new Set([
+  'pending',
+  'confirmed',
+  'cancelled',
+  'preparing',
+  'completed',
+  'accepted',
+  'delivered',
+]);
+
+/**
+ * Wyciaga id zamowienia z zadania. Preferuje req.params.id (Express routuje
+ * /api/orders/:id), a gdy go brak - ostatni segment sciezki z odcietym query
+ * stringiem. Zwraca null dla /api/orders bez identyfikatora, zeby PATCH nie
+ * celowal w zamowienie o id doslownie rownym "orders".
+ */
+function extractOrderId(req) {
+  const fromParams = req?.params?.id;
+  if (typeof fromParams === 'string' && fromParams.trim()) return fromParams.trim();
+
+  const rawUrl = typeof req?.url === 'string' ? req.url : '';
+  const path = rawUrl.split('?')[0].replace(/\/+$/, '');
+  const last = path.split('/').pop() || '';
+  if (!last || last === 'orders') return null;
+  return last;
+}
+
 export default async function handler(req, res) {
   // Manual CORS check specifically for this endpoint to ensure Vercel doesn't block it
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  // T1: DELETE i PUT nie sa juz obslugiwane przez ten handler - nie ogloszaj ich.
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,POST');
   res.setHeader(
     'Access-Control-Allow-Headers',
     'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, X-Admin-Token'
@@ -179,7 +248,21 @@ export default async function handler(req, res) {
   // GET - pobierz zamówienia
   if (req.method === 'GET') {
     try {
-      const { user_email, user_id, restaurant_id } = req.query;
+      const { user_id, restaurant_id } = req.query;
+      const admin = isAdminRequest(req);
+
+      // T1 / filtr autoryzacyjny (etap 1 z SS9 planu hardeningu).
+      // Przed zmiana: brak parametrow ALBO samo user_email (ktore i tak bylo
+      // jawnie ignorowane) zwracalo CALA tabele orders razem z PII
+      // kazdemu anonimowemu klientowi. Teraz pelna lista wymaga tokenu admina,
+      // a kazdy inny odczyt musi podac zakres.
+      if (!admin && !restaurant_id && !user_id) {
+        return res.status(400).json({
+          ok: false,
+          error: 'scope_required',
+          detail: 'Podaj restaurant_id albo user_id. Pelna lista wymaga naglowka x-admin-token.'
+        });
+      }
 
       let query = supabase
         .from('orders')
@@ -192,14 +275,10 @@ export default async function handler(req, res) {
         `)
         .order('created_at', { ascending: false });
 
-      // Filtruj według parametrów
       if (restaurant_id) {
         query = query.eq('restaurant_id', restaurant_id);
       } else if (user_id) {
         query = query.eq('user_id', user_id);
-      } else if (user_email) {
-        // Dla kompatybilności - jeśli nie ma user_id, pobierz wszystkie zamówienia
-        console.log('âš ď¸Ź user_email nie jest obsługiwane, pobieram wszystkie zamówienia');
       }
 
       const { data: orders, error } = await query;
@@ -468,52 +547,72 @@ export default async function handler(req, res) {
     }
   }
 
-  // DELETE - usuń wszystkie zamówienia (dla testów)
-  if (req.method === 'DELETE') {
-    try {
-      console.log('đź—‘ď¸Ź Usuwam wszystkie zamówienia...');
-
-      const { error } = await supabase.from('orders').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-
-      if (error) {
-        console.error('âťŚ Błąd usuwania zamówień:', error);
-        return res.status(500).json({ error: error.message });
-      }
-
-      console.log('âś… Wszystkie zamówienia usunięte');
-      return res.json({ message: 'All orders deleted successfully' });
-
-    } catch (err) {
-      console.error('đź”Ą Błąd DELETE orders:', err);
-      return res.status(500).json({ error: err.message });
-    }
-  }
   // PATCH - update order status
   if (req.method === 'PATCH') {
-    try {
-      const orderId = req.url.split('/').pop();
-      const { status, notes, user_id } = req.body || {};
+    // T1 (etap 1 z SS9): PATCH mutuje CUDZE zamowienia, wiec wymaga autoryzacji.
+    // Przed zmiana dowolny anonimowy klient zmienial status, notatki i wlasciciela
+    // dowolnego zamowienia, znajac wylacznie jego id.
+    if (!requireAdmin(req, res)) return;
 
+    try {
+      const orderId = extractOrderId(req);
       if (!orderId) {
-        return res.status(400).json({ error: 'Missing order ID' });
+        return res.status(400).json({ ok: false, error: 'missing_order_id' });
+      }
+
+      const body =
+        req.body && typeof req.body === 'object' && !Array.isArray(req.body)
+          ? req.body
+          : {};
+      const providedKeys = Object.keys(body);
+
+      if (providedKeys.length === 0) {
+        return res.status(400).json({
+          ok: false,
+          error: 'empty_payload',
+          allowed: [...PATCH_ALLOWED_FIELDS],
+        });
+      }
+
+      // Allowlista pol. Cokolwiek spoza niej odrzuca CALE zadanie - payload
+      // z dodatkowym polem nie moze zostac zastosowany czesciowo.
+      const rejectedFields = providedKeys.filter((k) => !PATCH_ALLOWED_FIELDS.has(k));
+      if (rejectedFields.length > 0) {
+        return res.status(400).json({
+          ok: false,
+          error: 'field_not_allowed',
+          fields: rejectedFields,
+          allowed: [...PATCH_ALLOWED_FIELDS],
+          detail: 'Zadanie odrzucone w calosci - zadne pole nie zostalo zapisane.',
+        });
       }
 
       const updatePayload = {};
-      if (typeof status === 'string' && status.trim()) {
-        updatePayload.status = status.trim();
-      }
-      if (typeof notes === 'string') {
-        updatePayload.notes = notes;
-      }
-      if (typeof user_id === 'string' && user_id.trim()) {
-        updatePayload.user_id = user_id.trim();
+
+      if ('status' in body) {
+        const status = typeof body.status === 'string' ? body.status.trim() : '';
+        if (!status) {
+          return res.status(400).json({ ok: false, error: 'invalid_status' });
+        }
+        if (!ALLOWED_STATUS_VALUES.has(status)) {
+          return res.status(400).json({
+            ok: false,
+            error: 'status_not_allowed',
+            allowed: [...ALLOWED_STATUS_VALUES],
+          });
+        }
+        updatePayload.status = status;
       }
 
-      if (Object.keys(updatePayload).length === 0) {
-        return res.status(400).json({ error: 'Missing update payload (status or notes or user_id)' });
+      if ('notes' in body) {
+        if (typeof body.notes !== 'string') {
+          return res.status(400).json({ ok: false, error: 'invalid_notes' });
+        }
+        updatePayload.notes = body.notes;
       }
 
-      console.log('[ORDERS_PATCH]', { orderId, updatePayload });
+      // Loguj wylacznie nazwy pol. Wartosci (notes) moga zawierac dane klienta.
+      console.log('[ORDERS_PATCH]', { orderId, fields: Object.keys(updatePayload) });
 
       const { data, error } = await supabase
         .from('orders')
@@ -523,14 +622,13 @@ export default async function handler(req, res) {
         .single();
 
       if (error) {
-        console.error('Error updating order:', error);
+        console.error('[ORDERS_PATCH] blad aktualizacji:', error.message);
         return res.status(500).json({ error: error.message });
       }
 
-      console.log('Order updated successfully:', data);
       return res.json({ ok: true, order: data });
     } catch (err) {
-      console.error('PATCH orders error:', err);
+      console.error('[ORDERS_PATCH] wyjatek:', err);
       return res.status(500).json({ error: err.message });
     }
   }
