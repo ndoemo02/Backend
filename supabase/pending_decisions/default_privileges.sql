@@ -1,0 +1,62 @@
+-- ============================================================================
+-- RYZYKO: "hardening z datą ważności" — default privileges (review T8, P2-6)
+-- ⛔ PLIK ZABLOKOWANY DANYMI — treść zależy od wyniku Q8 ze snapshotu (etap 0,
+-- supabase/snapshot/snapshot_queries.sql) i nie jest migracją. Leży POZA
+-- supabase/migrations/ celowo: katalog migracji zawiera wyłącznie pliki wolne
+-- od otwartych decyzji, żeby `supabase db push` nigdy nie rozstrzygnął tej
+-- sprawy przypadkiem. Wymaga zgody użytkownika na snapshot (decyzja C4,
+-- docs/HANDOFF_EXEC_SONNET5_2026-08-08.md §5) PRZED wykonaniem Q8.
+--
+-- Stan faktyczny (nieznany bez Q8): jeśli komplet uprawnień anon widoczny
+-- dziś na ~25 tabelach live pochodzi z `pg_default_acl` (a nie z jednorazowych
+-- GRANT-ów per tabela), to REVOKE wykonane przez etapy 8-11 na ISTNIEJĄCYCH
+-- tabelach nie zamyka dziury na przyszłość: każdy kolejny `CREATE TABLE`
+-- odziedziczy domyślne uprawnienia i odtworzy ją automatycznie. Dotyczy to
+-- WPROST tabel planowanych po demo (`payments`, znormalizowane `order_items`)
+-- — powstałyby już z otwartym dostępem anon, zanim ktokolwiek pomyśli
+-- o hardeningu.
+--
+-- Q8 (snapshot_queries.sql) zwraca: grantor (defaclrole), nspname, defaclobjtype,
+-- defaclacl. Bez tych danych nie da się złożyć poprawnego `FOR ROLE <grantor>`
+-- poniżej — zgadywanie grantora jest zabronione (mógłby to być właściciel bazy,
+-- rola migracji, albo rola, spod której historycznie uruchamiano `CREATE TABLE`;
+-- podanie złej roli w `ALTER DEFAULT PRIVILEGES ... FOR ROLE` cicho nie zrobi
+-- nic, bo klauzula filtruje po grantorze).
+--
+-- Do rozstrzygnięcia przez użytkownika (po Q8): WARIANT A albo WARIANT B.
+-- ============================================================================
+
+-- === WARIANT A — REVOKE default privileges dla anon/authenticated ==========
+-- Za: zamyka dziurę trwale — nowe tabele nie dziedziczą dostępu anon/authenticated;
+--     spójne z modelem docelowym §3 planu (deny-all, jawny GRANT per tabela).
+-- Przeciw: każda przyszła tabela wymaga JAWNEGO GRANT-u zanim stanie się
+--          użyteczna z frontendu/anon — może zaskoczyć przy szybkim demo-CREATE.
+--
+-- <TU WSTAWIĆ dokładny grantor z Q8.defaclrole — NIE zgadywać>
+-- ALTER DEFAULT PRIVILEGES FOR ROLE <grantor_z_Q8> IN SCHEMA public
+--   REVOKE ALL ON TABLES FROM anon, authenticated;
+-- ALTER DEFAULT PRIVILEGES FOR ROLE <grantor_z_Q8> IN SCHEMA public
+--   REVOKE ALL ON SEQUENCES FROM anon, authenticated;
+-- ALTER DEFAULT PRIVILEGES FOR ROLE <grantor_z_Q8> IN SCHEMA public
+--   REVOKE ALL ON FUNCTIONS FROM anon, authenticated;
+
+-- === WARIANT B — świadome pozostawienie + checklist per CREATE TABLE =======
+-- Za: zero zmian w bazie dziś; unika ryzyka zablokowania nieznanego przepływu,
+--     który już polega na dziedziczonych uprawnieniach.
+-- Przeciw: hardening etapów 8-11 ma "datę ważności" — każdy przyszły
+--          `CREATE TABLE` w schemacie public wymaga RĘCZNEJ weryfikacji:
+--            1. Sprawdzić granty nowej tabeli od razu po CREATE
+--               (information_schema.role_table_grants).
+--            2. Jeśli anon/authenticated mają tam coś ponad zamierzone —
+--               REVOKE ALL + jawny GRANT wyłącznie na potrzebne kolumny/wiersze
+--               (RLS policy), tym samym wzorcem co etapy 8-11.
+--            3. Dopisać nową tabelę do odpowiedniej listy w README.md
+--              (klaster runtime/log/config, wrażliwe, katalog publiczny, freeze).
+--
+-- (bez SQL dla wariantu B — checklist proceduralny, nie zmiana bazy)
+
+-- Niezależnie od wariantu: bez Q8 nie wiadomo, który wariant jest w ogóle
+-- potrzebny (może domyślne uprawnienia dla anon/authenticated nigdy nie były
+-- ustawione, a obserwowany dostęp pochodzi wyłącznie z jednorazowych GRANT-ów
+-- na istniejących tabelach — wtedy WARIANT B jest faktycznym stanem, nie
+-- decyzją).

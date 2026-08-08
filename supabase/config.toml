@@ -6,6 +6,11 @@
 # dopiero w ramach T10, za jawną zgodą.
 #
 # PG na live: 17.6 (inventory 2026-08-08) — stąd major_version = 17.
+#
+# major_version = 17 wymaga odpowiednio nowego Supabase CLI (starsze wersje
+# CLI nie rozpoznają PG17 jako celu lokalnego stacka). Jeśli `supabase db lint`
+# / `supabase start` nie startuje na wejściu T10, sprawdź NAJPIERW
+# `supabase --version` przed diagnozowaniem tego jako błąd w SQL (review T8, nit-3).
 
 project_id = "freeflow-backend"
 

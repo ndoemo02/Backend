@@ -3,9 +3,15 @@
 -- ⛔ PLIK ZABLOKOWANY DECYZYJNIE — nie jest migracją i nie wolno go wykonać.
 -- Leży POZA supabase/migrations/ celowo (jak orders_status_check_confirmed.sql).
 --
--- Stan faktyczny: rpc('get_order_stats') woła server-vercel.js:543 przez klient
--- modułowy (historycznie anon-first; po T2 przypisania klientów są jawne —
--- zweryfikować bieżące przypisanie tego endpointu przed decyzją).
+-- Stan faktyczny (zweryfikowane review T8, nit-1): kodowa połowa WARIANTU 1
+-- JUŻ ISTNIEJE. `api/server-vercel.js:565` woła
+-- `privateServerClient.rpc('get_order_stats')` — klient jest już
+-- service_role, z komentarzem w kodzie wprost odsyłającym do §13.7
+-- (`server-vercel.js:563`). Przypisanie klienta NIE jest już otwartym
+-- pytaniem — decyzja użytkownika sprowadza się WYŁĄCZNIE do tego, czy
+-- wykonać REVOKE EXECUTE dla ról klienckich (WARIANT 1, domyka to, co kod
+-- już robi) czy przebudować funkcję na świadomie publiczny agregat
+-- (WARIANT 2, wymaga dodatkowo zmiany kodu z powrotem na klienta publicznego).
 -- Funkcja jest SECURITY INVOKER (inventory §4); jej search_path porządkuje
 -- etap 12 niezależnie od tej decyzji.
 --

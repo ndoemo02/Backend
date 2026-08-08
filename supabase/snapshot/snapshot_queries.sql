@@ -67,8 +67,13 @@ FROM pg_default_acl d
 LEFT JOIN pg_namespace n ON n.oid = d.defaclnamespace;
 
 -- Q9. Granty na sekwencjach (restore kompletny; dziś PK to uuid, więc
---     spodziewany wynik bliski pustego).
-SELECT grantor, grantee, object_schema, object_name, object_type, privilege_type
-FROM information_schema.role_usage_grants
-WHERE object_schema = 'public'
-ORDER BY object_name, grantee;
+--     spodziewany wynik bliski pustego). information_schema.role_usage_grants
+--     zwraca wyłącznie uprawnienie USAGE i tylko dla ról bieżącego użytkownika
+--     (zawężenie roli, nie schematu) — niekompletne jako źródło restore
+--     (review T8, nit-2). Czytamy ACL wprost z pg_class: pełny zestaw
+--     uprawnień (USAGE, SELECT, UPDATE), bez zawężenia do ról wołającego.
+SELECT c.relname AS sequence_name, c.relacl
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname = 'public' AND c.relkind = 'S'
+ORDER BY c.relname;

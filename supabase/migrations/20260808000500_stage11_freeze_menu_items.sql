@@ -23,9 +23,14 @@
 -- Rollback: restore_snapshot.sql dla tej tabeli + pilna naprawa kodu, jeśli
 --   coś jednak odpytuje menu_items (§12 planu, etap 11). Tabela pozostaje
 --   fizycznie nietknięta — to jest rollback sam w sobie.
+--
+-- Wykonanie wyłącznie pojedynczo za bramką T10 — nigdy przez zbiorczy db push
+-- (decyzja użytkownika U2, handoff 2026-08-08).
 -- ============================================================================
 
 BEGIN;
+
+SET LOCAL lock_timeout = '3s';
 
 DO $$
 DECLARE pol record;
@@ -40,8 +45,13 @@ END $$;
 
 ALTER TABLE public.menu_items ENABLE ROW LEVEL SECURITY;
 REVOKE ALL ON public.menu_items FROM PUBLIC, anon, authenticated;
--- Celowo BEZ nowej policy i BEZ grantu dla service_role ponad stan zastany:
--- deny-all; service_role i tak omija RLS, a kod po T4 nie ma prawa tej tabeli
--- używać (egzekwowane testem kontraktowym, nie uprawnieniami).
+-- REVOKE nie rusza zastanych grantów service_role; jawny GRANT SELECT
+-- zabezpiecza środowiska odtwarzane z migracji; zamrożenie egzekwuje test
+-- kontraktowy T4, nie uprawnienia (review T8, P2-2: BYPASSRLS omija RLS, ale
+-- NIE zastępuje uprawnień tabelowych — na środowisku odtworzonym wyłącznie
+-- z migracji, bez zastanych grantów, `full_orders_view` po etapie 12
+-- (security_invoker) JOIN-uje menu_items i service_role potrzebuje na niej
+-- SELECT).
+GRANT SELECT ON public.menu_items TO service_role;
 
 COMMIT;

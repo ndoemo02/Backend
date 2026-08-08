@@ -33,9 +33,14 @@
 --   zamówienia przez service_role.
 -- Rollback: restore_snapshot.sql z etapu 0; dodatkowo weryfikacja, czy
 --   `privateServerClient` faktycznie ma service_role (§12 planu, etap 9).
+--
+-- Wykonanie wyłącznie pojedynczo za bramką T10 — nigdy przez zbiorczy db push
+-- (decyzja użytkownika U2, handoff 2026-08-08).
 -- ============================================================================
 
 BEGIN;
+
+SET LOCAL lock_timeout = '3s';
 
 DO $$
 DECLARE

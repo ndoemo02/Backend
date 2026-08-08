@@ -30,9 +30,14 @@
 -- Warunek wyjścia: backend nadal loguje i czyta sesje (service_role omija RLS).
 -- Rollback: restore_snapshot.sql z etapu 0 (dokładny stan, nie generyczny
 --           DISABLE RLS) — §12 planu, etap 8.
+--
+-- Wykonanie wyłącznie pojedynczo za bramką T10 — nigdy przez zbiorczy db push
+-- (decyzja użytkownika U2, handoff 2026-08-08).
 -- ============================================================================
 
 BEGIN;
+
+SET LOCAL lock_timeout = '3s';
 
 DO $$
 DECLARE
@@ -70,6 +75,20 @@ BEGIN
     EXECUTE format('REVOKE ALL ON public.%I FROM PUBLIC, anon, authenticated', t);
     EXECUTE format('GRANT ALL ON public.%I TO service_role', t);
   END LOOP;
+END $$;
+
+-- Domknięcie okna telemetrii przez widok (review T8, P2-1 + decyzja U5).
+-- amber_tts_daily jest dziś security-definer nad amber_intents, którą etap 8
+-- właśnie zamyka — bez tego REVOKE anon czyta zagregowaną telemetrię TTS aż do
+-- etapu 12. security_invoker NIE jest tu ustawiany (to zależy od etapu 9,
+-- kolejność z §9 planu bez zmian) — wyłącznie REVOKE/GRANT na uprawnieniach
+-- widoku, które nie zależy od niczego i nie zmienia jego definicji (U5:
+-- „bez nowej zależności" spełnione). Etap 12 powtarza ten REVOKE idempotentnie.
+DO $$ BEGIN
+  IF to_regclass('public.amber_tts_daily') IS NOT NULL THEN
+    REVOKE ALL ON public.amber_tts_daily FROM PUBLIC, anon, authenticated;
+    GRANT SELECT ON public.amber_tts_daily TO service_role;
+  END IF;
 END $$;
 
 COMMIT;

@@ -32,9 +32,14 @@
 --   potrzebne pola; anon NIE czyta owner_id (test negatywny §11).
 -- Rollback: restore_snapshot.sql; jeśli przyczyną regresji jest brakująca
 --   kolumna w grancie — DOPISAĆ kolumnę, nie wyłączać RLS (§12 planu, etap 10).
+--
+-- Wykonanie wyłącznie pojedynczo za bramką T10 — nigdy przez zbiorczy db push
+-- (decyzja użytkownika U2, handoff 2026-08-08).
 -- ============================================================================
 
 BEGIN;
+
+SET LOCAL lock_timeout = '3s';
 
 -- ---------------------------------------------------------------- restaurants
 DO $$
@@ -51,14 +56,21 @@ END $$;
 ALTER TABLE public.restaurants ENABLE ROW LEVEL SECURITY;
 REVOKE ALL ON public.restaurants FROM PUBLIC, anon, authenticated;
 
--- Column-level grant: kontrakt live-safe (CLAUDE.md §7 + §3 planu).
+-- Column-level grant: kontrakt live-safe (CLAUDE.md §7 + §3 planu), poszerzony
+-- decyzją użytkownika U1 (handoff 2026-08-08): is_active MOŻE być widoczne dla
+-- anon. Bez niego klienckie `.eq('is_active', true)` (backend
+-- api/server-vercel.js:788, frontend ClientPanel.tsx:140-144) pada z 42501 —
+-- uprawnienia kolumnowe w PG są sprawdzane też dla kolumn użytych w WHERE, nie
+-- tylko w SELECT-liście. RLS i tak zwraca wyłącznie wiersze is_active = true
+-- (patrz USING poniżej) — grant kolumnowy tylko odblokowuje filtr po stronie
+-- klienta, nie zmienia zbioru widocznych wierszy.
 -- Celowo BEZ: owner_id, description, phone, website, maps_rating,
 -- maps_ratings_total, opening_hours — wzbogacenie karty czyta backend
 -- (repository.js, service_role), nie przeglądarka. Rozszerzenie tej listy
 -- to decyzja §13 planu (T5/T10), nie korekta ad hoc.
 GRANT SELECT (
   id, name, address, city, cuisine_type, lat, lng,
-  delivery_available, price_level,
+  delivery_available, price_level, is_active,
   taxonomy_groups, taxonomy_cats, taxonomy_tags
 ) ON public.restaurants TO anon, authenticated;
 

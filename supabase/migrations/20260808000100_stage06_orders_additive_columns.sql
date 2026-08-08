@@ -28,9 +28,14 @@
 -- (gen_random_uuid()) wymusza przepisanie tabeli i nadaje ISTNIEJĄCYM wierszom
 -- unikalne wartości — to zamierzone (UNIQUE niżej tego wymaga). Skala demo,
 -- okno transakcyjne minutowe.
+--
+-- Wykonanie wyłącznie pojedynczo za bramką T10 — nigdy przez zbiorczy db push
+-- (decyzja użytkownika U2, handoff 2026-08-08).
 -- ============================================================================
 
 BEGIN;
+
+SET LOCAL lock_timeout = '3s';
 
 ALTER TABLE public.orders
   ADD COLUMN IF NOT EXISTS session_id text,
@@ -53,12 +58,29 @@ EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 -- bez ograniczenia w bazie idempotencja ścieżki B to check-then-act z wyścigiem.
 -- NULL-e nie kolidują (standardowe zachowanie UNIQUE), więc ścieżka A,
 -- która klucza nie zapisuje, nie jest blokowana.
+--
+-- Strażnik IF NOT EXISTS na pg_constraint (nie EXCEPTION WHEN duplicate_object):
+-- ADD CONSTRAINT … UNIQUE przy już istniejącej nazwie rzuca duplicate_table
+-- (42P07, kolizja nazwy wspierającego indeksu), nie duplicate_object — powtórne
+-- wykonanie pliku wywaliłoby się na starym handlerze (review T8, P1-1).
 DO $$ BEGIN
-  ALTER TABLE public.orders ADD CONSTRAINT uq_orders_idempotency_key UNIQUE (idempotency_key);
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conrelid = 'public.orders'::regclass
+      AND conname = 'uq_orders_idempotency_key'
+  ) THEN
+    ALTER TABLE public.orders ADD CONSTRAINT uq_orders_idempotency_key UNIQUE (idempotency_key);
+  END IF;
+END $$;
 
 DO $$ BEGIN
-  ALTER TABLE public.orders ADD CONSTRAINT uq_orders_tracking_token UNIQUE (tracking_token);
-EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conrelid = 'public.orders'::regclass
+      AND conname = 'uq_orders_tracking_token'
+  ) THEN
+    ALTER TABLE public.orders ADD CONSTRAINT uq_orders_tracking_token UNIQUE (tracking_token);
+  END IF;
+END $$;
 
 COMMIT;

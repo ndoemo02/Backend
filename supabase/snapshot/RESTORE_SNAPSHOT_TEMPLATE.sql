@@ -27,6 +27,61 @@
 
 BEGIN;
 
+-- === SEKCJA 0 — zerowanie stanu wprowadzonego migracjami (PRZED sekcją A) ===
+-- Bez tej sekcji restore odtwarza zmaterializowany stan z Q1-Q6 NA WIERZCHU
+-- polityk i REVOKE-ów, które wprowadziły migracje etapów 8-11 — dając stan
+-- "sprzed + resztki migracji", nie "dokładny stan sprzed zmiany" wymagany
+-- przez §12 planu (review T8, P2-4). Kolejność: najpierw usunąć wszystko, co
+-- migracje dodały (polityki, w tym restaurants_public_read i
+-- menu_items_v2_public_read z etapu 10, przez pętlę po tabelach dotkniętych
+-- etapami 8-11) — dopiero potem sekcje A-E odtwarzają zmaterializowany stan.
+DO $$
+DECLARE
+  t   text;
+  pol record;
+  tabs text[] := ARRAY[
+    -- etap 8
+    'brain_sessions','conversations','conversation_events','amber_intents',
+    'brain_logs','intent_issues','intent_logs','live_perf_logs','system_logs',
+    'unhandled_logs','freefun_events','system_config','phrases','amber_alerts',
+    'amber_knowledge','menu_items_v2_backup','menu_items_v2_backup2',
+    'menu_items_v2_backup_nlu','system_events','debug_logs','local_promotions',
+    -- etap 9
+    'orders','order_items','profiles','users','businesses','table_reservations',
+    'taxi_drivers',
+    -- etap 10 (polityki restaurants_public_read, menu_items_v2_public_read)
+    'restaurants','menu_items_v2',
+    -- etap 11
+    'menu_items'
+  ];
+BEGIN
+  FOREACH t IN ARRAY tabs LOOP
+    IF to_regclass(format('public.%I', t)) IS NULL THEN
+      CONTINUE;
+    END IF;
+
+    FOR pol IN
+      SELECT policyname FROM pg_policies
+      WHERE schemaname = 'public' AND tablename = t
+    LOOP
+      EXECUTE format('DROP POLICY IF EXISTS %I ON public.%I', pol.policyname, t);
+    END LOOP;
+
+    EXECUTE format('REVOKE ALL ON public.%I FROM PUBLIC, anon, authenticated', t);
+  END LOOP;
+END $$;
+
+-- Widoki dotknięte etapami 8/9/12 (amber_tts_daily, full_orders_view) —
+-- REVOKE bez ruszania security_invoker (to odtwarza sekcja D z Q5).
+DO $$ BEGIN
+  IF to_regclass('public.full_orders_view') IS NOT NULL THEN
+    REVOKE ALL ON public.full_orders_view FROM PUBLIC, anon, authenticated;
+  END IF;
+  IF to_regclass('public.amber_tts_daily') IS NOT NULL THEN
+    REVOKE ALL ON public.amber_tts_daily FROM PUBLIC, anon, authenticated;
+  END IF;
+END $$;
+
 -- === SEKCJA A — granty tabelowe i kolumnowe (z Q1/Q2) =======================
 -- <TU WKLEIĆ zmaterializowane GRANT-y, np.:>
 -- GRANT SELECT, INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER
@@ -55,6 +110,15 @@ BEGIN;
 -- <TU WKLEIĆ, np.:>
 -- ALTER FUNCTION public.get_order_stats() RESET search_path;
 -- GRANT EXECUTE ON FUNCTION public.get_order_stats() TO anon;
+-- ...
+
+-- === SEKCJA F — sekwencje (z Q9) ============================================
+-- Dziś bez miejsca docelowego w szablonie (review T8, P2-4) — Q9 zbiera dane,
+-- restore ich nie odtwarzał. PK w tym projekcie to uuid, więc spodziewany
+-- wynik Q9 jest bliski pustego; sekcja istnieje na wypadek sekwencji spoza
+-- kolumn PK (np. liczniki).
+-- <TU WKLEIĆ, po jednym GRANT na wiersz wyniku Q9, np.:>
+-- GRANT USAGE, SELECT ON SEQUENCE public.<nazwa> TO anon;
 -- ...
 
 COMMIT;

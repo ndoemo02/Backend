@@ -27,15 +27,27 @@
 -- i tak dostaną odmowę na tabelach bazowych (etap 9), a service_role omija RLS.
 -- Widok nadal czyta legacy menu_items — zależność opisana w pliku etapu 11.
 --
+-- Uwaga do amber_tts_daily: REVOKE/GRANT poniżej jest od 2026-08-08 POWTÓRZENIEM
+-- bloku już wykonanego w etapie 8 (fixup po review T8, P2-1/U5) — etap 8 zamyka
+-- okno telemetrii wcześniej, bo amber_tts_daily jest security-definer nad
+-- amber_intents, którą etap 8 właśnie zamyka. Tu dochodzi wyłącznie
+-- security_invoker (zależny od etapu 9, patrz wyżej) — REVOKE/GRANT jest
+-- idempotentny i celowo pozostawiony dla porządku (spójność z full_orders_view).
+--
 -- Warunki wejścia: etap 9 wykonany (inaczej security_invoker na widoku PII
 --   opiera się o niezamknięte tabele); odczyt definicji z §10.0 — WYKONANY
 --   (inventory §4).
 -- Warunek wyjścia: testy negatywne na widoki zielone; /api/order-stats zachowuje
 --   się zgodnie z decyzją §13.7.
 -- Rollback: restore_snapshot.sql dla konkretnego widoku/funkcji (§12, etap 12).
+--
+-- Wykonanie wyłącznie pojedynczo za bramką T10 — nigdy przez zbiorczy db push
+-- (decyzja użytkownika U2, handoff 2026-08-08).
 -- ============================================================================
 
 BEGIN;
+
+SET LOCAL lock_timeout = '3s';
 
 -- ------------------------------------------------------------------- widoki
 DO $$ BEGIN
