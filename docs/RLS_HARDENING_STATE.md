@@ -74,7 +74,16 @@ Awarie zastane, potwierdzone parytetem z `f996b23`, **nie regresje**:
   zablokowanych decyzyjnie). Zero wykonania SQL. Bramka lint NIEuruchomiona
   (brak supabase CLI/psql w środowisku) — przeniesiona na wejście T10.
   Zakommitowane jako `d0f58e8`.
-- **Review T8** — osobna sesja Opus, read-only, bez edycji.
+- **Review T8** — WYKONANE 2026-08-08 (Opus, czysta sesja, read-only).
+  Werdykt: **CHANGES-REQUIRED** — 4×P1, 7×P2, 3×nit. Raport nie istnieje jako
+  osobny plik; wszystkie ustalenia wcielone do handoffu poniżej (sekcja 7 = mapowanie).
+- **AKTUALNY HANDOFF WYKONAWCZY: `docs/HANDOFF_EXEC_SONNET5_2026-08-08.md`.**
+  Punkt wejścia dla Sonnet 5 (wykonawca) i Opusa (re-review D1). Zawiera:
+  decyzje użytkownika U1-U5, kontrakt Voice (głosowe potwierdzenie ≠ złożenie
+  zamówienia; rozdział `complete_cart_draft`/`finish_voice_session` od
+  `place_order`/`finalize_order`), zadania A (fix-safe) / B (verify-first) /
+  C (owner-decision) / D (opus-review-required) z plikami, testami akceptacyjnymi,
+  rollbackiem i bramkami per etap T10. Nic z handoffu nie zostało jeszcze wykonane.
 - T3, T5, T6, T9, T10 — nietknięte.
 
 ---
