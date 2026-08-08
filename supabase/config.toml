@@ -1,0 +1,13 @@
+# Supabase CLI — konfiguracja minimalna (T8).
+#
+# Plik istnieje po to, żeby `supabase db lint` / `supabase start` / `supabase db push`
+# miały punkt zaczepienia w repo. NIE zawiera project_ref projektu live —
+# link do live (`supabase link --project-ref ezemaacyyvbpjlagchds`) wolno wykonać
+# dopiero w ramach T10, za jawną zgodą.
+#
+# PG na live: 17.6 (inventory 2026-08-08) — stąd major_version = 17.
+
+project_id = "freeflow-backend"
+
+[db]
+major_version = 17

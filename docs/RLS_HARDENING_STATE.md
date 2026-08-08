@@ -67,9 +67,12 @@ Awarie zastane, potwierdzone parytetem z `f996b23`, **nie regresje**:
 
 ## Otwarte
 
-- **T8** — migracje jako pliki, odblokowane. Wejście dla Fable: treść T8 z §14,
-  wyniki T1/T2/T7, `docs/SUPABASE_LIVE_INVENTORY_2026-08-08.md`. Nic więcej.
-  Fable nie projektuje całości od zera i nie tworzy konkurencyjnego planu.
+- **T8** — WYKONANE 2026-08-08 (Fable, ta sesja): pliki w `supabase/`
+  (README = manifest z kolejnością, warunkami wejścia, ryzykami; 6 migracji
+  etapów 6/8/9/10/11/12; snapshot etapu 0; `pending_decisions/` dla spraw
+  zablokowanych decyzyjnie). Zero wykonania SQL. Bramka lint NIEuruchomiona
+  (brak supabase CLI/psql w środowisku) — przeniesiona na wejście T10.
+  Pliki NIEZAKOMMITOWANE — czekają na review i decyzję o commicie.
 - **Review T8** — osobna sesja Opus, read-only, bez edycji.
 - T3, T5, T6, T9, T10 — nietknięte.
 

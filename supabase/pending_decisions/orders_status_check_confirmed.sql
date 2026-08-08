@@ -1,0 +1,46 @@
+-- ============================================================================
+-- DECYZJA OTWARTA nr 1 (RLS_HARDENING_STATE.md) / §13.6 planu / T9
+-- ⛔ PLIK ZABLOKOWANY DECYZYJNIE — nie jest migracją i nie wolno go wykonać.
+-- Leży POZA supabase/migrations/ celowo: katalog migracji zawiera wyłącznie
+-- pliki wolne od otwartych decyzji, żeby `supabase db push` nigdy nie
+-- rozstrzygnął tej sprawy przypadkiem.
+--
+-- Stan faktyczny (inventory §6):
+--   orders_status_check = CHECK (status IN ('pending','preparing','completed',
+--                                           'delivered','cancelled','accepted'))
+--   'confirmed' NIE jest dozwolone, a zapisują je:
+--     - api/orders/finalizeOrder.js:44          (ścieżka ŻYWA, po Stripe)
+--     - api/brain/services/OrderPersistence.js:107 (ścieżka wyłączona)
+--   Kolumna confirmed_at istnieje — status był zamierzony, nigdy nie trafił
+--   do CHECK-a. Kod po T1 (ALLOWED_STATUS_VALUES) używa 6 wartości = domena bazy.
+--
+-- Plan §10.1 proponował sumę 8 wartości (z 'confirmed' i 'ready') — inventory
+-- to skorygowało: 'ready' i 'new' żyją wyłącznie w UI KDS (kdsApi.ts:306,
+-- mapowanie przy renderze) i nigdy nie są zapisywane. Suma 8 jest nadmiarowa.
+--
+-- Do rozstrzygnięcia przez użytkownika (T9): WARIANT A albo WARIANT B.
+-- ============================================================================
+
+-- === WARIANT A — rozszerzyć CHECK o 'confirmed' (zmiana w bazie) ============
+-- Za: zachowuje semantykę kodu (finalizeOrder + confirmed_at); addytywne.
+-- Przeciw: powiększa domenę wartości przed decyzją o grafie przejść
+--          (CONTRACT_DECISION_REQUIRED); wymaga przywrócenia 'confirmed'
+--          do ALLOWED_STATUS_VALUES w api/orders.js (T1 je usunął).
+--
+-- BEGIN;
+-- ALTER TABLE public.orders DROP CONSTRAINT IF EXISTS orders_status_check;
+-- ALTER TABLE public.orders ADD CONSTRAINT orders_status_check
+--   CHECK (status = ANY (ARRAY['pending','preparing','completed','delivered',
+--                              'cancelled','accepted','confirmed']));
+-- COMMIT;
+
+-- === WARIANT B — zostawić bazę, zmienić kod na 'accepted' ===================
+-- Za: zero DDL; domena bazy pozostaje źródłem prawdy; 'accepted' już istnieje.
+-- Przeciw: confirmed_at staje się nazwą historyczną; zmiana dotyka żywej
+--          ścieżki po płatności (finalizeOrder.js:44 + OrderPersistence.js:107)
+--          i wymaga regresji testów T7.
+--
+-- (bez SQL — wyłącznie zmiana kodu w ramach T9)
+
+-- Niezależnie od wariantu: graf dozwolonych PRZEJŚĆ statusu pozostaje
+-- nieokreślony (decyzja otwarta nr 2). CHECK definiuje tylko domenę wartości.

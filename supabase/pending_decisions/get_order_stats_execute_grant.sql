@@ -1,0 +1,42 @@
+-- ============================================================================
+-- DECYZJA OTWARTA §13.7 planu — EXECUTE na public.get_order_stats()
+-- ⛔ PLIK ZABLOKOWANY DECYZYJNIE — nie jest migracją i nie wolno go wykonać.
+-- Leży POZA supabase/migrations/ celowo (jak orders_status_check_confirmed.sql).
+--
+-- Stan faktyczny: rpc('get_order_stats') woła server-vercel.js:543 przez klient
+-- modułowy (historycznie anon-first; po T2 przypisania klientów są jawne —
+-- zweryfikować bieżące przypisanie tego endpointu przed decyzją).
+-- Funkcja jest SECURITY INVOKER (inventory §4); jej search_path porządkuje
+-- etap 12 niezależnie od tej decyzji.
+--
+-- UWAGA na kolejność względem etapu 9: po deny-all na orders funkcja INVOKER
+-- wołana przez anon straci odczyt tabeli źródłowej niezależnie od EXECUTE —
+-- endpoint statystyk przestanie zwracać dane dla klienta anon. To pożądany
+-- fail-closed, ale musi być świadomy (plan §5, uwaga kolejnościowa).
+-- ============================================================================
+
+-- === WARIANT 1 — statystyki prywatne (rekomendacja spójna z deny-all) =======
+-- Endpoint przechodzi na privateServerClient + autoryzację panelu;
+-- funkcja zamknięta dla ról klienckich.
+--
+-- BEGIN;
+-- DO $$
+-- DECLARE fn record;
+-- BEGIN
+--   FOR fn IN
+--     SELECT p.oid::regprocedure AS sig FROM pg_proc p
+--     WHERE p.pronamespace = 'public'::regnamespace AND p.proname = 'get_order_stats'
+--   LOOP
+--     EXECUTE format('REVOKE EXECUTE ON FUNCTION %s FROM PUBLIC, anon, authenticated', fn.sig);
+--     EXECUTE format('GRANT EXECUTE ON FUNCTION %s TO service_role', fn.sig);
+--   END LOOP;
+-- END $$;
+-- COMMIT;
+
+-- === WARIANT 2 — agregat świadomie publiczny ================================
+-- GRANT EXECUTE zostaje dla anon; wymaga DODATKOWO przebudowy funkcji na
+-- SECURITY DEFINER z ustawionym search_path i ścisłym zakresem (bez PII),
+-- inaczej po etapie 9 i tak zwróci odmowę/pustkę (INVOKER bez SELECT na orders).
+-- Ta przebudowa to osobny, jawny projekt — nie zwykły GRANT.
+--
+-- (bez gotowego SQL — wariant wymaga projektu funkcji, nie samego grantu)
