@@ -178,38 +178,44 @@ export async function createOrder(restaurantId, userId = "guest") {
 const PATCH_ALLOWED_FIELDS = new Set(['status', 'notes']);
 
 /**
- * allowed_status_values - domena wyprowadzona z KODU, nie z bazy.
+ * allowed_status_values - DOWOD Z BAZY, nie z kodu.
  *
- * LIVE_SCHEMA_VERIFICATION_REQUIRED: definicja CHECK `orders_status_check`
- * nie zostala odczytana - konektor Supabase nie ma dostepu do projektu
- * ezemaacyyvbpjlagchds. Ta lista moze byc SZERSZA niz to, co dopuszcza baza;
- * wtedy wartosc przejdzie walidacje aplikacji i zostanie odrzucona dopiero
- * przez Postgresa. Po odczycie CHECK-a liste nalezy ZAWEZIC do przeciecia.
+ * Zrodlo: constraint `orders_status_check` na public.orders, odczytany
+ * 2026-08-08 z projektu ezemaacyyvbpjlagchds:
  *
- * Zrodla - kazda wartosc ma dowod w kodzie, zadna nie jest wymyslona:
- *   pending    orders.js POST insert + createOrder(), ai/tools/order.js:126
- *   confirmed  orders/finalizeOrder.js:44, OrderPersistence.js:107
- *   cancelled  whitelist POST w orders.js
- *   preparing  KDS startOrder()      -> frontend/src/lib/kdsApi.ts:355
- *   completed  KDS markOrderReady()  -> kdsApi.ts:378 (pierwsza proba)
- *   accepted   KDS markOrderReady()  -> kdsApi.ts:378 (fallback po orders_status_check)
- *   delivered  KDS completeOrder()   -> kdsApi.ts:428
+ *   CHECK (status = ANY (ARRAY[
+ *     'pending', 'preparing', 'completed', 'delivered', 'cancelled', 'accepted'
+ *   ]))
+ *
+ * Pelny odczyt: docs/SUPABASE_LIVE_INVENTORY_2026-08-08.md
+ *
+ * Lista byla wczesniej wyprowadzona z kodu i miala siedem pozycji. Po odczycie
+ * CHECK-a zostala ZAWEZONA do przeciecia z baza - usunieto 'confirmed'.
+ *
+ * UWAGA, ZNANY BLAD PRODUKCYJNY (poza zakresem T1, nie naprawiany tutaj):
+ * wartosc 'confirmed' NIE jest dozwolona przez baze, a mimo to zapisuja ja
+ *   - api/orders/finalizeOrder.js:44         (sciezka ZYWA, po platnosci Stripe)
+ *   - api/brain/services/OrderPersistence.js:107 (sciezka wylaczona)
+ *   - api/orders.js whitelist POST ponizej   (gdy klient poda status)
+ * Kolumna orders.confirmed_at istnieje, wiec status byl zamierzony, ale nigdy
+ * nie trafil do CHECK-a. Naprawa nalezy do T9 - wymaga decyzji, czy rozszerzyc
+ * CHECK, czy zmienic kod na 'accepted'.
  *
  * Swiadomie NIEobecne: 'new' i 'ready' zyja wylacznie w UI KDS
  * (kdsApi.ts:306 mapuje pending->new przy renderze) i nigdy nie sa zapisywane.
+ * Baza rowniez ich nie dopuszcza - zgodnie.
  *
  * CONTRACT_DECISION_REQUIRED: to jest domena WARTOSCI, nie graf PRZEJSC.
- * Walidator dozwolonych przejsc (ktory status wolno zmienic na ktory)
+ * CHECK nie definiuje, ktory status wolno zmienic na ktory. Walidator przejsc
  * swiadomie nie jest tu zaimplementowany - wymaga osobnej decyzji kontraktowej.
  */
 const ALLOWED_STATUS_VALUES = new Set([
   'pending',
-  'confirmed',
-  'cancelled',
   'preparing',
   'completed',
-  'accepted',
   'delivered',
+  'cancelled',
+  'accepted',
 ]);
 
 /**

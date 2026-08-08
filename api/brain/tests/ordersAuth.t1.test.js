@@ -227,14 +227,22 @@ describe('T1 / PATCH allowlista pol', () => {
 describe('T1 / PATCH domena statusu', () => {
   const auth = { 'x-admin-token': VALID_TOKEN };
 
-  // Wartosci z dowodem w kodzie - patrz ALLOWED_STATUS_VALUES w api/orders.js.
-  it.each(['pending', 'confirmed', 'cancelled', 'preparing', 'completed', 'accepted', 'delivered'])(
+  // Dokladnie szesc wartosci z constraintu orders_status_check odczytanego
+  // z bazy 2026-08-08 (docs/SUPABASE_LIVE_INVENTORY_2026-08-08.md).
+  it.each(['pending', 'preparing', 'completed', 'delivered', 'cancelled', 'accepted'])(
     'przyjmuje status %s',
     async (status) => {
       const res = await call(createReq({ method: 'PATCH', headers: auth, body: { status } }));
       expect(res.statusCode).toBe(200);
     }
   );
+
+  it('odrzuca confirmed - baza go NIE dopuszcza mimo uzycia w finalizeOrder.js', async () => {
+    const res = await call(createReq({ method: 'PATCH', headers: auth, body: { status: 'confirmed' } }));
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toMatchObject({ error: 'status_not_allowed' });
+    expect(updateSpy).not.toHaveBeenCalled();
+  });
 
   it('odrzuca status spoza domeny', async () => {
     const res = await call(
