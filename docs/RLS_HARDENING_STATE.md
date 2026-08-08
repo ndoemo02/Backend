@@ -50,8 +50,10 @@ git cat-file blob HEAD:docs/SUPABASE_FINAL_DEMO_HARDENING_PLAN.md | sha256sum
 | `38ef68b` | **T7** — analiza ścieżki zapisu + test anty-duplikatowy |
 | `b5541a8` | **inventory §10.0** + zawężenie domeny statusów do bazy |
 | `d0f58e8` | **T8** — migracje SQL jako pliki w `supabase/`, zero wykonania |
+| `6487cb4` | **Paczka A (A1-A11)** — fixup T8 po review Opusa: P1-1..P1-4, P2-1..P2-4, P2-6, nit-1..3 + decyzje U1/U2/U5 |
 
-Testy: **49/49 PASS** (`ordersAuth.t1`, `supabaseClients.t2`, `orderPersistence.antiDuplicate`).
+Testy: **49/49 PASS** (`ordersAuth.t1`, `supabaseClients.t2`, `orderPersistence.antiDuplicate`) —
+niezmienione po paczce A (wyłącznie pliki w `supabase/` + `docs/`, zero kodu backendu dotknięte).
 
 Awarie zastane, potwierdzone parytetem z `f996b23`, **nie regresje**:
 - `greetingGate` / `liveToolRouter` / `conversationGuards` / `orderHandler.explicitRestaurantLock` — 17 failed
@@ -65,10 +67,33 @@ Awarie zastane, potwierdzone parytetem z `f996b23`, **nie regresje**:
 - **T2** (§9 etap 2) — ryzyka #8, #9
 - **T7** (§9 etap 7) — analiza, bez zmian produkcyjnych
 - **Inventory §10.0** — wszystkie pozycje `[DO WERYFIKACJI]` zamknięte
+- **Paczka A (A1-A11)** — WYKONANE 2026-08-08 (Sonnet 5, ta sesja), commit
+  `6487cb4`. Wyłącznie zadania kategorii FIX-SAFE z
+  `docs/HANDOFF_EXEC_SONNET5_2026-08-08.md` §3, w podanej kolejności:
+  - A1 idempotencja UNIQUE (42P07) w etapie 6
+  - A2 `is_active` w grancie kolumnowym `restaurants` (U1)
+  - A3 protokół T10 plik-po-pliku, zakaz `db push`/`db reset` (U2) —
+    README + nagłówki wszystkich 6 migracji
+  - A4 domknięcie `amber_tts_daily` już w etapie 8 (U5)
+  - A5 etap 11: `GRANT SELECT … TO service_role` + poprawka komentarza
+  - A6 `SET LOCAL lock_timeout = '3s'` w 6/6 migracjach
+  - A7 szablon restore: sekcja 0 (zerowanie polityk/grantów migracji przed
+    odtworzeniem stanu) + sekcja F (Q9); Q9 przepisane na `pg_class.relacl`
+  - A8 szkic `pending_decisions/default_privileges.sql` (nowy plik)
+  - A9 `get_order_stats_execute_grant.sql` — kodowa połowa Wariantu 1 już
+    istnieje (`server-vercel.js:565`)
+  - A10 nota o wersji CLI dla PG17 (config.toml + README)
+  - A11 konsolidacja README (warunki wejścia etapów 8/10, tabela U1-U5,
+    mapowanie ustaleń review → zadania)
+
+  Zero wykonania SQL na jakiejkolwiek bazie — wyłącznie edycje plików w
+  `supabase/`. Baseline 49/49 PASS zweryfikowany po paczce, bez regresji.
+  Branch NIE wypchnięty na origin po tym commicie (czeka na explicit
+  polecenie użytkownika, jak poprzednio przy `d0f58e8`→push).
 
 ## Otwarte
 
-- **T8** — WYKONANE 2026-08-08 (Fable, ta sesja): pliki w `supabase/`
+- **T8** — WYKONANE 2026-08-08 (Fable, poprzednia sesja): pliki w `supabase/`
   (README = manifest z kolejnością, warunkami wejścia, ryzykami; 6 migracji
   etapów 6/8/9/10/11/12; snapshot etapu 0; `pending_decisions/` dla spraw
   zablokowanych decyzyjnie). Zero wykonania SQL. Bramka lint NIEuruchomiona
@@ -76,14 +101,22 @@ Awarie zastane, potwierdzone parytetem z `f996b23`, **nie regresje**:
   Zakommitowane jako `d0f58e8`.
 - **Review T8** — WYKONANE 2026-08-08 (Opus, czysta sesja, read-only).
   Werdykt: **CHANGES-REQUIRED** — 4×P1, 7×P2, 3×nit. Raport nie istnieje jako
-  osobny plik; wszystkie ustalenia wcielone do handoffu poniżej (sekcja 7 = mapowanie).
+  osobny plik; wszystkie ustalenia wcielone do handoffu (sekcja 7 = mapowanie)
+  i teraz też do `supabase/README.md` (reprodukcja tabeli po paczce A).
+- **Fixup po review (paczka A)** — WYKONANE, patrz „Zrobione" powyżej.
+- **NASTĘPNY KROK WYMAGANY: D1 — re-review paczki A przez Opusa** (read-only),
+  zgodnie z `docs/HANDOFF_EXEC_SONNET5_2026-08-08.md` §6 (D1) i §8 (bramki).
+  Werdykt APPROVE jest warunkiem wejścia do jakiegokolwiek T10. D1 NIE zostało
+  wykonane w tej sesji — kategoria OPUS-REVIEW-REQUIRED, poza zakresem FIX-SAFE.
+- Kategorie B (verify-first: B1-B5), C (owner-decision: C1-C5) i pozostałe
+  zadania D (D2-D5) z handoffu — NIETKNIĘTE w tej sesji, zgodnie z zakresem
+  (wyłącznie FIX-SAFE).
 - **AKTUALNY HANDOFF WYKONAWCZY: `docs/HANDOFF_EXEC_SONNET5_2026-08-08.md`.**
-  Punkt wejścia dla Sonnet 5 (wykonawca) i Opusa (re-review D1). Zawiera:
-  decyzje użytkownika U1-U5, kontrakt Voice (głosowe potwierdzenie ≠ złożenie
-  zamówienia; rozdział `complete_cart_draft`/`finish_voice_session` od
-  `place_order`/`finalize_order`), zadania A (fix-safe) / B (verify-first) /
-  C (owner-decision) / D (opus-review-required) z plikami, testami akceptacyjnymi,
-  rollbackiem i bramkami per etap T10. Nic z handoffu nie zostało jeszcze wykonane.
+  Zawiera: decyzje użytkownika U1-U5, kontrakt Voice (głosowe potwierdzenie ≠
+  złożenie zamówienia; rozdział `complete_cart_draft`/`finish_voice_session` od
+  `place_order`/`finalize_order`), zadania A (fix-safe, WYKONANE tą sesją) /
+  B (verify-first) / C (owner-decision) / D (opus-review-required) z plikami,
+  testami akceptacyjnymi, rollbackiem i bramkami per etap T10.
 - T3, T5, T6, T9, T10 — nietknięte.
 
 ---
