@@ -11,7 +11,7 @@ Ostatnia aktualizacja: 2026-08-08
 
 - **Worktree:** `C:\Firerfox Portable\Freeflow backend-rls`
 - **Branch:** `security/rls-demo-hardening` (baza: `demo/gate1-finalization` @ `f996b23`)
-- **Nie pchnięty.** Brak upstreamu. Nie mergowany.
+- Wypchnięty na `origin/security/rls-demo-hardening` (2026-08-08, po T8). Nie mergowany.
 - Główny worktree `…\Freeflow brain\backend` pozostaje nietknięty.
 
 ### Operacyjne: uruchamianie testów
