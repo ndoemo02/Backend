@@ -49,6 +49,7 @@ git cat-file blob HEAD:docs/SUPABASE_FINAL_DEMO_HARDENING_PLAN.md | sha256sum
 | `12df4df` | **T2** — rozdział klientów, zero fallbacków w obie strony |
 | `38ef68b` | **T7** — analiza ścieżki zapisu + test anty-duplikatowy |
 | `b5541a8` | **inventory §10.0** + zawężenie domeny statusów do bazy |
+| `d0f58e8` | **T8** — migracje SQL jako pliki w `supabase/`, zero wykonania |
 
 Testy: **49/49 PASS** (`ordersAuth.t1`, `supabaseClients.t2`, `orderPersistence.antiDuplicate`).
 
@@ -72,7 +73,7 @@ Awarie zastane, potwierdzone parytetem z `f996b23`, **nie regresje**:
   etapów 6/8/9/10/11/12; snapshot etapu 0; `pending_decisions/` dla spraw
   zablokowanych decyzyjnie). Zero wykonania SQL. Bramka lint NIEuruchomiona
   (brak supabase CLI/psql w środowisku) — przeniesiona na wejście T10.
-  Pliki NIEZAKOMMITOWANE — czekają na review i decyzję o commicie.
+  Zakommitowane jako `d0f58e8`.
 - **Review T8** — osobna sesja Opus, read-only, bez edycji.
 - T3, T5, T6, T9, T10 — nietknięte.
 
