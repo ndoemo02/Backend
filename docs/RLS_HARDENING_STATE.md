@@ -3,7 +3,7 @@
 Dokument wskaźnikowy. **Nie jest planem** — plan kanoniczny to
 `docs/SUPABASE_FINAL_DEMO_HARDENING_PLAN.md` i tylko on obowiązuje.
 
-Ostatnia aktualizacja: 2026-08-08
+Ostatnia aktualizacja: 2026-08-09
 
 ---
 
@@ -51,9 +51,12 @@ git cat-file blob HEAD:docs/SUPABASE_FINAL_DEMO_HARDENING_PLAN.md | sha256sum
 | `b5541a8` | **inventory §10.0** + zawężenie domeny statusów do bazy |
 | `d0f58e8` | **T8** — migracje SQL jako pliki w `supabase/`, zero wykonania |
 | `6487cb4` | **Paczka A (A1-A11)** — fixup T8 po review Opusa: P1-1..P1-4, P2-1..P2-4, P2-6, nit-1..3 + decyzje U1/U2/U5 |
+| `c59453d` | **D1 cleanup** — F1 nagłówek etapu 8, F4 rozszerzenie zakresu B1 (kolumny poza `.select()`) |
+| `d42df6a` | **D2** — `sessionAdapter`: klasyfikacja odmowy uprawnień (42501) do memory-fallback + test 8/8 |
 
-Testy: **49/49 PASS** (`ordersAuth.t1`, `supabaseClients.t2`, `orderPersistence.antiDuplicate`) —
-niezmienione po paczce A (wyłącznie pliki w `supabase/` + `docs/`, zero kodu backendu dotknięte).
+Testy: **57/57 PASS** (`ordersAuth.t1`, `supabaseClients.t2`, `orderPersistence.antiDuplicate`
+= baseline 49/49 + `sessionAdapter.permissionDenied` 8/8 z D2). Paczka A i D1 nie dotknęły kodu
+backendu (wyłącznie `supabase/` + `docs/`); D2 dotknęło wyłącznie `sessionAdapter.js` + nowy test.
 
 Awarie zastane, potwierdzone parytetem z `f996b23`, **nie regresje**:
 - `greetingGate` / `liveToolRouter` / `conversationGuards` / `orderHandler.explicitRestaurantLock` — 17 failed
@@ -90,6 +93,24 @@ Awarie zastane, potwierdzone parytetem z `f996b23`, **nie regresje**:
   `supabase/`. Baseline 49/49 PASS zweryfikowany po paczce, bez regresji.
   Branch NIE wypchnięty na origin po tym commicie (czeka na explicit
   polecenie użytkownika, jak poprzednio przy `d0f58e8`→push).
+- **D2 — `sessionAdapter`: klasyfikacja odmowy RLS do memory-fallback** —
+  WYKONANE 2026-08-09, commit `d42df6a`. Nowy `isPermissionDeniedError()`
+  (`sessionAdapter.js:69-74`) łapie SQLSTATE `42501` oraz frazy
+  `permission denied` / `row-level security policy` i kieruje je tam, gdzie
+  dotąd trafiał wyłącznie brak tabeli — do `disableSupabase()` + memory-fallback.
+  Wpięte w trzy ścieżki: `loadFromSupabase:144`, `saveToSupabase:196`,
+  `touchInSupabase:239`. Bez fixu odmowa uprawnień leciała `throw`, a
+  `sessionStore.js:112-121` maskował ją zwrotem świeżej domyślnej sesji —
+  cicha utrata stanu na zimnym wywołaniu serverless.
+  Zakres nienaruszony zgodnie z handoffem §6: dual-schema probing
+  (`modeCandidates`, `continue` na schema-mismatch, memoizacja `supabaseMode`),
+  kontrakt sesji, `sessionStore.js`, migracje — bez zmian (potwierdzone `git diff --quiet`).
+  Testy: nowy `api/brain/tests/sessionAdapter.permissionDenied.test.js` 8/8
+  (load/save/touch × oba warianty schematu `id_data`/`session_payload`
+  + przejście do `supabaseMode='memory'`), baseline 49/49 bez regresji.
+  **Review Opusa 2026-08-09 (read-only, ta sesja): werdykt D2 CLOSED.**
+  Konsekwencja: blokada etapu 8 zdjęta — README i nagłówek migracji etapu 8
+  zaktualizowane tym commitem dokumentacyjnym.
 
 ## Otwarte
 
@@ -108,9 +129,11 @@ Awarie zastane, potwierdzone parytetem z `f996b23`, **nie regresje**:
   zgodnie z `docs/HANDOFF_EXEC_SONNET5_2026-08-08.md` §6 (D1) i §8 (bramki).
   Werdykt APPROVE jest warunkiem wejścia do jakiegokolwiek T10. D1 NIE zostało
   wykonane w tej sesji — kategoria OPUS-REVIEW-REQUIRED, poza zakresem FIX-SAFE.
-- Kategorie B (verify-first: B1-B5), C (owner-decision: C1-C5) i pozostałe
-  zadania D (D2-D5) z handoffu — NIETKNIĘTE w tej sesji, zgodnie z zakresem
-  (wyłącznie FIX-SAFE).
+- Kategorie B (verify-first: B1-B5), C (owner-decision: C1-C5) oraz D3-D5
+  z handoffu — NIETKNIĘTE. **D2 nie jest już otwarte** — wykonane 2026-08-09
+  (`d42df6a`), patrz „Zrobione" powyżej.
+- **NASTĘPNY KROK: B1 — public catalog read-set** (`api/server-vercel.js:781-790`
+  + kolumny poza `.select()` wg rozszerzenia F4 z D1). Blokuje etap 10, nie etap 8.
 - **AKTUALNY HANDOFF WYKONAWCZY: `docs/HANDOFF_EXEC_SONNET5_2026-08-08.md`.**
   Zawiera: decyzje użytkownika U1-U5, kontrakt Voice (głosowe potwierdzenie ≠
   złożenie zamówienia; rozdział `complete_cart_draft`/`finish_voice_session` od
@@ -118,6 +141,28 @@ Awarie zastane, potwierdzone parytetem z `f996b23`, **nie regresje**:
   B (verify-first) / C (owner-decision) / D (opus-review-required) z plikami,
   testami akceptacyjnymi, rollbackiem i bramkami per etap T10.
 - T3, T5, T6, T9, T10 — nietknięte.
+
+---
+
+## Backlog test-hardening
+
+Nieblokujące, wychwycone przez review D2 2026-08-09 (ustalenia F2/F3 raportu).
+Nie są warunkiem wejścia żadnego etapu — do zrobienia przy najbliższym dotknięciu
+`api/brain/tests/sessionAdapter.permissionDenied.test.js`.
+
+1. **Dwa przypadki „message-only" bez `code: '42501'`.** Obie fixtury testu
+   (`PERMISSION_DENIED`, `RLS_POLICY_DENIED`, linie `:41-49`) niosą `code`, więc
+   `error?.code === '42501'` (`sessionAdapter.js:70`) zwraca `true` zanim dojdzie do
+   dopasowania frazowego z `:73` — gałąź tekstowa jest we wszystkich 8 testach
+   nieosiągalna. To właśnie ona jest siatką bezpieczeństwa dla odmów bez SQLSTATE
+   (błędy opakowane przez warstwę pośrednią). Dodać `{ message: 'permission denied
+   for table brain_sessions' }` i `{ message: 'new row violates row-level security
+   policy …' }` bez pola `code`.
+2. **Jeden test negatywny.** Nic dziś nie blokuje przyszłego rozluźnienia predykatu
+   (np. do `msg.includes('denied')`), które zaczęłoby po cichu maskować błędy spoza
+   klasy permission/RLS. Dodać asercję, że błąd typu connection failure
+   (`{ code: '08006', message: 'connection failure' }`) nadal propaguje —
+   `await expect(adapter.loadSession('x')).rejects`.
 
 ---
 
@@ -153,5 +198,9 @@ z frontendu, brak tokenu w `dist` i source mapach.
 
 ## Czego nie robiono
 
-Zero merge, zero push, zero rotacji kluczy, zero zapisu do Supabase, zero DDL i DML.
+Zero merge, zero rotacji kluczy, zero zapisu do Supabase, zero DDL i DML.
 Jedyne wykonane SQL to osiem `SELECT`-ów z §10.0 za jawną zgodą, udokumentowane w inventory.
+
+Push: wyłącznie na gałąź `origin/security/rls-demo-hardening`, za każdym razem na
+jawne polecenie użytkownika. Gałąź nie jest mergowana do `main` ani do
+`demo/gate1-finalization`.

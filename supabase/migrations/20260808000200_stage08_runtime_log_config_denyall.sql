@@ -23,8 +23,11 @@
 -- Warunki wejścia:
 --   - etap 0 (snapshot/restore wygenerowany);
 --   - dla `brain_sessions`: poprawka sessionAdapter z §7 planu (klasyfikacja
---     RLS-denial do ścieżki memory-fallback, zadanie D2) — NIEWYKONANA na dziś,
---     jedyna realna blokada tego etapu;
+--     RLS-denial do ścieżki memory-fallback, zadanie D2) — WYKONANA 2026-08-09,
+--     commit `d42df6a` (`isPermissionDeniedError()`: `42501` / `permission denied`
+--     / `row-level security policy` → memory-fallback w load/save/touch; dual-schema
+--     probing i kontrakt sesji nietknięte). Review Opusa read-only: D2 CLOSED.
+--     Blokada zdjęta — jedynym pozostałym warunkiem wejścia jest etap 0;
 --   - domknięcie write-setu T2 (PLAN_CORRECTION_REQUIRED, decyzja nr 4 stanu):
 --     ZWERYFIKOWANE (review T8) — klienci `server.js:28-39` i
 --     `api/brain/supabaseClient.js:26-36` używają wyłącznie
