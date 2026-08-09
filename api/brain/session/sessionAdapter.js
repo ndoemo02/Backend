@@ -66,6 +66,13 @@ function isSchemaMismatchError(error) {
     return msg.includes('column') && msg.includes('does not exist');
 }
 
+function isPermissionDeniedError(error) {
+    if (error?.code === '42501') return true;
+    const msg = getErrorMessage(error);
+    if (!msg) return false;
+    return msg.includes('permission denied') || msg.includes('row-level security policy');
+}
+
 function disableSupabase(error) {
     supabaseMode = 'memory';
     if (!supabaseDisabledReason) {
@@ -134,7 +141,7 @@ async function loadFromSupabase(supabase, sessionId) {
         }
 
         if (error) {
-            if (isMissingTableError(error)) {
+            if (isMissingTableError(error) || isPermissionDeniedError(error)) {
                 disableSupabase(error);
                 return null;
             }
@@ -186,7 +193,7 @@ async function saveToSupabase(supabase, sessionId, data, updatedAt) {
         }
 
         if (error) {
-            if (isMissingTableError(error)) {
+            if (isMissingTableError(error) || isPermissionDeniedError(error)) {
                 disableSupabase(error);
                 return null;
             }
@@ -229,7 +236,7 @@ async function touchInSupabase(supabase, sessionId, updatedAt) {
         }
 
         if (error) {
-            if (isMissingTableError(error)) {
+            if (isMissingTableError(error) || isPermissionDeniedError(error)) {
                 disableSupabase(error);
                 return null;
             }
