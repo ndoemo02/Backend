@@ -250,7 +250,14 @@ Wszystkie zadania A to edycje plików w `supabase/` + README. Jedna paczka, jede
 ### B1 — `/api/restaurants`: zawężenie `select("*")` na kliencie anon  [P1-3]
 - **Pliki (analiza):** `api/server-vercel.js:781-790` + wszyscy konsumenci odpowiedzi
   `/api/restaurants` (frontend: grep po fetch/axios na ten endpoint; backend: brak).
-  **Pliki (zmiana):** `api/server-vercel.js` (tylko lista kolumn w `.select()`).
+  **DODATKOWO (re-review D1, F4):** zakres analizy B1 obejmuje TEŻ bezpośrednie
+  zapytania klienta anon z frontendu (nie tylko `/api/restaurants` przez backend) —
+  `frontend/src/pages/ClientPanel/ClientPanel.tsx:141-144`,
+  `frontend/src/pages/Panel/CustomerPanel.jsx:96-99`,
+  `frontend/src/state/CartContext.jsx:262-283` i analogiczne miejsca po
+  `grep -rn "\.from('restaurants')\|\.from('menu_items_v2')" frontend/src`.
+  **Pliki (zmiana):** `api/server-vercel.js` (tylko lista kolumn w `.select()`);
+  ewentualne zmiany frontendu — osobna decyzja, patrz niżej.
 - **Cel:** endpoint działa po T2 na `publicCatalogClient` (klucz anon) i po etapie 10
   jego `select("*")` padnie na kolumnach spoza grantu. Analiza: które pola odpowiedzi
   są realnie konsumowane. Jeśli mieszczą się w kontrakcie live-safe
@@ -259,10 +266,25 @@ Wszystkie zadania A to edycje plików w `supabase/` + README. Jedna paczka, jede
   do tej listy (zmiana mechaniczna). Jeśli konsument potrzebuje pola SPOZA kontraktu
   (np. phone/maps_rating) — STOP, eskalacja do C (decyzja o poszerzeniu grantu vs
   przepięcie endpointu na `privateServerClient`, co zmienia model §4 planu).
+  **Rozszerzenie zakresu (re-review D1, F4):** kolumnowy grant PostgreSQL jest
+  sprawdzany nie tylko dla kolumn w liście `.select()`, ale dla KAŻDEJ kolumny
+  użytej po stronie serwera w zapytaniu — `.eq()`, `.ilike()`, `.order()`, `.in()`
+  i analogiczne operatory (ten sam mechanizm, który uzasadnił A2/`is_active` w
+  WHERE). Audyt B1 musi więc objąć te operatory, nie tylko listy SELECT, i to
+  zarówno w `api/server-vercel.js` jak i w bezpośrednich zapytaniach frontendu
+  wskazanych wyżej. **Znany przykład:** `frontend/src/state/CartContext.jsx:283`
+  — `.ilike('aliases', …)` na `restaurants`; kolumna `aliases` NIE występuje
+  wcale w liście `GRANT SELECT (…)` etapu 10
+  (`supabase/migrations/20260808000400_stage10_public_catalog_rls.sql:71-75`) —
+  po etapie 10 to zapytanie padnie z 42501. Czy `aliases` dopisać do grantu, czy
+  przepiąć to wyszukiwanie na backend (service_role) — NIEROZSTRZYGNIĘTE tutaj;
+  decyzja należy do C, analogicznie do pozostałych rozszerzeń grantu w §13 planu.
 - **Nie wolno:** zmieniać przypisania klienta bez decyzji; ruszać innych endpointów;
   zmieniać kształtu odpowiedzi ponad usunięcie pól (usunięcie pól = zmiana kontraktu
-  API — musi być wykazane, że nikt ich nie czyta).
-- **Test akceptacyjny:** raport konsumentów pól; po zmianie `node --check` +
+  API — musi być wykazane, że nikt ich nie czyta); rozstrzygać los `aliases` (i
+  innych podobnych trafień audytu) bez decyzji C.
+- **Test akceptacyjny:** raport konsumentów pól (SELECT + WHERE/ORDER/filter) —
+  backend i frontend; po zmianie `node --check` +
   `npx vitest run api/brain/tests/supabaseClients.t2.test.js` zielone; smoke
   `/api/restaurants` zwraca dane z jawną listą kolumn.
 - **Rollback:** `git revert` commita B1.

@@ -43,7 +43,7 @@ Normatywne, przyjęte przed fixupem po review T8 — pełny kontekst w
 | 1 | `20260808000100_stage06_orders_additive_columns.sql` | 6 | etap 0 | gotowe po etapie 0 |
 | 2 | `20260808000200_stage08_runtime_log_config_denyall.sql` | 8 | etap 0; poprawka `sessionAdapter` — klasyfikacja odmowy RLS (42501) do memory-fallback (§7 planu, zadanie D2) | **ZWERYFIKOWANE (review T8): klienci spoza write-setu T2 (`server.js:28-39`, `api/brain/supabaseClient.js:26-36`) używają wyłącznie `SUPABASE_SERVICE_ROLE_KEY`, fail-fast — zdjęte jako blokada.** Jedyną realną blokadą pozostaje `sessionAdapter` (D2) — NIEWYKONANA |
 | 3 | `20260808000300_stage09_sensitive_denyall.sql` | 9 | etapy 1 ✓, 2 ✓ (z zastrzeżeniem j.w.), 5 ✗ (T5), 7 ✓; audyt zapisów `profiles` z frontendu (zadanie B2) | **T5 niewykonane — twarda blokada**; B2 NIEWYKONANE |
-| 4 | `20260808000400_stage10_public_catalog_rls.sql` | 10 | etap 5 ✗ (T5) + weryfikacja kolumn (snapshot Q7) + zawężenie `/api/restaurants` `select("*")` na kliencie anon (zadanie B1, `api/server-vercel.js:781-790`, review T8 P1-3) + kontrakt endpointów panelu właściciela (zadanie D3, po B5/C5, U3/U4) | **T5 niewykonane — twarda blokada**; B1 i D3 NIEWYKONANE — dodatkowe blokady |
+| 4 | `20260808000400_stage10_public_catalog_rls.sql` | 10 | etap 5 ✗ (T5) + weryfikacja kolumn (snapshot Q7) + zawężenie `/api/restaurants` `select("*")` na kliencie anon (zadanie B1, `api/server-vercel.js:781-790`, review T8 P1-3) + **audyt kolumn poza `.select()`** — `.eq()`/`.ilike()`/`.order()`/`.in()` w backendzie i we frontendowych zapytaniach anon (zadanie B1 rozszerzone, re-review D1 F4; znany przypadek: `frontend/src/state/CartContext.jsx:283` filtruje po `aliases`, kolumnie NIEOBECNEJ w grancie etapu 10) + kontrakt endpointów panelu właściciela (zadanie D3, po B5/C5, U3/U4) | **T5 niewykonane — twarda blokada**; B1 (w tym rozszerzenie audytu) i D3 NIEWYKONANE — dodatkowe blokady |
 | 5 | `20260808000500_stage11_freeze_menu_items.sql` | 11 | etap 4 ✗ (T4, test kontraktowy) | **T4 niewykonane — twarda blokada** |
 | 6 | `20260808000600_stage12_views_functions.sql` | 12 | etap 9 wykonany; definicje z §10.0 ✓ (inventory) | za etapem 9 |
 
@@ -93,6 +93,14 @@ w tej tabeli. Każdy plik w `migrations/` niesie tę samą regułę w nagłówku
   szerokie granty mimo REVOKE na istniejących; do rozstrzygnięcia po snapshot.
 - **Kod woła nieistniejące RPC `get_business_stats`** (`api/admin/business-stats.js:17`) —
   błąd zastany, poza zakresem T8, tylko flagowany.
+- **Kolumnowy grant etapu 10 sprawdzany też w WHERE/ORDER, nie tylko w SELECT** —
+  ta sama mechanika co `is_active`/A2, ale audyt B1 pierwotnie obejmował tylko
+  listy `.select()`. Znany przypadek: `frontend/src/state/CartContext.jsx:283`
+  (`.ilike('aliases', …)` na `restaurants`) — `aliases` nie jest w ogóle w liście
+  grantu etapu 10, więc to zapytanie padnie z 42501 po etapie 10. Pełny audyt
+  (backend + frontend, wszystkie operatory) jest częścią rozszerzonego B1
+  (re-review D1, ustalenie F4) — patrz `docs/HANDOFF_EXEC_SONNET5_2026-08-08.md` §4 B1.
+  Los `aliases` (grant vs przepięcie na backend) NIEROZSTRZYGNIĘTY.
 
 ## Mapowanie ustaleń review T8 → zadania
 

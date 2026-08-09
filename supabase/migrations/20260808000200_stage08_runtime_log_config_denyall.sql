@@ -23,10 +23,13 @@
 -- Warunki wejścia:
 --   - etap 0 (snapshot/restore wygenerowany);
 --   - dla `brain_sessions`: poprawka sessionAdapter z §7 planu (klasyfikacja
---     RLS-denial do ścieżki memory-fallback) — NIEWYKONANA na dziś;
+--     RLS-denial do ścieżki memory-fallback, zadanie D2) — NIEWYKONANA na dziś,
+--     jedyna realna blokada tego etapu;
 --   - domknięcie write-setu T2 (PLAN_CORRECTION_REQUIRED, decyzja nr 4 stanu):
---     klienci `server.js:28-39` i `api/brain/supabaseClient.js` muszą mieć
---     potwierdzone service_role, inaczej REVOKE odetnie zapisy logów/sesji.
+--     ZWERYFIKOWANE (review T8) — klienci `server.js:28-39` i
+--     `api/brain/supabaseClient.js:26-36` używają wyłącznie
+--     `SUPABASE_SERVICE_ROLE_KEY`, bez fallbacku na klucz anon — zdjęte jako
+--     blokada.
 -- Warunek wyjścia: backend nadal loguje i czyta sesje (service_role omija RLS).
 -- Rollback: restore_snapshot.sql z etapu 0 (dokładny stan, nie generyczny
 --           DISABLE RLS) — §12 planu, etap 8.
