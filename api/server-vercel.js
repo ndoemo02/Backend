@@ -780,11 +780,13 @@ app.post("/api/tts", async (req, res) => {
 // === RESTAURANTS ===
 app.get("/api/restaurants", async (req, res) => {
   try {
-    // Katalog publiczny -> klient anon. Uwaga: select("*") pozostaje bez zmian,
-    // zawezenie kolumn nalezy do T5/SS3 i zmienialoby ksztalt odpowiedzi API.
+    // Katalog publiczny -> klient anon. Kolumny zawezone do zatwierdzonego
+    // kontraktu PUBLIC restaurants (audyt B1, 2026-08-10) - zgodne z grantem
+    // etapu 10 (supabase/migrations/20260808000400_stage10_public_catalog_rls.sql).
+    // Ksztalt odpowiedzi { ok, data } bez zmian - to nie jest naprawa kontraktu API.
     const { data, error } = await publicCatalogClient
       .from("restaurants")
-      .select("*")
+      .select("id,name,address,city,cuisine_type,lat,lng,delivery_available,price_level,is_active,taxonomy_groups,taxonomy_cats,taxonomy_tags,image_url")
       .eq("is_active", true);
     if (error) throw error;
     res.json({ ok: true, data });

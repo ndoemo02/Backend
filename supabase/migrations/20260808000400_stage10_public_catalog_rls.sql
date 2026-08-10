@@ -64,14 +64,19 @@ REVOKE ALL ON public.restaurants FROM PUBLIC, anon, authenticated;
 -- tylko w SELECT-liście. RLS i tak zwraca wyłącznie wiersze is_active = true
 -- (patrz USING poniżej) — grant kolumnowy tylko odblokowuje filtr po stronie
 -- klienta, nie zmienia zbioru widocznych wierszy.
--- Celowo BEZ: owner_id, description, phone, website, maps_rating,
--- maps_ratings_total, opening_hours — wzbogacenie karty czyta backend
--- (repository.js, service_role), nie przeglądarka. Rozszerzenie tej listy
--- to decyzja §13 planu (T5/T10), nie korekta ad hoc.
+-- Poszerzony decyzją użytkownika po audycie B1 (2026-08-10): image_url
+-- zatwierdzone jako PUBLIC (karta restauracji w ClientPanel.tsx renderuje ją
+-- bez logowania, klientem anon).
+-- Celowo BEZ: owner_id, aliases, created_at, description, phone, website,
+-- maps_rating, maps_ratings_total, photo_gallery, opening_hours — wzbogacenie
+-- karty i dane właścicielskie czyta backend (repository.js, service_role),
+-- nie przeglądarka. Rozszerzenie tej listy to decyzja §13 planu (T5/T10),
+-- nie korekta ad hoc (patrz audyt B1: owner_id/aliases wymagają osobnego
+-- backend-scoped path, nie grantu anon).
 GRANT SELECT (
   id, name, address, city, cuisine_type, lat, lng,
   delivery_available, price_level, is_active,
-  taxonomy_groups, taxonomy_cats, taxonomy_tags
+  taxonomy_groups, taxonomy_cats, taxonomy_tags, image_url
 ) ON public.restaurants TO anon, authenticated;
 
 CREATE POLICY restaurants_public_read ON public.restaurants
