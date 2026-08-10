@@ -3,7 +3,7 @@
 Dokument wskaźnikowy. **Nie jest planem** — plan kanoniczny to
 `docs/SUPABASE_FINAL_DEMO_HARDENING_PLAN.md` i tylko on obowiązuje.
 
-Ostatnia aktualizacja: 2026-08-09
+Ostatnia aktualizacja: 2026-08-10
 
 ---
 
@@ -53,6 +53,8 @@ git cat-file blob HEAD:docs/SUPABASE_FINAL_DEMO_HARDENING_PLAN.md | sha256sum
 | `6487cb4` | **Paczka A (A1-A11)** — fixup T8 po review Opusa: P1-1..P1-4, P2-1..P2-4, P2-6, nit-1..3 + decyzje U1/U2/U5 |
 | `c59453d` | **D1 cleanup** — F1 nagłówek etapu 8, F4 rozszerzenie zakresu B1 (kolumny poza `.select()`) |
 | `d42df6a` | **D2** — `sessionAdapter`: klasyfikacja odmowy uprawnień (42501) do memory-fallback + test 8/8 |
+| `34c6132` | **B1** — narrow public catalog read-set |
+| `d76adcc` | **B1** — owner-read endpoint (`api/owner/restaurants.js`) + restaurant alias resolver |
 
 Testy: **57/57 PASS** (`ordersAuth.t1`, `supabaseClients.t2`, `orderPersistence.antiDuplicate`
 = baseline 49/49 + `sessionAdapter.permissionDenied` 8/8 z D2). Paczka A i D1 nie dotknęły kodu
@@ -111,6 +113,30 @@ Awarie zastane, potwierdzone parytetem z `f996b23`, **nie regresje**:
   **Review Opusa 2026-08-09 (read-only, ta sesja): werdykt D2 CLOSED.**
   Konsekwencja: blokada etapu 8 zdjęta — README i nagłówek migracji etapu 8
   zaktualizowane tym commitem dokumentacyjnym.
+- **B1 — public catalog read-set + owner-read** — WYKONANE 2026-08-10, commity
+  `34c6132` (zawężenie read-setu `restaurants`/`menu_items_v2`) i `d76adcc`
+  (`api/owner/restaurants.js` — `GET /api/owner/restaurants[/:id]`, auth przez
+  `requireOwner`, service_role, ownership `owner_id = auth.uid()` w jednym
+  query + resolver aliasów restauracji). **B1 CLOSED.** Frontend
+  (`RestaurantManager.jsx` `DetailsTab`) już czyta przez ten endpoint zamiast
+  bezpośredniego `supabase.from('restaurants')` — patrz komentarz
+  `RestaurantManager.jsx:283-287`. WRITE (restaurants + menu_items_v2) świadomie
+  poza zakresem B1 — zostawione dla B5/D3 (`api/owner/restaurants.js:25-27`).
+- **B5 — Inwentaryzacja zapisów panelu właściciela** — WYKONANE 2026-08-10
+  (deliverable-only, zero edycji kodu). Raport:
+  `docs/B5_OWNER_PANEL_WRITE_INVENTORY.md`. Skrót: 4 operacje zapisu, wszystkie
+  w `RestaurantManager.jsx` (UPDATE `restaurants`; INSERT/UPDATE/DELETE
+  `menu_items_v2`), dziś chronione WYŁĄCZNIE przez RLS live (polityki
+  `owner_id = auth.uid()`, potwierdzone poprawne w inventory §3), które etap 10
+  usuwa — stąd D3 jest twardym warunkiem wejścia etapu 10. Dodatkowo odkryty
+  gap poza pierwotnym opisem B5: `MenuTab.reload()` czyta `menu_items_v2`
+  bezpośrednio z przeglądarki i po etapie 10 przestanie widzieć pozycje
+  `available = false` (nie tylko zapis się urwie, też odczyt) — wymaga nowego
+  endpointu `GET /api/owner/restaurants/:id/menu` w zakresie D3. Proponowany
+  kontrakt 5 endpointów (`PATCH` restauracji, `GET/POST/PATCH/DELETE` menu) w
+  raporcie §5, wzorowany na `api/owner/restaurants.js`. **B5 CLOSED**, blokuje
+  D3, czeka na C5 (zatwierdzenie kontraktu przez użytkownika) — 3 otwarte
+  pytania w raporcie §6.
 
 ## Otwarte
 
@@ -130,10 +156,13 @@ Awarie zastane, potwierdzone parytetem z `f996b23`, **nie regresje**:
   Werdykt APPROVE jest warunkiem wejścia do jakiegokolwiek T10. D1 NIE zostało
   wykonane w tej sesji — kategoria OPUS-REVIEW-REQUIRED, poza zakresem FIX-SAFE.
 - Kategorie B (verify-first: B1-B5), C (owner-decision: C1-C5) oraz D3-D5
-  z handoffu — NIETKNIĘTE. **D2 nie jest już otwarte** — wykonane 2026-08-09
-  (`d42df6a`), patrz „Zrobione" powyżej.
-- **NASTĘPNY KROK: B1 — public catalog read-set** (`api/server-vercel.js:781-790`
-  + kolumny poza `.select()` wg rozszerzenia F4 z D1). Blokuje etap 10, nie etap 8.
+  z handoffu — **B1 i B5 CLOSED** (patrz „Zrobione" powyżej), **B2-B4 oraz
+  C1-C5 i D3-D5 NIETKNIĘTE**. D2 nie jest już otwarte — wykonane 2026-08-09
+  (`d42df6a`).
+- **NASTĘPNY KROK: C5 — zatwierdzenie kontraktu endpointów panelu właściciela**
+  przez użytkownika, na podstawie `docs/B5_OWNER_PANEL_WRITE_INVENTORY.md` §5-6
+  (3 otwarte pytania). Warunek wejścia do D3 (implementacja). D3 blokuje etap
+  10 razem z T5 i B1 (B1 już zamknięte).
 - **AKTUALNY HANDOFF WYKONAWCZY: `docs/HANDOFF_EXEC_SONNET5_2026-08-08.md`.**
   Zawiera: decyzje użytkownika U1-U5, kontrakt Voice (głosowe potwierdzenie ≠
   złożenie zamówienia; rozdział `complete_cart_draft`/`finish_voice_session` od
