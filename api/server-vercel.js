@@ -795,6 +795,35 @@ app.get("/api/restaurants", async (req, res) => {
   }
 });
 
+// === OWNER RESTAURANTS (B1 owner-read: auth.getUser + owner_id server-side) ===
+app.get('/api/owner/restaurants', async (req, res) => {
+  try {
+    const mod = await import('./owner/restaurants.js');
+    return mod.default(req, res);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.get('/api/owner/restaurants/:id', async (req, res) => {
+  try {
+    const mod = await import('./owner/restaurants.js');
+    return mod.default(req, res);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// === RESTAURANT RESOLVER (public: name/alias -> {id,name}) ===
+app.get('/api/restaurants/resolve', async (req, res) => {
+  try {
+    const mod = await import('./restaurants/resolve.js');
+    return mod.default(req, res);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 // === ORDERS ===
 app.all("/api/orders", async (req, res) => {
   try {

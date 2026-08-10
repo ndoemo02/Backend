@@ -92,3 +92,64 @@ export function requireAdmin(req, res) {
   res.status(verdict.status).json({ ok: false, error: verdict.error });
   return false;
 }
+
+/**
+ * Weryfikuje tozsamosc wlasciciela na podstawie naglowka
+ * `Authorization: Bearer <Supabase JWT>`.
+ *
+ * Uzywa `supabase.auth.getUser(token)` (klient service_role z ./_supabase.js)
+ * - to jedyny sposob weryfikacji podpisu JWT po stronie serwera; token nigdy
+ * nie jest dekodowany recznie. Zwrocone `userId` jest JEDYNYM zrodlem prawdy
+ * o tozsamosci dla ownership checks nizej w stosie - endpoint nie ma przyjmowac
+ * `owner_id` z query/body jako dowodu wlasnosci.
+ *
+ * Import `_supabase.js` jest dynamiczny (lazy), zeby modul dalo sie zaladowac
+ * w testach bez pelnego env i zeby `vi.mock('./_supabase.js', ...)` przechwycil
+ * wywolanie identycznie jak w innych testach tego repo.
+ *
+ * @param {{ headers?: Record<string, unknown> }} req
+ * @returns {Promise<{ ok: true, userId: string } | { ok: false, status: 401, error: string }>}
+ */
+export async function authenticateOwner(req) {
+  const header = req?.headers?.authorization || req?.headers?.Authorization;
+
+  if (typeof header !== 'string' || !header.startsWith('Bearer ')) {
+    return { ok: false, status: 401, error: 'unauthorized' };
+  }
+
+  const token = header.slice(7).trim();
+  if (!token) {
+    return { ok: false, status: 401, error: 'unauthorized' };
+  }
+
+  try {
+    const { supabase } = await import('./_supabase.js');
+    const { data, error } = await supabase.auth.getUser(token);
+    if (error || !data?.user?.id) {
+      return { ok: false, status: 401, error: 'unauthorized' };
+    }
+    return { ok: true, userId: data.user.id };
+  } catch {
+    return { ok: false, status: 401, error: 'unauthorized' };
+  }
+}
+
+/**
+ * Twarda bramka dla endpointow wlasciciela. Gdy brak/niepoprawny JWT - wysyla
+ * 401 i zwraca null. W przeciwienstwie do `requireAdmin` (boolean) zwraca
+ * obiekt z `userId`, bo kazdy consumer potrzebuje go do filtra ownership.
+ *
+ * Wzorzec wywolania:
+ *   const auth = await requireOwner(req, res);
+ *   if (!auth) return; // requireOwner juz wyslal odpowiedz
+ *
+ * @param {{ headers?: Record<string, unknown> }} req
+ * @param {{ status: Function }} res
+ * @returns {Promise<{ ok: true, userId: string } | null>}
+ */
+export async function requireOwner(req, res) {
+  const verdict = await authenticateOwner(req);
+  if (verdict.ok) return verdict;
+  res.status(verdict.status).json({ ok: false, error: verdict.error });
+  return null;
+}
