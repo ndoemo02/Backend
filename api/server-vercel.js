@@ -795,7 +795,7 @@ app.get("/api/restaurants", async (req, res) => {
   }
 });
 
-// === OWNER RESTAURANTS (B1 owner-read: auth.getUser + owner_id server-side) ===
+// === OWNER RESTAURANTS (B1 owner-read + D3 owner-write: auth.getUser + owner_id server-side) ===
 app.get('/api/owner/restaurants', async (req, res) => {
   try {
     const mod = await import('./owner/restaurants.js');
@@ -808,6 +808,52 @@ app.get('/api/owner/restaurants', async (req, res) => {
 app.get('/api/owner/restaurants/:id', async (req, res) => {
   try {
     const mod = await import('./owner/restaurants.js');
+    return mod.default(req, res);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.patch('/api/owner/restaurants/:id', async (req, res) => {
+  try {
+    const mod = await import('./owner/restaurants.js');
+    return mod.default(req, res);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// === OWNER MENU (D3: menu_items_v2, service_role, ownership przez restaurant_id) ===
+app.get('/api/owner/restaurants/:id/menu', async (req, res) => {
+  try {
+    const mod = await import('./owner/restaurantMenu.js');
+    return mod.default(req, res);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.post('/api/owner/restaurants/:id/menu', async (req, res) => {
+  try {
+    const mod = await import('./owner/restaurantMenu.js');
+    return mod.default(req, res);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.patch('/api/owner/restaurants/:restaurantId/menu/:itemId', async (req, res) => {
+  try {
+    const mod = await import('./owner/restaurantMenu.js');
+    return mod.default(req, res);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.delete('/api/owner/restaurants/:restaurantId/menu/:itemId', async (req, res) => {
+  try {
+    const mod = await import('./owner/restaurantMenu.js');
     return mod.default(req, res);
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
