@@ -3,7 +3,7 @@
 Dokument wskaźnikowy. **Nie jest planem** — plan kanoniczny to
 `docs/SUPABASE_FINAL_DEMO_HARDENING_PLAN.md` i tylko on obowiązuje.
 
-Ostatnia aktualizacja: 2026-08-10
+Ostatnia aktualizacja: 2026-08-11
 
 ---
 
@@ -55,10 +55,22 @@ git cat-file blob HEAD:docs/SUPABASE_FINAL_DEMO_HARDENING_PLAN.md | sha256sum
 | `d42df6a` | **D2** — `sessionAdapter`: klasyfikacja odmowy uprawnień (42501) do memory-fallback + test 8/8 |
 | `34c6132` | **B1** — narrow public catalog read-set |
 | `d76adcc` | **B1** — owner-read endpoint (`api/owner/restaurants.js`) + restaurant alias resolver |
+| `0c60705` | **B5** — inwentaryzacja zapisów panelu właściciela (docs-only) |
+| `d53c71b` | **D3** — owner-scoped write backend (`restaurants.js` PATCH, nowy `restaurantMenu.js`, `_helpers.js`, routing w `server-vercel.js`, 40 nowych testów) |
 
-Testy: **57/57 PASS** (`ordersAuth.t1`, `supabaseClients.t2`, `orderPersistence.antiDuplicate`
-= baseline 49/49 + `sessionAdapter.permissionDenied` 8/8 z D2). Paczka A i D1 nie dotknęły kodu
-backendu (wyłącznie `supabase/` + `docs/`); D2 dotknęło wyłącznie `sessionAdapter.js` + nowy test.
+Frontend (`security/rls-demo-hardening-frontend`, repo `Freeflow-Final`, poza tym worktree):
+`f99c19d` — **D3** — `RestaurantManager.jsx` przepięty z bezpośrednich zapisów Supabase
+(`restaurants` UPDATE, `menu_items_v2` INSERT/UPDATE/DELETE, menu READ) na `fetch` do
+`/api/owner/restaurants/*`.
+
+Testy: **96/96 PASS** na bramce D3 (`ownerRestaurants.test.js` 21/21 +
+`ownerRestaurantMenu.test.js` 19/19 + baseline/resolver 56/56 —
+`ordersAuth.t1`/`supabaseClients.t2`/`orderPersistence.antiDuplicate`/
+`restaurantResolver.aliasStep`). Pełny suite: zero nowych regresji (delta failures = 0,
++30 testów, wszystkie D3, wszystkie PASS — jedyna fluktuacja między przebiegami to
+`discoveryTaxonomy.test.js`, timing-zależny kontrakt p95, bez związku z `api/owner/*`).
+Paczka A i D1 nie dotknęły kodu backendu (wyłącznie `supabase/` + `docs/`); D2 dotknęło
+wyłącznie `sessionAdapter.js` + nowy test.
 
 Awarie zastane, potwierdzone parytetem z `f996b23`, **nie regresje**:
 - `greetingGate` / `liveToolRouter` / `conversationGuards` / `orderHandler.explicitRestaurantLock` — 17 failed
@@ -137,6 +149,35 @@ Awarie zastane, potwierdzone parytetem z `f996b23`, **nie regresje**:
   raporcie §5, wzorowany na `api/owner/restaurants.js`. **B5 CLOSED**, blokuje
   D3, czeka na C5 (zatwierdzenie kontraktu przez użytkownika) — 3 otwarte
   pytania w raporcie §6.
+- **C5 — zatwierdzenie kontraktu endpointów panelu właściciela** — ZATWIERDZONE
+  przez użytkownika 2026-08-11. Kontrakt z B5 §5 (5 endpointów) przyjęty bez zmian.
+- **D3 — Backendowe endpointy zapisu panelu właściciela** — WYKONANE 2026-08-11,
+  commity `d53c71b` (backend) + `f99c19d` (frontend, repo `Freeflow-Final`,
+  branch `security/rls-demo-hardening-frontend`). Zgodnie z kontraktem C5:
+  - `PATCH /api/owner/restaurants/:id` — edycja restauracji, allowlist 11 pól
+    z `DetailsTab.save()`, ownership `.eq('id').eq('owner_id')` atomowo w
+    samym `update()` (`api/owner/restaurants.js:100-106`).
+  - `GET /api/owner/restaurants/:id/menu` — pełne menu właściciela (wliczając
+    `available=false`), zastępuje bezpośredni odczyt `MenuTab.reload()`
+    zależny od publicznej polityki Stage10.
+  - `POST /PATCH /DELETE .../menu(/:itemId)` — CRUD pozycji menu, ownership
+    dwuwarstwowe: `getOwnedRestaurant()` (restauracja) +
+    `.eq('id',itemId).eq('restaurant_id',restaurantId)` w samym zapisie
+    (`api/owner/restaurantMenu.js`). `restaurant_id` nigdy z body.
+  - Nowy wspólny helper `api/owner/_helpers.js`: `getOwnedRestaurant` +
+    generyczny `buildAllowlistedPatch` (iteruje po schemacie, nie po kluczach
+    body — pola spoza allowlisty, w tym `owner_id`/`id`/`restaurant_id`, nigdy
+    nie są odczytywane).
+  - Frontend `RestaurantManager.jsx` przepięty ze wszystkich 5 bezpośrednich
+    wywołań `supabase.from('restaurants'|'menu_items_v2')` na `fetch` do tych
+    endpointów; nieużywany import `supabase` usunięty.
+  - Testy: 40 nowych (`ownerRestaurants.test.js` +11 PATCH,
+    `ownerRestaurantMenu.test.js` nowy, 19), 96/96 na bramce D3, zero regresji
+    na pełnym suite.
+  **Niezależny review Opusa (read-only, osobna sesja) 2026-08-11: werdykt
+  D3 APPROVED — zero P0, zero P1.** 7 ustaleń P2 (nieblokujące, kontrakt/testy)
+  przeniesione do backlogu testów-hardeningu poniżej. **D3 CLOSED — owner-panel
+  nie jest już blokerem etapu 10.**
 
 ## Otwarte
 
@@ -151,18 +192,23 @@ Awarie zastane, potwierdzone parytetem z `f996b23`, **nie regresje**:
   osobny plik; wszystkie ustalenia wcielone do handoffu (sekcja 7 = mapowanie)
   i teraz też do `supabase/README.md` (reprodukcja tabeli po paczce A).
 - **Fixup po review (paczka A)** — WYKONANE, patrz „Zrobione" powyżej.
-- **NASTĘPNY KROK WYMAGANY: D1 — re-review paczki A przez Opusa** (read-only),
-  zgodnie z `docs/HANDOFF_EXEC_SONNET5_2026-08-08.md` §6 (D1) i §8 (bramki).
-  Werdykt APPROVE jest warunkiem wejścia do jakiegokolwiek T10. D1 NIE zostało
-  wykonane w tej sesji — kategoria OPUS-REVIEW-REQUIRED, poza zakresem FIX-SAFE.
+- **D1 — re-review paczki A przez Opusa (read-only)** — **APPROVED.** Warunek
+  wejścia do T10 spełniony. (Poprzedni wpis w tym dokumencie błędnie twierdził,
+  że D1 nadal jest wymagane — stan nieaktualny, skorygowany 2026-08-11.)
 - Kategorie B (verify-first: B1-B5), C (owner-decision: C1-C5) oraz D3-D5
-  z handoffu — **B1 i B5 CLOSED** (patrz „Zrobione" powyżej), **B2-B4 oraz
-  C1-C5 i D3-D5 NIETKNIĘTE**. D2 nie jest już otwarte — wykonane 2026-08-09
-  (`d42df6a`).
-- **NASTĘPNY KROK: C5 — zatwierdzenie kontraktu endpointów panelu właściciela**
-  przez użytkownika, na podstawie `docs/B5_OWNER_PANEL_WRITE_INVENTORY.md` §5-6
-  (3 otwarte pytania). Warunek wejścia do D3 (implementacja). D3 blokuje etap
-  10 razem z T5 i B1 (B1 już zamknięte).
+  z handoffu — **B1, B5, C5 i D3 CLOSED** (patrz „Zrobione" powyżej).
+  **B2-B4, C1-C4, D4-D5 NIETKNIĘTE.** D2 nie jest już otwarte — wykonane
+  2026-08-09 (`d42df6a`).
+- **Owner-panel nie jest już blokerem etapu 10.** D3 zamknęło jedyną aktywną
+  zależność panelu właściciela od bezpośredniego zapisu/odczytu Supabase w
+  przeglądarce — potwierdzone grepem: zero `.update/.insert/.delete` na
+  `restaurants`/`menu_items_v2` w aktywnym UI (`RestaurantManager.jsx`).
+  Pozostałe bezpośrednie `.from('restaurants')` w aktywnym froncie
+  (`ClientPanel.tsx`, `CustomerPanel.jsx`, `CartContext.jsx`) to wyłącznie
+  `.select()` z jawną, wąską listą kolumn — przy okazji review D3 potwierdzone,
+  że przynajmniej te trzy miejsca NIE używają `select('*')` (stan w planie
+  §14 może być nieaktualny w tym punkcie — bez pełnego audytu T5 nie
+  rozstrzygam czy T5 jest w całości zamknięte, czy tylko częściowo).
 - **AKTUALNY HANDOFF WYKONAWCZY: `docs/HANDOFF_EXEC_SONNET5_2026-08-08.md`.**
   Zawiera: decyzje użytkownika U1-U5, kontrakt Voice (głosowe potwierdzenie ≠
   złożenie zamówienia; rozdział `complete_cart_draft`/`finish_voice_session` od
@@ -192,6 +238,37 @@ Nie są warunkiem wejścia żadnego etapu — do zrobienia przy najbliższym dot
    klasy permission/RLS. Dodać asercję, że błąd typu connection failure
    (`{ code: '08006', message: 'connection failure' }`) nadal propaguje —
    `await expect(adapter.loadSession('x')).rejects`.
+
+Nieblokujące, wychwycone przez niezależny review Opusa D3 2026-08-11 (werdykt D3 APPROVED,
+zero P0/P1). Nie są warunkiem wejścia etapu 10 — do zrobienia przy najbliższym dotknięciu
+`api/owner/*`.
+
+3. **Silent field drop + 200 „Zapisano" przy częściowo niepoprawnym payloadzie.**
+   `buildAllowlistedPatch` (`api/owner/_helpers.js:59-95`) traktuje wartość niepoprawną
+   identycznie jak nieobecną — bezpieczne (fail-closed, zero półzapisu), ale mylące dla
+   właściciela (np. ujemne `min_order_pln` ciche pomijane, frontend nie waliduje znaku
+   przed wysyłką — `RestaurantManager.jsx:367`).
+4. **401 dla POST/PATCH/DELETE menu przetestowany tylko pośrednio.** Testy 401 w
+   `ownerRestaurantMenu.test.js` istnieją wyłącznie w bloku `GET`. Guard (`requireOwner`
+   przed rozgałęzieniem metod, `restaurantMenu.js:96`) jest bezpieczny, ale brak testu
+   wprost blokującego regresję, gdyby ktoś przeniósł go do gałęzi per-metoda.
+5. **`eqSpy` współdzielony między dwoma query builderami w testach menu.** Asercje
+   `eq('id',...)`/`eq('restaurant_id',...)` w `ownerRestaurantMenu.test.js` nie dowodzą,
+   że oba filtry są w JEDNYM łańcuchu zapytania (są — `restaurantMenu.js:146-152`), tylko
+   że obie wartości gdzieś padły. Doprecyzować mock, jeśli kod kiedyś rozdzieli te query.
+6. **Malformed UUID w `:id`/`:itemId` → 500 zamiast 404.** Nie-UUID powoduje błąd
+   PostgREST (22P02) łapany przez ogólny `catch` → 500 `internal_error`. Zero wycieku,
+   ale zaśmieca logi; do rozważenia dedykowana walidacja formatu przed query.
+7. **TOCTOU w ścieżce menu (marginalne).** `getOwnedRestaurant` i właściwy zapis to dwa
+   osobne zapytania; okno wyścigu wymagałoby przepisania właściciela restauracji w trakcie
+   pojedynczego requestu — demo nie ma transferu własności (U3), ryzyko teoretyczne.
+8. **Rozjazd allowlisty zapisu i projekcji odczytu restauracji (odziedziczone po B1).**
+   `description`/`min_order_pln`/`is_open` są zapisywalne przez D3, ale nie ma ich w
+   `DETAIL_FIELDS` (`restaurants.js:40-41`) — właściciel nie zobaczy zapisanej wartości
+   po odświeżeniu. Pre-existing z B1 (`d76adcc`), D3 tylko dokłada ścieżkę zapisu.
+9. **Brak górnego limitu długości stringów w `buildAllowlistedPatch`.** Walidowany jest
+   tylko `minLength`. Górna granica pochodzi wyłącznie z limitu ciała `express.json()`
+   (100kb) i typów kolumn DB — bez DoS-u, ale bardzo długie wartości przechodzą do bazy.
 
 ---
 
