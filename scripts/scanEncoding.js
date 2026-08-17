@@ -67,7 +67,6 @@ function collectSourceFiles() {
     // Root-level config files we also want to validate.
     const rootCandidates = [
         'package.json',
-        'server.js',
         'vitest.config.js',
     ];
 

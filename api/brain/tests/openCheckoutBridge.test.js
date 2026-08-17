@@ -23,7 +23,7 @@ vi.mock('../../_supabase.js', () => {
     };
 });
 
-vi.mock('../../debug.js', () => ({
+vi.mock('../services/DebugSessionState.js', () => ({
     updateDebugSession: vi.fn(),
 }));
 

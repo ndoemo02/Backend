@@ -5,7 +5,7 @@
   "type": "module",
   "main": "api/server-vercel.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node api/server-vercel.js",
     "start:ws": "node api/voice/live/standalone-server.js",
     "dev": "node api/server-vercel.js",
     "vercel-build": "echo Using server-vercel.js handler",

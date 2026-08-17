@@ -1,6 +1,6 @@
 import { supabase } from '../_supabase.js';
 import { createOrder } from '../orders.js';
-import { updateDebugSession } from '../debug.js';
+import { updateDebugSession } from './services/DebugSessionState.js';
 import { getRestaurantAliases } from '../config/configService.js';
 
 // ——— Utils: Import from helpers ———

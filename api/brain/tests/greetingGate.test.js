@@ -11,7 +11,7 @@ vi.mock('../_supabase.js', () => ({
     supabase: { from: vi.fn(() => ({ select: vi.fn(() => ({ limit: vi.fn(() => Promise.resolve({ data: [], error: null })), in: vi.fn(() => Promise.resolve({ data: [], error: null })) })) })) }
 }));
 vi.mock('../orders.js', () => ({ createOrder: vi.fn() }));
-vi.mock('../debug.js', () => ({ updateDebugSession: vi.fn() }));
+vi.mock('../services/DebugSessionState.js', () => ({ updateDebugSession: vi.fn() }));
 vi.mock('../config/configService.js', () => ({ getRestaurantAliases: vi.fn(async () => ({})) }));
 vi.mock('./intents/functionalIntentDetector.js', () => ({
     detectFunctionalIntent: vi.fn(() => ({ intent: 'UNKNOWN', confidence: 0 })),
