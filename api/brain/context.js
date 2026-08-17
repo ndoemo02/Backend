@@ -1,16 +1,24 @@
 // /api/brain/context.js
 // Lekka pamięć sesji Amber (tylko w RAM, brak profilowania)
 
-const sessions = new Map(); // key = sessionId, value = kontekst rozmowy
+import {
+  requireValidSessionId,
+  validateSessionId
+} from "./session/sessionIdContract.js";
+
+const sessions = new Map(); // key = kanoniczny sessionId, value = kontekst rozmowy
 
 export default async function handler(req, res) {
   try {
     const body = await req.json?.() || req.body || {};
-    const { sessionId, tone, intent, restaurant, items } = body;
+    const { tone, intent, restaurant, items } = body;
 
-    if (!sessionId) {
-      return res.status(400).json({ ok: false, error: "missing_sessionId" });
+    // Granica kontraktu sesji: brak -> missing_session_id, zly format -> invalid_session_id.
+    const verdict = validateSessionId(body.session_id ?? body.sessionId);
+    if (!verdict.ok) {
+      return res.status(400).json({ ok: false, error: verdict.error });
     }
+    const sessionId = verdict.sessionId;
 
     // 🔹 Pobierz istniejącą sesję
     const prev = sessions.get(sessionId) || {};
@@ -46,19 +54,22 @@ export default async function handler(req, res) {
 }
 
 // Pomocnicza funkcja (opcjonalnie eksportowana do innych modułów)
+// Fail-closed: niekanoniczny identyfikator nigdy nie odpytuje magazynu.
 export function getSession(sessionId) {
-  return sessions.get(sessionId) || null;
+  return sessions.get(requireValidSessionId(sessionId)) || null;
 }
 
 // Funkcja do aktualizacji sesji
+// Fail-closed: walidacja przed set(), wiec invalid ID nie zaklada klucza.
 export function updateSession(sessionId, updates) {
-  const current = sessions.get(sessionId) || {};
+  const key = requireValidSessionId(sessionId);
+  const current = sessions.get(key) || {};
   const updated = {
     ...current,
     ...updates,
     lastUpdated: Date.now()
   };
-  sessions.set(sessionId, updated);
+  sessions.set(key, updated);
   return updated;
 }
 

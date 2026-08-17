@@ -15,6 +15,7 @@ import {
     buildDemoSessionPatch,
     resolveDemoContextFromRequest,
 } from '../demo/demoContext.js';
+import { validateSessionId } from './session/sessionIdContract.js';
 
 // Singleton Initialization (Warm Start)
 const nlu = new NLURouter();
@@ -34,15 +35,16 @@ export default async function handler(req, res) {
         const text = input || body.text;
         const sessionId = session_id || body.sessionId;
 
-        if (!sessionId || typeof sessionId !== 'string' || !sessionId.trim()) {
-            return res.status(400).json({ ok: false, error: 'missing_session_id' });
+        const sessionIdVerdict = validateSessionId(sessionId);
+        if (!sessionIdVerdict.ok) {
+            return res.status(400).json({ ok: false, error: sessionIdVerdict.error });
         }
 
         if (!text && !body.text) {
             return res.status(400).json({ ok: false, error: 'missing_input' });
         }
 
-        const normalizedSessionId = sessionId.trim();
+        const normalizedSessionId = sessionIdVerdict.sessionId;
         const demoContext = resolveDemoContextFromRequest(body);
 
         // Serverless safety: hydrate the durable session before adding request
@@ -66,7 +68,12 @@ export default async function handler(req, res) {
 
         // Vercel may freeze an invocation immediately after res.json(). Persist
         // all mutations performed by legacy sync call-sites before responding.
-        const finalSessionId = String(result?.session_id || normalizedSessionId);
+        const resultSessionVerdict = validateSessionId(result?.session_id || normalizedSessionId);
+        if (!resultSessionVerdict.ok) throw new Error('invalid_pipeline_session_id');
+        if (result?.newSessionId && !validateSessionId(result.newSessionId).ok) {
+            throw new Error('invalid_pipeline_new_session_id');
+        }
+        const finalSessionId = resultSessionVerdict.sessionId;
         const finalSessionSnapshot = getSession(finalSessionId);
         if (finalSessionSnapshot) {
             await setSession(finalSessionId, finalSessionSnapshot);

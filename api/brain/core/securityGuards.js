@@ -1,3 +1,5 @@
+import { validateSessionId } from '../session/sessionIdContract.js';
+
 const ROLE_GUARD_FALLBACK_REPLY = 'Pomagam w zamówieniu. Powiedz proszę, co chcesz dodać lub zmienić.';
 const SUBMITTED_ORDER_FALLBACK_REPLY = 'Zamówienie jest już złożone. Mogę dodać nowe.';
 
@@ -179,17 +181,23 @@ function isMetaRequest(inputText = '') {
 function sanitizeAssistantResponse(payload) {
     const sanitized = sanitizeValue(payload, '');
 
-    // session_id is an opaque conversation handle supplied by the client, not
-    // a credential. The generic long-token guard used to replace generated
+    // session_id is a canonical runtime correlation handle, not a credential.
+    // The generic long-token guard used to replace generated
     // IDs (for example `sess_...`) with "[redacted]", which made the client
     // switch to a different session after the first response.
-    if (
-        payload
-        && typeof payload === 'object'
-        && typeof payload.session_id === 'string'
-        && /^[A-Za-z0-9_-]{1,128}$/.test(payload.session_id)
-    ) {
-        sanitized.session_id = payload.session_id;
+    if (payload && typeof payload === 'object' && 'session_id' in payload) {
+        if (typeof payload.session_id === 'string' && validateSessionId(payload.session_id).ok) {
+            sanitized.session_id = payload.session_id;
+        } else {
+            delete sanitized.session_id;
+        }
+    }
+    if (payload && typeof payload === 'object' && 'newSessionId' in payload) {
+        if (typeof payload.newSessionId === 'string' && validateSessionId(payload.newSessionId).ok) {
+            sanitized.newSessionId = payload.newSessionId;
+        } else {
+            delete sanitized.newSessionId;
+        }
     }
 
     return sanitized;

@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { requireValidSessionId } from './sessionIdContract.js';
 
 const SESSION_TTL_MS = 2 * 60 * 60 * 1000; // 2h
 
@@ -12,13 +13,7 @@ function nowIso() {
 }
 
 function ensureSessionId(sessionId) {
-    if (typeof sessionId !== 'string' || !sessionId.trim()) {
-        const err = new Error('missing_session_id');
-        err.statusCode = 400;
-        throw err;
-    }
-
-    return sessionId.trim();
+    return requireValidSessionId(sessionId);
 }
 
 function parseTimestamp(value) {

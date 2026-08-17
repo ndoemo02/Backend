@@ -6,7 +6,7 @@ import { updateSession, getSession } from '../context.js';
 describe('🧠 Smart Intent System E2E', () => {
 
     it('Flow: Find Nearby -> Select -> Confirm Menu', () => {
-        const sessionId = 'e2e-test-flow';
+        const sessionId = 'sess_e2e_test_flow';
 
         // 1. Simulate state after "Poleć coś" -> System returns results
         updateSession(sessionId, {

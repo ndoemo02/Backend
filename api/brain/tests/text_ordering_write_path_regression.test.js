@@ -110,7 +110,7 @@ describe('TEXT write-path safety regressions', () => {
 
   it('A: explicit restaurant/menu targeting keeps restaurant context', async () => {
     const pipeline = createPipeline();
-    const sessionId = `text_target_${Date.now()}`;
+    const sessionId = `sess_text_target_${Date.now()}`;
 
     const menuResult = await pipeline.process(sessionId, 'pokaz menu Stara Kamienica');
     const calzoneResult = await pipeline.process(`${sessionId}_2`, 'pokaz restauracje Calzone');
@@ -133,7 +133,7 @@ describe('TEXT write-path safety regressions', () => {
 
   it('A1: qualified next request stays in the active menu context', async () => {
     const pipeline = createPipeline();
-    const sessionId = `menu_next_${Date.now()}`;
+    const sessionId = `sess_menu_next_${Date.now()}`;
 
     await pipeline.process(sessionId, 'pokaz menu Stara Kamienica');
     const result = await pipeline.process(sessionId, 'Jakie są kolejne dania główne?');
@@ -148,7 +148,7 @@ describe('TEXT write-path safety regressions', () => {
 
   it('A2: UI restaurant selection uses the exact ID from the last discovery list', async () => {
     const pipeline = createPipeline();
-    const sessionId = `ui_select_${Date.now()}`;
+    const sessionId = `sess_ui_select_${Date.now()}`;
     updateSession(sessionId, { last_restaurants_list: RESTAURANTS });
     const nluSpy = vi.spyOn(pipeline.nlu, 'detect');
 
@@ -169,7 +169,7 @@ describe('TEXT write-path safety regressions', () => {
 
   it('A3: stale UI restaurant ID is rejected without mutating restaurant context', async () => {
     const pipeline = createPipeline();
-    const sessionId = `ui_select_stale_${Date.now()}`;
+    const sessionId = `sess_ui_select_stale_${Date.now()}`;
     updateSession(sessionId, { last_restaurants_list: RESTAURANTS });
     const result = await pipeline.process(sessionId, 'Nieaktualna restauracja', {
       requestBody: {
@@ -187,7 +187,7 @@ describe('TEXT write-path safety regressions', () => {
 
   it('A4: UI restaurant selection revalidates an active ID after a session-list cache miss', async () => {
     const pipeline = createPipeline();
-    const sessionId = `ui_select_cache_miss_${Date.now()}`;
+    const sessionId = `sess_ui_select_cache_miss_${Date.now()}`;
 
     const result = await pipeline.process(sessionId, 'Restauracja Stara Kamienica', {
       requestBody: {
@@ -205,7 +205,7 @@ describe('TEXT write-path safety regressions', () => {
 
   it('A5: UI restaurant selection resolves an exact active card name when its cached ID is unusable', async () => {
     const pipeline = createPipeline();
-    const sessionId = `ui_select_name_fallback_${Date.now()}`;
+    const sessionId = `sess_ui_select_name_fallback_${Date.now()}`;
 
     const result = await pipeline.process(sessionId, 'Restauracja Stara Kamienica', {
       requestBody: {
@@ -227,8 +227,8 @@ describe('TEXT write-path safety regressions', () => {
 
   it('B: explicit restaurant + dish stays scoped and no cross-restaurant substitution', async () => {
     const pipeline = createPipeline();
-    const s1 = `text_scope_single_${Date.now()}`;
-    const s2 = `text_scope_cross_${Date.now()}`;
+    const s1 = `sess_text_scope_single_${Date.now()}`;
+    const s2 = `sess_text_scope_cross_${Date.now()}`;
 
     const ok = await pipeline.process(s1, 'chcialbym nalesniki z nutella z restauracji Stara Kamienica');
     const bad = await pipeline.process(s2, 'dodaj nalesniki z nutella z restauracji Dwor Hubertus');
@@ -250,7 +250,7 @@ describe('TEXT write-path safety regressions', () => {
 
   it('B2: restaurant context + "nalesniki z nutella" never aliases to chicken crepe', async () => {
     const pipeline = createPipeline();
-    const sessionId = `text_alias_${Date.now()}`;
+    const sessionId = `sess_text_alias_${Date.now()}`;
 
     await pipeline.process(sessionId, 'pokaz menu Stara Kamienica');
     const result = await pipeline.process(sessionId, 'nalesniki z nutella');
@@ -267,7 +267,7 @@ describe('TEXT write-path safety regressions', () => {
 
   it('C: multi-item keeps quantity, order scope and item list in one restaurant', async () => {
     const pipeline = createPipeline();
-    const sessionId = `text_multi_${Date.now()}`;
+    const sessionId = `sess_text_multi_${Date.now()}`;
 
     const result = await pipeline.process(
       sessionId,
@@ -291,7 +291,7 @@ describe('TEXT write-path safety regressions', () => {
 
   it('D/E: ambiguity stays conservative (clarify/no forced add)', async () => {
     const pipeline = createPipeline();
-    const sessionId = `text_amb_${Date.now()}`;
+    const sessionId = `sess_text_amb_${Date.now()}`;
 
     await pipeline.process(sessionId, 'Restauracja Stara Kamienica');
     const result = await pipeline.process(sessionId, 'dodaj cos dobrego');

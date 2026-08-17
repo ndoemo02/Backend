@@ -57,7 +57,7 @@ describe('open_checkout bridge', () => {
 
     it('opens checkout when cart has items', async () => {
         const pipeline = createPipeline();
-        const sessionId = `checkout_bridge_${Date.now()}`;
+        const sessionId = `sess_checkout_bridge_${Date.now()}`;
 
         updateSession(sessionId, {
             conversationPhase: 'ordering',
@@ -84,7 +84,7 @@ describe('open_checkout bridge', () => {
 
     it('returns cart-empty clarify when checkout requested without items', async () => {
         const pipeline = createPipeline();
-        const sessionId = `checkout_empty_${Date.now()}`;
+        const sessionId = `sess_checkout_empty_${Date.now()}`;
 
         updateSession(sessionId, {
             conversationPhase: 'ordering',

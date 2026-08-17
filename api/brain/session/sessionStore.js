@@ -4,6 +4,7 @@ import {
     saveSession as saveSessionToAdapter,
     touchSession as touchSessionInAdapter,
 } from "./sessionAdapter.js";
+import { generateSessionId, requireValidSessionId } from "./sessionIdContract.js";
 
 const SESSION_TTL_MS = 2 * 60 * 60 * 1000; // 2h
 const CACHE_SWEEP_INTERVAL_MS = 5 * 60 * 1000;
@@ -17,13 +18,7 @@ function nowIso() {
 }
 
 function ensureSessionId(sessionId) {
-    if (typeof sessionId !== 'string' || !sessionId.trim()) {
-        const err = new Error('missing_session_id');
-        err.statusCode = 400;
-        throw err;
-    }
-
-    return sessionId.trim();
+    return requireValidSessionId(sessionId);
 }
 
 function parseTimestamp(value) {
@@ -207,9 +202,7 @@ export async function closeSession(sessionId, reason) {
  * Format: sess_{timestamp}_{random}
  */
 export function generateNewSessionId() {
-    const ts = Date.now();
-    const rand = Math.random().toString(36).substring(2, 8);
-    return `sess_${ts}_${rand}`;
+    return generateSessionId();
 }
 
 /**

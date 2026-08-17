@@ -5,6 +5,7 @@ import {
     buildDemoSessionPatch,
     resolveDemoContextFromRequest,
 } from '../../demo/demoContext.js';
+import { validateSessionId } from '../../brain/session/sessionIdContract.js';
 
 const DEFAULT_LIVE_MODEL =
     process.env.GEMINI_LIVE_MODEL
@@ -102,10 +103,11 @@ export default async function handler(req, res) {
         return res.status(400).json({ ok: false, error: 'live_model_not_allowed' });
     }
 
-    const sessionId = typeof req.body?.session_id === 'string' ? req.body.session_id.trim() : '';
-    if (!sessionId) {
-        return res.status(400).json({ ok: false, error: 'missing_session_id' });
+    const sessionIdVerdict = validateSessionId(req.body?.session_id);
+    if (!sessionIdVerdict.ok) {
+        return res.status(400).json({ ok: false, error: sessionIdVerdict.error });
     }
+    const sessionId = sessionIdVerdict.sessionId;
 
     let demoContext;
     try {

@@ -1,6 +1,7 @@
 // api/debug.js
 import express from 'express';
 import supabase from './brain/supabaseClient.js';
+import { generateSessionId, requireValidSessionId } from './brain/session/sessionIdContract.js';
 const router = express.Router();
 
 // Global session state for debugging
@@ -48,7 +49,9 @@ router.get('/debug/session', async (req, res) => {
 router.post('/debug/log', async (req, res) => {
   try {
     const logData = {
-      session_id: req.body.sessionId || debugSessionState.sessionId || `debug-${Date.now()}`,
+      session_id: requireValidSessionId(
+        req.body.session_id || req.body.sessionId || debugSessionState.sessionId || generateSessionId('debug')
+      ),
       intent: req.body.intent || debugSessionState.intent,
       restaurant: req.body.restaurant || debugSessionState.restaurant,
       confidence: req.body.confidence || debugSessionState.confidence,
@@ -81,8 +84,11 @@ router.post('/debug/log', async (req, res) => {
     });
   } catch (error) {
     console.error("Debug log error:", error);
-    res.status(500).json({ 
-      error: "Failed to log session",
+    // Contract violations from requireValidSessionId carry statusCode 400 and
+    // must stay client errors; only genuine failures degrade to 500.
+    const statusCode = Number(error?.statusCode) || 500;
+    res.status(statusCode).json({
+      error: statusCode === 400 ? error.message : "Failed to log session",
       message: error.message
     });
   }

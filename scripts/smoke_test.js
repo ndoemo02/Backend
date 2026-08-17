@@ -43,7 +43,7 @@ async function testScenario(name, input, sessionId) {
 }
 
 async function runSmokeTests() {
-    const sessionId = `smoke-${Date.now()}`;
+    const sessionId = `sess_smoke_${Date.now()}_${Math.random().toString(36).slice(2, 8).padEnd(6, '0')}`;
 
     // a) Discovery
     await testScenario('Discovery', 'Szukam czegoś do jedzenia w Piekarach', sessionId);

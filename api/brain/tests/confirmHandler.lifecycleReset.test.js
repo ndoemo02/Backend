@@ -5,7 +5,7 @@ import { getSession } from '../session/sessionStore.js';
 describe('ConfirmOrderHandler lifecycle reset', () => {
     it('resets restaurant/menu/orderMode context on confirm_order completion', async () => {
         const handler = new ConfirmOrderHandler();
-        const sessionId = `test_confirm_reset_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+        const sessionId = `sess_test_confirm_reset_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
         const session = {
             pendingOrder: {

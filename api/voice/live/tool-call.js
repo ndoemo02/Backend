@@ -5,6 +5,7 @@ import { applyCORS } from '../../_cors.js';
 import { ToolRouter } from './ToolRouter.js';
 import { validateLiveInternalKey, validateLiveOrigin } from './liveSecurity.js';
 import { buildInitialTurnTrace } from './liveTurnLedger.js';
+import { validateSessionId } from '../../brain/session/sessionIdContract.js';
 
 function isLiveModeEnabled() {
   return String(process.env.LIVE_MODE || '').toLowerCase() === 'true';
@@ -53,20 +54,23 @@ export default async function handler(req, res) {
     });
   }
 
-  if (!sessionId || !toolName) {
+  const sessionIdVerdict = validateSessionId(sessionId);
+  if (!sessionIdVerdict.ok || !toolName) {
     console.log(`[TOOL_CALL_HTTP] 400 missing_session_or_tool — sessionId=${JSON.stringify(sessionId)} toolName=${JSON.stringify(toolName)} bodyKeys=${Object.keys(body).join(',')}`);
     return res.status(400).json({
       ok: false,
-      error: 'missing_session_or_tool',
+      error: !sessionIdVerdict.ok ? sessionIdVerdict.error : 'missing_tool',
       detail: { sessionId: !!sessionId, toolName: !!toolName },
     });
   }
 
+  const normalizedSessionId = sessionIdVerdict.sessionId;
+
   try {
-    console.log(`[InteractionBridge] toolcall_received turn_id=${turnId || '?'} session_id=${sessionId} tool=${toolName} source=http`);
+    console.log(`[InteractionBridge] toolcall_received turn_id=${turnId || '?'} session_id=${normalizedSessionId} tool=${toolName} source=http`);
     const t0 = Date.now();
     const turnTrace = buildInitialTurnTrace({
-      sessionId: String(sessionId),
+      sessionId: normalizedSessionId,
       turnId,
       requestId,
       toolName: String(toolName),
@@ -76,7 +80,7 @@ export default async function handler(req, res) {
       source: 'live_tool_http',
     });
     const result = await toolRouter.executeToolCall({
-      sessionId: String(sessionId),
+      sessionId: normalizedSessionId,
       toolName: String(toolName),
       args,
       requestId,

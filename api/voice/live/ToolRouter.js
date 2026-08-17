@@ -27,6 +27,7 @@ import {
     finalizeTurnTrace,
 } from './liveTurnLedger.js';
 import { shouldRoutePendingDiscoveryClarification } from '../../brain/discovery/activeDiscoveryFilter.js';
+import { validateSessionId } from '../../brain/session/sessionIdContract.js';
 
 const TOOL_TO_INTENT = Object.freeze({
     find_nearby: 'find_nearby',
@@ -1116,14 +1117,16 @@ export class ToolRouter {
             userText,
         });
 
-        if (!sessionId || typeof sessionId !== 'string') {
+        const sessionIdVerdict = validateSessionId(sessionId);
+        if (!sessionIdVerdict.ok) {
             return {
                 ok: false,
-                error: 'missing_session_id',
+                error: sessionIdVerdict.error,
                 turn_id: turnId || undefined,
                 backend_ms: Date.now() - startedAt,
             };
         }
+        sessionId = sessionIdVerdict.sessionId;
 
         if (!intent) {
             return {

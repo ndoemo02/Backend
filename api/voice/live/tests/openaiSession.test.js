@@ -71,7 +71,7 @@ describe('OpenAI Realtime fallback session', () => {
     const res = makeRes();
     await handler(makeReq({
       instructions: 'Jesteś Amber.',
-      session_id: 'demo-session',
+      session_id: 'sess_demo_session',
       demo_context: {
         scenario_id: 'krakow-tourist',
         preferred_locale: 'pl',
@@ -116,8 +116,17 @@ describe('OpenAI Realtime fallback session', () => {
       new Response('{"error":{"message":"quota"}}', { status: 429 }),
     );
     const res = makeRes();
-    await handler(makeReq({ session_id: 'quota-test-session' }), res);
+    await handler(makeReq({ session_id: 'sess_quota_test_session' }), res);
     expect(res.statusCode).toBe(429);
     expect(res.body).toEqual({ ok: false, error: 'openai_realtime_quota_exceeded' });
+  });
+
+  it('rejects a noncanonical runtime session before contacting OpenAI', async () => {
+    const upstreamFetch = vi.spyOn(globalThis, 'fetch');
+    const res = makeRes();
+    await handler(makeReq({ session_id: 'sess-with-dashes' }), res);
+    expect(res.statusCode).toBe(400);
+    expect(res.body.error).toBe('invalid_session_id');
+    expect(upstreamFetch).not.toHaveBeenCalled();
   });
 });

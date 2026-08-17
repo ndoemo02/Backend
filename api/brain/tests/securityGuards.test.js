@@ -67,4 +67,10 @@ describe('Security guards', () => {
         expect(sanitized.session_id).toBe(sessionId);
         expect(sanitized.meta.sessionKey).toBe('[redacted]');
     });
+
+    it('preserves only a canonical lifecycle newSessionId', () => {
+        const nextSessionId = 'sess_next_1785127504444_xs67m6';
+        expect(sanitizeAssistantResponse({ newSessionId: nextSessionId }).newSessionId).toBe(nextSessionId);
+        expect(sanitizeAssistantResponse({ newSessionId: 'next-session' }).newSessionId).not.toBe('next-session');
+    });
 });

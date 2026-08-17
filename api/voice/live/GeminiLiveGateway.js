@@ -22,6 +22,7 @@ import {
     buildDemoSessionPatch,
     resolveDemoContextFromRequest,
 } from '../../demo/demoContext.js';
+import { validateSessionId } from '../../brain/session/sessionIdContract.js';
 
 const TOOL_EXECUTION_TIMEOUT_MS = 12000;
 const DEFAULT_LIVE_MODEL = process.env.GEMINI_LIVE_MODEL || process.env.LIVE_MODEL || 'gemini-2.5-flash-native-audio-preview-12-2025';
@@ -187,12 +188,12 @@ export class GeminiLiveGateway {
             }
 
             const requestUrl = new URL(req.url, 'http://localhost');
-            const sessionId = requestUrl.searchParams.get('session_id') || '';
-
-            if (!sessionId.trim()) {
-                socket.close(4002, 'MISSING_SESSION_ID');
+            const sessionIdVerdict = validateSessionId(requestUrl.searchParams.get('session_id'));
+            if (!sessionIdVerdict.ok) {
+                socket.close(4002, sessionIdVerdict.error.toUpperCase());
                 return;
             }
+            const sessionId = sessionIdVerdict.sessionId;
 
             // Deduplikacja: zamknij poprzedni socket dla tego samego sessionId
             // przed rejestracją nowego — zapobiega data race w sessionStore.

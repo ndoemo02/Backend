@@ -6,6 +6,7 @@ import {
   buildDemoSessionPatch,
   resolveDemoContextFromRequest,
 } from '../../demo/demoContext.js';
+import { validateSessionId } from '../../brain/session/sessionIdContract.js';
 
 const DEFAULT_MODEL = 'gpt-realtime-2.1-mini';
 const DEFAULT_VOICE = 'coral';
@@ -160,10 +161,11 @@ export default async function openAIRealtimeSessionHandler(req, res) {
   }
 
   const body = req.body && typeof req.body === 'object' ? req.body : {};
-  const sessionId = typeof body.session_id === 'string' ? body.session_id.trim() : '';
-  if (!sessionId) {
-    return res.status(400).json({ ok: false, error: 'missing_session_id' });
+  const sessionIdVerdict = validateSessionId(body.session_id);
+  if (!sessionIdVerdict.ok) {
+    return res.status(400).json({ ok: false, error: sessionIdVerdict.error });
   }
+  const sessionId = sessionIdVerdict.sessionId;
   let demoContext;
   try {
     demoContext = resolveDemoContextFromRequest(body);
@@ -182,7 +184,7 @@ export default async function openAIRealtimeSessionHandler(req, res) {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${String(process.env.OPENAI_API_KEY).trim()}`,
-        'OpenAI-Safety-Identifier': safetyIdentifier(body.session_id),
+        'OpenAI-Safety-Identifier': safetyIdentifier(sessionId),
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ session: sessionConfig }),

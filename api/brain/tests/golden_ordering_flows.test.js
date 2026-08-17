@@ -137,7 +137,7 @@ describe('Golden ordering flows', () => {
 
   it('flow 1: restaurant selection -> menu -> dish alias -> add to cart', async () => {
     const pipeline = createPipeline();
-    const sessionId = `golden_alias_${Date.now()}`;
+    const sessionId = `sess_golden_alias_${Date.now()}`;
 
     await selectCallzone(pipeline, sessionId);
     const result = await pipeline.process(sessionId, 'wege burger');
@@ -154,7 +154,7 @@ describe('Golden ordering flows', () => {
 
   it('flow 2: restaurant selection -> full dish name -> add to cart', async () => {
     const pipeline = createPipeline();
-    const sessionId = `golden_full_${Date.now()}`;
+    const sessionId = `sess_golden_full_${Date.now()}`;
 
     await selectCallzone(pipeline, sessionId);
     const result = await pipeline.process(sessionId, 'Bacon Burger');
@@ -170,7 +170,7 @@ describe('Golden ordering flows', () => {
 
   it('flow 3: restaurant selection -> qty=2 -> add to cart', async () => {
     const pipeline = createPipeline();
-    const sessionId = `golden_qty_${Date.now()}`;
+    const sessionId = `sess_golden_qty_${Date.now()}`;
 
     await selectCallzone(pipeline, sessionId);
     const result = await pipeline.process(sessionId, '2 wege burgery');
@@ -187,7 +187,7 @@ describe('Golden ordering flows', () => {
 
   it('flow 4: after add-to-cart, escape to restaurant list is not blocked', async () => {
     const pipeline = createPipeline();
-    const sessionId = `golden_escape_${Date.now()}`;
+    const sessionId = `sess_golden_escape_${Date.now()}`;
 
     await selectCallzone(pipeline, sessionId);
     await pipeline.process(sessionId, 'wege burger');
@@ -206,7 +206,7 @@ describe('Golden ordering flows', () => {
   });
 
   it('flow 5: after checkout close, a new session starts without ghost cart', async () => {
-    const sessionId = `golden_checkout_${Date.now()}`;
+    const sessionId = `sess_golden_checkout_${Date.now()}`;
 
     updateSession(sessionId, {
       currentRestaurant: { id: CALLZONE_ID, name: 'Callzone' },
@@ -232,7 +232,7 @@ describe('Golden ordering flows', () => {
 
   it('flow 6: dish alias inside restaurant context does not fall back to restaurant choice', async () => {
     const pipeline = createPipeline();
-    const sessionId = `golden_context_${Date.now()}`;
+    const sessionId = `sess_golden_context_${Date.now()}`;
 
     await selectCallzone(pipeline, sessionId);
     const result = await pipeline.process(sessionId, 'wege burger');
@@ -248,7 +248,7 @@ describe('Golden ordering flows', () => {
 
   it('flow 7: menu request prefers currentRestaurant over stale lastRestaurant', async () => {
     const pipeline = createPipeline();
-    const sessionId = `golden_menu_ctx_${Date.now()}`;
+    const sessionId = `sess_golden_menu_ctx_${Date.now()}`;
 
     updateSession(sessionId, {
       currentRestaurant: { id: CALLZONE_ID, name: 'Callzone' },
@@ -269,7 +269,7 @@ describe('Golden ordering flows', () => {
 
   it('flow 8: explicit "pokaz restauracje calzone" selects restaurant (not discovery)', async () => {
     const pipeline = createPipeline();
-    const sessionId = `golden_rest_target_${Date.now()}`;
+    const sessionId = `sess_golden_rest_target_${Date.now()}`;
 
     const result = await pipeline.process(sessionId, 'pokaz restauracje Calzone');
     const session = getSession(sessionId);
@@ -282,7 +282,7 @@ describe('Golden ordering flows', () => {
 
   it('flow 9: explicit restaurant + dish stays scoped to Stara Kamienica', async () => {
     const pipeline = createPipeline();
-    const sessionId = `golden_scope_single_${Date.now()}`;
+    const sessionId = `sess_golden_scope_single_${Date.now()}`;
 
     const result = await pipeline.process(sessionId, 'chcialbym nalesniki z nutella z restauracji Stara Kamienica');
     const session = getSession(sessionId);
@@ -299,7 +299,7 @@ describe('Golden ordering flows', () => {
 
   it('flow 10: multi-item explicit restaurant keeps quantity and scope', async () => {
     const pipeline = createPipeline();
-    const sessionId = `golden_scope_multi_${Date.now()}`;
+    const sessionId = `sess_golden_scope_multi_${Date.now()}`;
 
     const result = await pipeline.process(
       sessionId,
@@ -322,7 +322,7 @@ describe('Golden ordering flows', () => {
 
   it('flow 11: explicit restaurant lock blocks cross-restaurant substitution', async () => {
     const pipeline = createPipeline();
-    const sessionId = `golden_scope_cross_${Date.now()}`;
+    const sessionId = `sess_golden_scope_cross_${Date.now()}`;
 
     const result = await pipeline.process(sessionId, 'dodaj nalesniki z nutella z restauracji Dwor Hubertus');
     const session = getSession(sessionId);
@@ -336,7 +336,7 @@ describe('Golden ordering flows', () => {
 
   it('flow 12: low-confidence generic request clarifies instead of forcing substitution', async () => {
     const pipeline = createPipeline();
-    const sessionId = `golden_scope_amb_${Date.now()}`;
+    const sessionId = `sess_golden_scope_amb_${Date.now()}`;
 
     await pipeline.process(sessionId, 'Restauracja Stara Kamienica');
     const result = await pipeline.process(sessionId, 'dodaj cos dobrego');

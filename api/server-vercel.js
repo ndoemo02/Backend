@@ -22,6 +22,7 @@ import fs from 'fs';
 import { verifyAmberAdmin } from './middleware/verifyAmberAdmin.js';
 import adminRouter from './admin/adminRouter.js';
 import { registerLiveRoutes, attachLiveGateway } from './voice/live/index.js';
+import { validateSessionId } from './brain/session/sessionIdContract.js';
 
 // 🧠 Debug mode must be opt-in via env (avoid leaking conversation data in logs)
 global.BRAIN_DEBUG = process.env.BRAIN_DEBUG === 'true';
@@ -281,8 +282,9 @@ app.post("/api/brain/reset", async (req, res) => {
     const { getSession } = await import("./brain/context.js");
     const { updateSession } = await import("./brain/context.js");
     const body = req.body || {};
-    const sessionId = body.sessionId;
-    if (!sessionId) return res.status(400).json({ ok: false, error: 'missing_sessionId' });
+    const sessionIdVerdict = validateSessionId(body.session_id || body.sessionId);
+    if (!sessionIdVerdict.ok) return res.status(400).json({ ok: false, error: sessionIdVerdict.error });
+    const sessionId = sessionIdVerdict.sessionId;
     updateSession(sessionId, { expectedContext: null, lastRestaurant: null, pendingOrder: null, last_restaurants_list: null });
     res.json({ ok: true, cleared: true, session: getSession(sessionId) });
   } catch (e) {

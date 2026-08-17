@@ -9,6 +9,7 @@ import {
     buildDemoSessionPatch,
     resolveDemoContextFromRequest,
 } from '../../demo/demoContext.js';
+import { validateSessionId } from '../../brain/session/sessionIdContract.js';
 
 let gateway = null;
 const toolRouter = new ToolRouter();
@@ -146,18 +147,20 @@ export function registerLiveRoutes(app) {
             });
         }
 
-        if (!sessionId || !toolName) {
+        const sessionIdVerdict = validateSessionId(sessionId);
+        if (!sessionIdVerdict.ok || !toolName) {
             return res.status(400).json({
                 ok: false,
-                error: 'missing_session_or_tool',
+                error: !sessionIdVerdict.ok ? sessionIdVerdict.error : 'missing_tool',
             });
         }
 
+        const normalizedSessionId = sessionIdVerdict.sessionId;
         try {
       const demoContext = resolveDemoContextFromRequest(body);
-      updateSession(String(sessionId), buildDemoSessionPatch(demoContext));
+      updateSession(normalizedSessionId, buildDemoSessionPatch(demoContext));
       const turnTrace = buildInitialTurnTrace({
-        sessionId: String(sessionId),
+        sessionId: normalizedSessionId,
         turnId,
         requestId,
         toolName: String(toolName),
@@ -167,7 +170,7 @@ export function registerLiveRoutes(app) {
         source: 'live_tool_http',
       });
       const result = await toolRouter.executeToolCall({
-        sessionId: String(sessionId),
+        sessionId: normalizedSessionId,
         toolName: String(toolName),
         args,
         requestId,

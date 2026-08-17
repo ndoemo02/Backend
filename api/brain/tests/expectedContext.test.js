@@ -87,7 +87,7 @@ describe('🧠 ExpectedContext Flow Tests', () => {
 
   describe('🧪 Session State Tests', () => {
     it('should preserve session state during expectedContext flow', () => {
-      const sessionId = 'test-session';
+      const sessionId = 'sess_test_session';
 
       // Ustaw początkową sesję
       updateSession(sessionId, {

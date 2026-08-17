@@ -143,4 +143,17 @@ describe('Gemini Live ephemeral token handler', () => {
         expect(res.payload.error).toBe('origin_not_allowed');
         expect(mocks.createToken).not.toHaveBeenCalled();
     });
+
+    it('rejects a noncanonical runtime session before issuing a token', async () => {
+        const req = {
+            method: 'POST',
+            headers: { origin: 'https://freeflow-final.vercel.app', 'x-forwarded-for': '203.0.113.10' },
+            body: { model: 'gemini-live-test', session_id: 'session-with-dashes' },
+        };
+        const res = createResponse();
+        await handler(req, res);
+        expect(res.statusCode).toBe(400);
+        expect(res.payload.error).toBe('invalid_session_id');
+        expect(mocks.createToken).not.toHaveBeenCalled();
+    });
 });

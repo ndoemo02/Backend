@@ -45,7 +45,7 @@ ALTER TABLE public.orders
   ADD COLUMN IF NOT EXISTS is_demo boolean NOT NULL DEFAULT true;
 
 -- Format session_id dopasowany do realnie generowanego przez frontend:
--- `sess_${Date.now()}_${random36}` (useBrainSession.ts:195). NULL dozwolony —
+-- `sess_${Date.now()}_${random36}` (frontend/src/store/useConversationStore.ts). NULL dozwolony —
 -- istniejące wiersze i ścieżka A (api/orders.js) nie zapisują session_id
 -- do czasu T9.
 DO $$ BEGIN

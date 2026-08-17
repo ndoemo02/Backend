@@ -86,4 +86,17 @@ describe('live tool-call HTTP handler', () => {
         expect(call.debugLiveFlow.sttSource).toBe('transcript');
         expect(call.debugLiveFlow.rawArgs).toEqual({ dish: 'Kotlet schabowy', quantity: 1 });
     });
+
+    it('rejects a noncanonical runtime session before tool execution', async () => {
+        const req = {
+            method: 'POST',
+            headers: { origin: 'https://freeflow-final.vercel.app' },
+            body: { session_id: 'sess-with-dashes', tool: 'get_cart_state', args: {} },
+        };
+        const res = createResponse();
+        await handler(req, res);
+        expect(res.statusCode).toBe(400);
+        expect(res.payload.error).toBe('invalid_session_id');
+        expect(mocks.executeToolCall).not.toHaveBeenCalled();
+    });
 });
