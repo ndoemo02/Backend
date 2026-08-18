@@ -323,16 +323,6 @@ export function applyAliases(text) {
   return anyReplacement ? output : original;
 }
 
-function fuzzyMatch(a, b) {
-  if (!a || !b) return false;
-  a = normalize(a);
-  b = normalize(b);
-  if (a === b) return true;
-  if (a.includes(b) || b.includes(a)) return true;
-  const dist = levenshteinHelper(a, b);
-  return dist <= 2;
-}
-
 // ——— Menu catalog & order parsing ———
 function isValidRestaurantContextId(value) {
   if (typeof value === 'number') return Number.isFinite(value) && value > 0;
@@ -1693,50 +1683,5 @@ export async function handleIntent(intent, text, session) {
   } catch (err) {
     console.error("?? handleIntent error:", err.message);
     return { reply: "Wystąpił błąd podczas przetwarzania. Spróbuj ponownie." };
-  }
-}
-
-export async function trainIntent(phrase, correctIntent) {
-  try {
-    const normalized = normalizeTxt(phrase);
-    const { data: existing, error } = await supabase
-      .from('phrases')
-      .select('id, text, intent');
-
-    if (error) {
-      console.error('?? trainIntent fetch error:', error.message);
-      return { ok: false, error: error.message };
-    }
-
-    const already = existing?.find(p => fuzzyMatch(normalized, p.text));
-    if (already) {
-      const { error: updateError } = await supabase
-        .from('phrases')
-        .update({ intent: correctIntent })
-        .eq('id', already.id);
-
-      if (updateError) {
-        console.error('?? trainIntent update error:', updateError.message);
-        return { ok: false, error: updateError.message };
-      }
-
-      console.log(`? Updated phrase "${phrase}" › ${correctIntent}`);
-      return { ok: true, action: 'updated' };
-    } else {
-      const { error: insertError } = await supabase
-        .from('phrases')
-        .insert({ text: phrase, intent: correctIntent });
-
-      if (insertError) {
-        console.error('?? trainIntent insert error:', insertError.message);
-        return { ok: false, error: insertError.message };
-      }
-
-      console.log(`? Inserted phrase "${phrase}" › ${correctIntent}`);
-      return { ok: true, action: 'inserted' };
-    }
-  } catch (err) {
-    console.error('?? trainIntent error:', err.message);
-    return { ok: false, error: err.message };
   }
 }
