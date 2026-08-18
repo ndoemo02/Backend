@@ -294,7 +294,15 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: error.message });
       }
 
-      return res.json({ orders: orders || [] });
+      // restaurant_name nie jest kolumna orders w nowej bazie - dokladamy ja
+      // do odpowiedzi z joina po restaurant_id, zeby konsumenci czytajacy
+      // plaskie pole obiektu (ClientPanel.tsx, CustomerPanel.jsx) nie musieli sie zmieniac.
+      const withRestaurantName = (orders || []).map(order => ({
+        ...order,
+        restaurant_name: order.restaurants?.name ?? order.restaurant_name ?? null,
+      }));
+
+      return res.json({ orders: withRestaurantName });
 
     } catch (err) {
       console.error('đź”Ą Błąd GET orders:', err);
@@ -309,7 +317,7 @@ export default async function handler(req, res) {
       if (req.body.restaurant_id && req.body.items && Array.isArray(req.body.items)) {
         console.log('đź›’ Cart order detected:', req.body);
 
-        const { restaurant_id, items, user_id, restaurant_name, customer_name, customer_phone, delivery_address, notes } = req.body;
+        const { restaurant_id, items, user_id, customer_name, customer_phone, delivery_address, notes } = req.body;
 
         let { total_price, total_cents } = req.body;
 
@@ -359,7 +367,6 @@ export default async function handler(req, res) {
         const orderData = {
           user_id: user_id || null,
           restaurant_id: restaurant_id,
-          restaurant_name: restaurant_name || 'Unknown Restaurant',
           items: items,
           total_price: finalPLN,   // PLN (float)
           // total_cents: finalCents, // Cents (integer) - Commented out to prevent "column does not exist" error

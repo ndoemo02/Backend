@@ -80,13 +80,11 @@ export async function persistOrderToDB(sessionId, session, options = {}) {
         const restaurantName = options.restaurant_name || firstItem.restaurant_name || session?.lastRestaurant?.name || 'Unknown';
 
         const totalPLN = Number(cart.total || 0);
-        const totalCents = Math.round(totalPLN * 100);
 
         const orderData = {
             // Identyfikatory
             user_id: options.user_id || session?.user_id || null,
             restaurant_id: restaurantId,
-            restaurant_name: restaurantName,
             session_id: sessionId,
             idempotency_key: cartHash,
 
@@ -99,7 +97,6 @@ export async function persistOrderToDB(sessionId, session, options = {}) {
                 special_instructions: item.special_instructions || null,
             })),
             total_price: totalPLN, // PLN (float) - standard dla Dashboardów
-            total_cents: totalCents, // Cents (integer) - dla precyzji analitycznej
 
             // Status
             // Zmieniamy na 'confirmed', ponieważ Voice Flow v2 zapisuje zamówienie
