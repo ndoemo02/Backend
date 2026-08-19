@@ -1,36 +1,84 @@
 /**
  * ownerRestaurants.test.js
  * ===========================================================================
- * B1 owner-read — GET /api/owner/restaurants(/:id) + D3 owner-write —
- * PATCH /api/owner/restaurants/:id (api/owner/restaurants.js).
+ * B1 owner-read + D3 owner-write (api/owner/restaurants.js), po przepieciu na
+ * model wlasnosci NOWEJ bazy (2026-08-19).
  *
- * Zakres: auth (401 bez/z niepoprawnym tokenem), ownership server-side
- * (owner widzi/edytuje wlasna liste/restauracje, nie widzi/edytuje cudzej ->
- * 404, nie 200 z cudzymi danymi), zero select("*") (asercja na przekazanych
- * polach), allowlist PATCH (owner_id/id/nieznane pola nie trafiaja do update()).
+ * ZMIANA MODELU: wlasnosc nie jest juz cecha OSOBY (`restaurants.owner_id ->
+ * auth.users.id`). W nowej bazie lokal nalezy do FIRMY
+ * (`restaurants.business_account_id -> business_accounts.id`), a osoba jest
+ * zwiazana z firma przez `business_members (user_id, business_account_id,
+ * role_key)`. Kolumny `owner_id` NIE MA.
+ *
+ * DLACZEGO TE TESTY SA JEDYNA OCHRONA: polityki RLS nowej bazy stoja na
+ * `private.has_capability()`, ktora czyta `auth.uid()`. Backend laczy sie
+ * kluczem service_role — RLS omija, `auth.uid()` jest NULL. Polityki nie
+ * chronia tych endpointow ani troche. Filtr zasiegu w kodzie backendu jest
+ * jedynym mechanizmem, wiec testy negatywne sa tu wazniejsze od pozytywnych.
+ *
+ * Zdolnosc wymagana przez ten endpoint to `venue.manage` — lustro polityk
+ * `restaurants_business_read` i `restaurants_business_update`
+ * (20260818000400_newbase_rls.sql:165-172).
+ *
+ * Harness rozszerzony wzgledem poprzedniej wersji: handler dotyka DWOCH tabel
+ * (`business_members` — wyprowadzenie zasiegu, `restaurants` — wlasciwa
+ * operacja), kazda z wlasnym wynikiem, plus szpieg na `.in()`.
  * ===========================================================================
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 const getUserMock = vi.fn();
+const fromSpy = vi.fn();
 const eqSpy = vi.fn();
+const inSpy = vi.fn();
 const selectSpy = vi.fn();
 const updateSpy = vi.fn();
-let queryResult = { data: null, error: null };
 
-function makeQueryBuilder() {
+/** Wynik zapytania o czlonkostwa (.from('business_members')). */
+let memberResult = { data: [], error: null };
+/** Wynik wlasciwej operacji (.from('restaurants')). */
+let restaurantResult = { data: null, error: null };
+
+/**
+ * Zdolnosci przepisane 1:1 z 20260818000200_newbase_business.sql — jesli tam
+ * sie zmienia, ten plik ma zaczac klamac glosno, a nie po cichu.
+ */
+const OWNER_CAPS = [
+  'orders.read', 'orders.update_status', 'menu.manage',
+  'venue.manage', 'members.manage', 'analytics.read', 'billing.read',
+];
+const MANAGER_CAPS = [
+  'orders.read', 'orders.update_status', 'menu.manage', 'venue.manage', 'analytics.read',
+];
+/** staff = kuchnia/kelner. CELOWO bez venue.manage — nie ma wstepu do panelu lokalu. */
+const STAFF_CAPS = ['orders.read', 'orders.update_status'];
+
+/** Jeden wiersz `business_members` w ksztalcie, jaki zwraca PostgREST z osadzeniem. */
+function membership({ accountId = 'acc-1', capabilities = OWNER_CAPS, status = 'active' } = {}) {
+  return {
+    business_account_id: accountId,
+    business_roles: { capabilities },
+    business_accounts: { status },
+  };
+}
+
+function makeQueryBuilder(resultGetter) {
   const qb = {
     eq: (...args) => {
       eqSpy(...args);
+      return qb;
+    },
+    in: (...args) => {
+      inSpy(...args);
       return qb;
     },
     select: (...args) => {
       selectSpy(...args);
       return qb;
     },
-    order: () => Promise.resolve(queryResult),
-    maybeSingle: () => Promise.resolve(queryResult),
-    then: (resolve, reject) => Promise.resolve(queryResult).then(resolve, reject),
+    order: () => Promise.resolve(resultGetter()),
+    maybeSingle: () => Promise.resolve(resultGetter()),
+    then: (resolve, reject) => Promise.resolve(resultGetter()).then(resolve, reject),
   };
   return qb;
 }
@@ -38,16 +86,22 @@ function makeQueryBuilder() {
 vi.mock('../../_supabase.js', () => ({
   supabase: {
     auth: { getUser: (...args) => getUserMock(...args) },
-    from: vi.fn(() => ({
-      select: (...args) => {
-        selectSpy(...args);
-        return makeQueryBuilder();
-      },
-      update: (...args) => {
-        updateSpy(...args);
-        return makeQueryBuilder();
-      },
-    })),
+    from: vi.fn((table) => {
+      fromSpy(table);
+      const resultGetter = table === 'business_members'
+        ? () => memberResult
+        : () => restaurantResult;
+      return {
+        select: (...args) => {
+          selectSpy(...args);
+          return makeQueryBuilder(resultGetter);
+        },
+        update: (...args) => {
+          updateSpy(...args);
+          return makeQueryBuilder(resultGetter);
+        },
+      };
+    }),
   },
 }));
 
@@ -78,12 +132,26 @@ async function call(req) {
   return res;
 }
 
+/** Ile razy handler siegnal do tabeli `restaurants`. */
+function restaurantQueries() {
+  return fromSpy.mock.calls.filter(([table]) => table === 'restaurants').length;
+}
+
+function authAs(userId) {
+  getUserMock.mockResolvedValue({ data: { user: { id: userId } }, error: null });
+}
+
+const BEARER = { authorization: 'Bearer dobry-token' };
+
 beforeEach(() => {
   getUserMock.mockReset();
+  fromSpy.mockClear();
   eqSpy.mockClear();
+  inSpy.mockClear();
   selectSpy.mockClear();
   updateSpy.mockClear();
-  queryResult = { data: null, error: null };
+  memberResult = { data: [], error: null };
+  restaurantResult = { data: null, error: null };
 });
 
 describe('GET /api/owner/restaurants — auth', () => {
@@ -92,7 +160,7 @@ describe('GET /api/owner/restaurants — auth', () => {
     expect(res.statusCode).toBe(401);
     expect(res.body).toMatchObject({ ok: false, error: 'unauthorized' });
     expect(getUserMock).not.toHaveBeenCalled();
-    expect(selectSpy).not.toHaveBeenCalled();
+    expect(fromSpy).not.toHaveBeenCalled();
   });
 
   it('naglowek bez prefiksu Bearer -> 401', async () => {
@@ -106,7 +174,7 @@ describe('GET /api/owner/restaurants — auth', () => {
     const res = await call(createReq({ headers: { authorization: 'Bearer zly-token' } }));
     expect(res.statusCode).toBe(401);
     expect(res.body).toMatchObject({ ok: false, error: 'unauthorized' });
-    expect(selectSpy).not.toHaveBeenCalled();
+    expect(fromSpy).not.toHaveBeenCalled();
   });
 
   it('metoda inna niz GET -> 405, zero auth check', async () => {
@@ -116,93 +184,177 @@ describe('GET /api/owner/restaurants — auth', () => {
   });
 });
 
-describe('GET /api/owner/restaurants — lista wlasnych', () => {
-  it('poprawny token -> lista filtrowana po owner_id z JWT, nie z requestu', async () => {
-    getUserMock.mockResolvedValue({ data: { user: { id: 'owner-1' } }, error: null });
-    queryResult = { data: [{ id: 'r1', name: 'Test', city: 'Piekary' }], error: null };
+describe('GET /api/owner/restaurants — zasieg wyprowadzony z czlonkostwa', () => {
+  it('czlonek z venue.manage -> lista filtrowana po zbiorze firm, nie po osobie', async () => {
+    authAs('user-1');
+    memberResult = { data: [membership({ accountId: 'acc-1' })], error: null };
+    restaurantResult = { data: [{ id: 'r1', name: 'Test', city: 'Piekary' }], error: null };
 
-    const res = await call(createReq({ headers: { authorization: 'Bearer dobry-token' } }));
+    const res = await call(createReq({ headers: BEARER }));
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toMatchObject({ ok: true, data: [{ id: 'r1', name: 'Test', city: 'Piekary' }] });
-    expect(eqSpy).toHaveBeenCalledWith('owner_id', 'owner-1');
-    // select("*") niedozwolony — lista pol musi byc jawna i waska.
+    // Zasieg pytany o tozsamosc z JWT, nigdy z requestu.
+    expect(eqSpy).toHaveBeenCalledWith('user_id', 'user-1');
+    // Filtr na restaurants jest ZBIOREM firm, nie skalarem osoby.
+    expect(inSpy).toHaveBeenCalledWith('business_account_id', ['acc-1']);
     expect(selectSpy).toHaveBeenCalledWith('id,name,city');
   });
 
-  it('pusta lista (brak restauracji) -> 200 z pusta tablica, nie blad', async () => {
-    getUserMock.mockResolvedValue({ data: { user: { id: 'owner-1' } }, error: null });
-    queryResult = { data: [], error: null };
-    const res = await call(createReq({ headers: { authorization: 'Bearer dobry-token' } }));
+  it('czlonkostwo w DWOCH firmach -> zbior obu id, nie tylko pierwsze', async () => {
+    authAs('user-1');
+    memberResult = {
+      data: [membership({ accountId: 'acc-1' }), membership({ accountId: 'acc-2', capabilities: MANAGER_CAPS })],
+      error: null,
+    };
+    restaurantResult = { data: [{ id: 'r1' }, { id: 'r9' }], error: null };
+
+    const res = await call(createReq({ headers: BEARER }));
+
+    expect(res.statusCode).toBe(200);
+    expect(inSpy).toHaveBeenCalledWith('business_account_id', ['acc-1', 'acc-2']);
+  });
+
+  it('ZERO czlonkostwa -> 200 z pusta lista i ZERO zapytan do restaurants', async () => {
+    authAs('obcy-user');
+    memberResult = { data: [], error: null };
+
+    const res = await call(createReq({ headers: BEARER }));
+
     expect(res.statusCode).toBe(200);
     expect(res.body).toMatchObject({ ok: true, data: [] });
+    // Kluczowe: tabela restaurants nie zostaje nawet dotknieta — brak zasiegu
+    // jest rozstrzygniety zanim powstanie jakikolwiek filtr.
+    expect(restaurantQueries()).toBe(0);
+    expect(inSpy).not.toHaveBeenCalled();
+  });
+
+  it('rola staff (bez venue.manage) -> pusta lista, ZERO zapytan do restaurants', async () => {
+    authAs('kucharz-1');
+    memberResult = { data: [membership({ capabilities: STAFF_CAPS })], error: null };
+
+    const res = await call(createReq({ headers: BEARER }));
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toMatchObject({ ok: true, data: [] });
+    expect(restaurantQueries()).toBe(0);
+  });
+
+  it('firma zawieszona (status suspended) -> pusta lista mimo waznego czlonkostwa', async () => {
+    // Lustro `b.status = 'active'` z private.has_capability
+    // (20260818000400_newbase_rls.sql:66). Bez tego zawieszona firma dalej
+    // pracuje przez backend, choc przez RLS bylaby odcieta.
+    authAs('user-1');
+    memberResult = { data: [membership({ status: 'suspended' })], error: null };
+
+    const res = await call(createReq({ headers: BEARER }));
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toMatchObject({ ok: true, data: [] });
+    expect(restaurantQueries()).toBe(0);
+  });
+
+  it('czlonkostwo jest, ale firma nie ma lokali -> 200 z pusta tablica, nie blad', async () => {
+    authAs('user-1');
+    memberResult = { data: [membership()], error: null };
+    restaurantResult = { data: [], error: null };
+
+    const res = await call(createReq({ headers: BEARER }));
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toMatchObject({ ok: true, data: [] });
+    expect(restaurantQueries()).toBe(1);
   });
 });
 
-describe('GET /api/owner/restaurants/:id — pojedyncza restauracja', () => {
-  it('wlasna restauracja -> 200 z danymi', async () => {
-    getUserMock.mockResolvedValue({ data: { user: { id: 'owner-1' } }, error: null });
-    queryResult = { data: { id: 'r1', name: 'Test', city: 'Piekary' }, error: null };
+describe('GET /api/owner/restaurants/:id — pojedynczy lokal', () => {
+  it('lokal wlasnej firmy -> 200, ownership i operacja w jednym query', async () => {
+    authAs('user-1');
+    memberResult = { data: [membership()], error: null };
+    restaurantResult = { data: { id: 'r1', name: 'Test', city: 'Piekary' }, error: null };
 
     const res = await call(
-      createReq({
-        url: '/api/owner/restaurants/r1',
-        params: { id: 'r1' },
-        headers: { authorization: 'Bearer dobry-token' },
-      })
+      createReq({ url: '/api/owner/restaurants/r1', params: { id: 'r1' }, headers: BEARER })
     );
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toMatchObject({ ok: true, data: { id: 'r1', name: 'Test' } });
     expect(eqSpy).toHaveBeenCalledWith('id', 'r1');
-    expect(eqSpy).toHaveBeenCalledWith('owner_id', 'owner-1');
+    expect(inSpy).toHaveBeenCalledWith('business_account_id', ['acc-1']);
   });
 
-  it('cudza restauracja (istniejaca, inny owner_id) -> 404, nie 200 i nie 403 z danymi', async () => {
-    getUserMock.mockResolvedValue({ data: { user: { id: 'owner-1' } }, error: null });
-    // Query { id = X, owner_id = 'owner-1' } zwraca zero wierszy, bo X nalezy do kogos innego —
-    // z punktu widzenia klienta nieodrozniane od "nie istnieje".
-    queryResult = { data: null, error: null };
+  it('lokal CUDZEJ firmy -> 404, nie 200 z cudzymi danymi i nie 403', async () => {
+    authAs('user-1');
+    memberResult = { data: [membership({ accountId: 'acc-moja' })], error: null };
+    // { id = X, business_account_id in ('acc-moja') } trafia zero wierszy,
+    // bo X nalezy do innej firmy — nieodrozniane od "nie istnieje".
+    restaurantResult = { data: null, error: null };
 
     const res = await call(
-      createReq({
-        url: '/api/owner/restaurants/cudza-restauracja',
-        params: { id: 'cudza-restauracja' },
-        headers: { authorization: 'Bearer dobry-token' },
-      })
+      createReq({ url: '/api/owner/restaurants/cudzy', params: { id: 'cudzy' }, headers: BEARER })
     );
 
     expect(res.statusCode).toBe(404);
     expect(res.body).toMatchObject({ ok: false, error: 'not_found' });
-    expect(eqSpy).toHaveBeenCalledWith('owner_id', 'owner-1');
+    expect(inSpy).toHaveBeenCalledWith('business_account_id', ['acc-moja']);
   });
 
-  it('nieistniejace id -> rowniez 404 (ten sam status co cudza restauracja)', async () => {
-    getUserMock.mockResolvedValue({ data: { user: { id: 'owner-1' } }, error: null });
-    queryResult = { data: null, error: null };
+  it('user BEZ czlonkostwa -> 404 i ZERO zapytan do restaurants', async () => {
+    authAs('obcy-user');
+    memberResult = { data: [], error: null };
+
     const res = await call(
-      createReq({
-        url: '/api/owner/restaurants/nie-istnieje',
-        params: { id: 'nie-istnieje' },
-        headers: { authorization: 'Bearer dobry-token' },
-      })
+      createReq({ url: '/api/owner/restaurants/r1', params: { id: 'r1' }, headers: BEARER })
     );
+
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toMatchObject({ ok: false, error: 'not_found' });
+    expect(restaurantQueries()).toBe(0);
+  });
+
+  it('rola staff -> 404 i ZERO zapytan do restaurants', async () => {
+    authAs('kucharz-1');
+    memberResult = { data: [membership({ capabilities: STAFF_CAPS })], error: null };
+
+    const res = await call(
+      createReq({ url: '/api/owner/restaurants/r1', params: { id: 'r1' }, headers: BEARER })
+    );
+
+    expect(res.statusCode).toBe(404);
+    expect(restaurantQueries()).toBe(0);
+  });
+
+  it('nieistniejace id -> rowniez 404 (ten sam status co cudzy lokal)', async () => {
+    authAs('user-1');
+    memberResult = { data: [membership()], error: null };
+    restaurantResult = { data: null, error: null };
+
+    const res = await call(
+      createReq({ url: '/api/owner/restaurants/nie-ma', params: { id: 'nie-ma' }, headers: BEARER })
+    );
+
     expect(res.statusCode).toBe(404);
   });
 
-  it('body odpowiedzi nigdy nie zawiera owner_id', async () => {
-    getUserMock.mockResolvedValue({ data: { user: { id: 'owner-1' } }, error: null });
-    queryResult = { data: { id: 'r1', name: 'Test' }, error: null };
+  it('zaden select nie prosi o owner_id ani business_account_id — to filtr, nie projekcja', async () => {
+    authAs('user-1');
+    memberResult = { data: [membership()], error: null };
+    restaurantResult = { data: { id: 'r1', name: 'Test' }, error: null };
+
     const res = await call(
-      createReq({
-        url: '/api/owner/restaurants/r1',
-        params: { id: 'r1' },
-        headers: { authorization: 'Bearer dobry-token' },
-      })
+      createReq({ url: '/api/owner/restaurants/r1', params: { id: 'r1' }, headers: BEARER })
     );
+
     expect(res.body.data).not.toHaveProperty('owner_id');
-    // select() dla detalu tez nie prosi o owner_id — filtr, nie projekcja.
-    expect(selectSpy).toHaveBeenCalledWith(expect.not.stringContaining('owner_id'));
+    expect(res.body.data).not.toHaveProperty('business_account_id');
+    const restaurantSelects = selectSpy.mock.calls
+      .map(([fields]) => fields)
+      .filter((fields) => typeof fields === 'string' && fields.includes('name'));
+    expect(restaurantSelects.length).toBeGreaterThan(0);
+    for (const fields of restaurantSelects) {
+      expect(fields).not.toContain('owner_id');
+      expect(fields).not.toContain('business_account_id');
+    }
   });
 });
 
@@ -232,16 +384,17 @@ describe('PATCH /api/owner/restaurants/:id — auth', () => {
 });
 
 describe('PATCH /api/owner/restaurants/:id — edycja', () => {
-  it('wlasna restauracja -> 200, patch zawiera wylacznie wyslane pola, ownership w tym samym query', async () => {
-    getUserMock.mockResolvedValue({ data: { user: { id: 'owner-1' } }, error: null });
-    queryResult = { data: { id: 'r1', name: 'Nowa nazwa', city: 'Piekary' }, error: null };
+  it('lokal wlasnej firmy -> 200, patch tylko z wyslanych pol, zasieg w tym samym query', async () => {
+    authAs('user-1');
+    memberResult = { data: [membership()], error: null };
+    restaurantResult = { data: { id: 'r1', name: 'Nowa nazwa', city: 'Piekary' }, error: null };
 
     const res = await call(
       createReq({
         method: 'PATCH',
         url: '/api/owner/restaurants/r1',
         params: { id: 'r1' },
-        headers: { authorization: 'Bearer dobry-token' },
+        headers: BEARER,
         body: { name: 'Nowa nazwa', is_active: true, delivery_available: false },
       })
     );
@@ -254,58 +407,111 @@ describe('PATCH /api/owner/restaurants/:id — edycja', () => {
       delivery_available: false,
     });
     expect(eqSpy).toHaveBeenCalledWith('id', 'r1');
-    expect(eqSpy).toHaveBeenCalledWith('owner_id', 'owner-1');
+    expect(inSpy).toHaveBeenCalledWith('business_account_id', ['acc-1']);
   });
 
-  it('cudza restauracja (istniejaca, inny owner_id) -> 404, nie 200 i nie 403', async () => {
-    getUserMock.mockResolvedValue({ data: { user: { id: 'owner-1' } }, error: null });
-    // Update { id = X, owner_id = 'owner-1' } trafia 0 wierszy, bo X nalezy do kogos innego.
-    queryResult = { data: null, error: null };
+  it('lokal CUDZEJ firmy -> 404, nie 200 i nie 403', async () => {
+    authAs('user-1');
+    memberResult = { data: [membership({ accountId: 'acc-moja' })], error: null };
+    restaurantResult = { data: null, error: null };
 
     const res = await call(
       createReq({
         method: 'PATCH',
-        url: '/api/owner/restaurants/cudza-restauracja',
-        params: { id: 'cudza-restauracja' },
-        headers: { authorization: 'Bearer dobry-token' },
+        url: '/api/owner/restaurants/cudzy',
+        params: { id: 'cudzy' },
+        headers: BEARER,
         body: { name: 'Przejecie' },
       })
     );
 
     expect(res.statusCode).toBe(404);
     expect(res.body).toMatchObject({ ok: false, error: 'not_found' });
-    expect(eqSpy).toHaveBeenCalledWith('owner_id', 'owner-1');
+    expect(inSpy).toHaveBeenCalledWith('business_account_id', ['acc-moja']);
   });
 
-  it('owner_id w body NIE trafia do update() i nie zmienia ownership filtra', async () => {
-    getUserMock.mockResolvedValue({ data: { user: { id: 'owner-1' } }, error: null });
-    queryResult = { data: { id: 'r1', name: 'Test' }, error: null };
+  it('user BEZ czlonkostwa -> 404 i ZERO update()', async () => {
+    authAs('obcy-user');
+    memberResult = { data: [], error: null };
 
     const res = await call(
       createReq({
         method: 'PATCH',
         params: { id: 'r1' },
-        headers: { authorization: 'Bearer dobry-token' },
-        body: { name: 'Test', owner_id: 'napastnik-999' },
+        headers: BEARER,
+        body: { name: 'Przejecie' },
+      })
+    );
+
+    expect(res.statusCode).toBe(404);
+    expect(updateSpy).not.toHaveBeenCalled();
+    expect(restaurantQueries()).toBe(0);
+  });
+
+  it('rola staff -> 404 i ZERO update() (kuchnia nie edytuje lokalu)', async () => {
+    authAs('kucharz-1');
+    memberResult = { data: [membership({ capabilities: STAFF_CAPS })], error: null };
+
+    const res = await call(
+      createReq({
+        method: 'PATCH',
+        params: { id: 'r1' },
+        headers: BEARER,
+        body: { name: 'Zmiana' },
+      })
+    );
+
+    expect(res.statusCode).toBe(404);
+    expect(updateSpy).not.toHaveBeenCalled();
+  });
+
+  it('firma zawieszona -> 404 i ZERO update()', async () => {
+    authAs('user-1');
+    memberResult = { data: [membership({ status: 'suspended' })], error: null };
+
+    const res = await call(
+      createReq({
+        method: 'PATCH',
+        params: { id: 'r1' },
+        headers: BEARER,
+        body: { name: 'Zmiana' },
+      })
+    );
+
+    expect(res.statusCode).toBe(404);
+    expect(updateSpy).not.toHaveBeenCalled();
+  });
+
+  it('business_account_id w body NIE trafia do update() i nie zmienia zasiegu', async () => {
+    authAs('user-1');
+    memberResult = { data: [membership({ accountId: 'acc-moja' })], error: null };
+    restaurantResult = { data: { id: 'r1', name: 'Test' }, error: null };
+
+    const res = await call(
+      createReq({
+        method: 'PATCH',
+        params: { id: 'r1' },
+        headers: BEARER,
+        body: { name: 'Test', business_account_id: 'acc-napastnika', owner_id: 'napastnik-999' },
       })
     );
 
     expect(res.statusCode).toBe(200);
     expect(updateSpy).toHaveBeenCalledWith({ name: 'Test' });
-    expect(updateSpy).not.toHaveBeenCalledWith(expect.objectContaining({ owner_id: expect.anything() }));
-    // Filtr ownership nadal auth.userId z JWT, nie z body.
-    expect(eqSpy).toHaveBeenCalledWith('owner_id', 'owner-1');
+    // Zasieg nadal z czlonkostwa, nie z body.
+    expect(inSpy).toHaveBeenCalledWith('business_account_id', ['acc-moja']);
   });
 
   it('id w body nie trafia do update() (nie da sie przeniesc rekordu)', async () => {
-    getUserMock.mockResolvedValue({ data: { user: { id: 'owner-1' } }, error: null });
-    queryResult = { data: { id: 'r1', name: 'Test' }, error: null };
+    authAs('user-1');
+    memberResult = { data: [membership()], error: null };
+    restaurantResult = { data: { id: 'r1', name: 'Test' }, error: null };
 
     await call(
       createReq({
         method: 'PATCH',
         params: { id: 'r1' },
-        headers: { authorization: 'Bearer dobry-token' },
+        headers: BEARER,
         body: { name: 'Test', id: 'inne-id' },
       })
     );
@@ -314,14 +520,15 @@ describe('PATCH /api/owner/restaurants/:id — edycja', () => {
   });
 
   it('nieznane pole w body nie trafia do update() (np. created_at, is_admin)', async () => {
-    getUserMock.mockResolvedValue({ data: { user: { id: 'owner-1' } }, error: null });
-    queryResult = { data: { id: 'r1', name: 'Test' }, error: null };
+    authAs('user-1');
+    memberResult = { data: [membership()], error: null };
+    restaurantResult = { data: { id: 'r1', name: 'Test' }, error: null };
 
     await call(
       createReq({
         method: 'PATCH',
         params: { id: 'r1' },
-        headers: { authorization: 'Bearer dobry-token' },
+        headers: BEARER,
         body: { name: 'Test', created_at: '2020-01-01', is_admin: true, cuisine_type: 'sushi' },
       })
     );
@@ -329,50 +536,48 @@ describe('PATCH /api/owner/restaurants/:id — edycja', () => {
     expect(updateSpy).toHaveBeenCalledWith({ name: 'Test' });
   });
 
-  it('body poza allowlista (wylacznie nieznane pola) -> 400 empty_patch, zero update()', async () => {
-    getUserMock.mockResolvedValue({ data: { user: { id: 'owner-1' } }, error: null });
+  it('body poza allowlista -> 400 empty_patch, zero update() i zero zapytan o zasieg', async () => {
+    authAs('user-1');
+    memberResult = { data: [membership()], error: null };
 
     const res = await call(
       createReq({
         method: 'PATCH',
         params: { id: 'r1' },
-        headers: { authorization: 'Bearer dobry-token' },
-        body: { owner_id: 'x', created_at: '2020-01-01' },
+        headers: BEARER,
+        body: { business_account_id: 'x', created_at: '2020-01-01' },
       })
     );
 
     expect(res.statusCode).toBe(400);
     expect(res.body).toMatchObject({ ok: false, error: 'empty_patch' });
     expect(updateSpy).not.toHaveBeenCalled();
+    // Walidacja ksztaltu przed dotknieciem bazy — kolejnosc zachowana z wersji sprzed przepiecia.
+    expect(fromSpy).not.toHaveBeenCalled();
   });
 
   it('null w polu nullable (np. city) -> jawne wyczyszczenie, nie odrzucane', async () => {
-    // Frontend wysyla null zamiast '' dla city/address/phone/website/image_url
-    // (RestaurantManager.jsx save(): `form.city || null`) - to jest sposob "wyczyszczenia" pola.
-    getUserMock.mockResolvedValue({ data: { user: { id: 'owner-1' } }, error: null });
-    queryResult = { data: { id: 'r1' }, error: null };
+    authAs('user-1');
+    memberResult = { data: [membership()], error: null };
+    restaurantResult = { data: { id: 'r1' }, error: null };
 
     await call(
-      createReq({
-        method: 'PATCH',
-        params: { id: 'r1' },
-        headers: { authorization: 'Bearer dobry-token' },
-        body: { city: null },
-      })
+      createReq({ method: 'PATCH', params: { id: 'r1' }, headers: BEARER, body: { city: null } })
     );
 
     expect(updateSpy).toHaveBeenCalledWith({ city: null });
   });
 
   it('zle typy (is_active jako string) -> pole pomijane, nie 500', async () => {
-    getUserMock.mockResolvedValue({ data: { user: { id: 'owner-1' } }, error: null });
-    queryResult = { data: { id: 'r1', name: 'Test' }, error: null };
+    authAs('user-1');
+    memberResult = { data: [membership()], error: null };
+    restaurantResult = { data: { id: 'r1', name: 'Test' }, error: null };
 
     const res = await call(
       createReq({
         method: 'PATCH',
         params: { id: 'r1' },
-        headers: { authorization: 'Bearer dobry-token' },
+        headers: BEARER,
         body: { name: 'Test', is_active: 'yes' },
       })
     );

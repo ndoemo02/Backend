@@ -10,21 +10,38 @@
  *
  * Auth: Authorization: Bearer <Supabase JWT>, weryfikowany przez
  * `authenticateOwner`/`requireOwner` (../_auth.js) -> `supabase.auth.getUser(token)`.
- * `user.id` zwrocony stamtad jest JEDYNYM zrodlem ownership - endpoint nie
- * przyjmuje `owner_id` z query/body/params jako dowodu wlasnosci.
+ * `user.id` zwrocony stamtad jest JEDYNYM zrodlem tozsamosci - endpoint nie
+ * przyjmuje zadnego identyfikatora wlasciciela z query/body/params jako dowodu.
  *
- * Query wykonywane na service_role (`privateServerClient`), bo po Stage10
- * kolumna `owner_id` nie jest w grancie anon/authenticated
- * (supabase/migrations/20260808000400_stage10_public_catalog_rls.sql) - to
- * jest wlasnie powod, dla ktorego ten endpoint istnieje zamiast bezposredniego
- * zapytania z przegladarki.
+ * MODEL WLASNOSCI (przepiete 2026-08-19)
+ * ---------------------------------------------------------------------------
+ * Lokal nalezy do FIRMY (`restaurants.business_account_id`), nie do osoby.
+ * Osoba jest zwiazana z firma przez `business_members`, a jej rola niesie
+ * ZDOLNOSCI (`business_roles.capabilities`). Ten endpoint wymaga
+ * `venue.manage` - lustro polityk `restaurants_business_read`
+ * i `restaurants_business_update` (20260818000400_newbase_rls.sql:165-172).
+ * Role `staff` i `reception` tej zdolnosci nie maja i panelu lokalu nie widza.
  *
- * Detail (:id) i PATCH (:id) LACZA `id` i `owner_id` w JEDNYM query (nie
- * dwoma osobnymi krokami "pobierz/zmien po id" + "sprawdz ownership w JS")
- * i zwracaja 404 zarowno dla nieistniejacego id, jak i dla cudzej restauracji -
+ * Zasieg jest ZBIOREM firm, nie pojedyncza firma: jedna osoba moze nalezec do
+ * wielu kont biznesowych.
+ *
+ * Query wykonywane na service_role (`privateServerClient`), ktory RLS OMIJA.
+ * Polityki nowej bazy czytaja `auth.uid()`, ktorego pod service_role nie ma -
+ * NIE CHRONIA tego pliku. Filtr `.in('business_account_id', …)` ponizej jest
+ * jedynym mechanizmem ochrony. To jest tez powod, dla ktorego ten endpoint
+ * istnieje zamiast bezposredniego zapytania z przegladarki: kolumna
+ * `business_account_id` nie jest w grancie anon/authenticated
+ * (20260818000400_newbase_rls.sql:115-120).
+ *
+ * Detail (:id) i PATCH (:id) LACZA `id` i zasieg firmowy w JEDNYM query (nie
+ * dwoma osobnymi krokami "pobierz/zmien po id" + "sprawdz zasieg w JS")
+ * i zwracaja 404 zarowno dla nieistniejacego id, jak i dla cudzego lokalu -
  * rozne statusy ujawnialyby przez efekt uboczny, ze cudze id w ogole istnieje
- * w bazie. Dla PATCH: 0 zaktualizowanych wierszy (bo brak id LUB owner_id sie
- * nie zgadza) jest nieodrozniane od "nie istnieje" - identycznie jak w GET.
+ * w bazie. Dla PATCH: 0 zaktualizowanych wierszy (bo brak id LUB lokal poza
+ * zasiegiem) jest nieodrozniane od "nie istnieje" - identycznie jak w GET.
+ *
+ * Pusty zasieg (brak czlonkostwa albo rola bez `venue.manage`) konczy obsluge
+ * ZANIM powstanie jakikolwiek filtr - tabela `restaurants` nie jest pytana.
  *
  * WRITE menu_items_v2 - patrz api/owner/restaurantMenu.js. RestaurantManager.jsx
  * (D3) jest przepiety z bezposrednich zapisow Supabase na oba te pliki.
@@ -32,7 +49,12 @@
  */
 import { requireOwner } from '../_auth.js';
 import { supabase } from '../_supabase.js';
-import { buildAllowlistedPatch } from './_helpers.js';
+import {
+  buildAllowlistedPatch,
+  getCapableAccountIds,
+  getScopedRestaurant,
+  CAPABILITY_VENUE_MANAGE,
+} from './_helpers.js';
 
 const LIST_FIELDS = 'id,name,city';
 
@@ -93,15 +115,23 @@ export default async function handler(req, res) {
       if (!restaurantId) {
         return res.status(400).json({ ok: false, error: 'missing_id' });
       }
+      // Ksztalt patcha sprawdzany PRZED dotknieciem bazy - zle sformowany
+      // request nie generuje ruchu ani nie ujawnia niczego o zasiegu.
       const patch = sanitizeRestaurantPatch(req.body);
       if (Object.keys(patch).length === 0) {
         return res.status(400).json({ ok: false, error: 'empty_patch' });
       }
+
+      const accountIds = await getCapableAccountIds(supabase, auth.userId, CAPABILITY_VENUE_MANAGE);
+      if (accountIds.length === 0) {
+        return res.status(404).json({ ok: false, error: 'not_found' });
+      }
+
       const { data, error } = await supabase
         .from('restaurants')
         .update(patch)
         .eq('id', restaurantId)
-        .eq('owner_id', auth.userId)
+        .in('business_account_id', accountIds)
         .select(DETAIL_FIELDS)
         .maybeSingle();
       if (error) throw error;
@@ -112,23 +142,29 @@ export default async function handler(req, res) {
     }
 
     if (!restaurantId) {
+      const accountIds = await getCapableAccountIds(supabase, auth.userId, CAPABILITY_VENUE_MANAGE);
+      // Brak zasiegu to pusta lista, nie blad: uzytkownik bez czlonkostwa
+      // biznesowego jest zwyklym klientem, a nie kims, kto zrobil cos zlego.
+      if (accountIds.length === 0) {
+        return res.status(200).json({ ok: true, data: [] });
+      }
+
       const { data, error } = await supabase
         .from('restaurants')
         .select(LIST_FIELDS)
-        .eq('owner_id', auth.userId)
+        .in('business_account_id', accountIds)
         .order('name');
       if (error) throw error;
       return res.status(200).json({ ok: true, data: data || [] });
     }
 
-    const { data, error } = await supabase
-      .from('restaurants')
-      .select(DETAIL_FIELDS)
-      .eq('id', restaurantId)
-      .eq('owner_id', auth.userId)
-      .maybeSingle();
-    if (error) throw error;
-
+    const data = await getScopedRestaurant(
+      supabase,
+      auth.userId,
+      restaurantId,
+      CAPABILITY_VENUE_MANAGE,
+      DETAIL_FIELDS
+    );
     if (!data) {
       return res.status(404).json({ ok: false, error: 'not_found' });
     }

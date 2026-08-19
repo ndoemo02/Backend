@@ -14,19 +14,28 @@
  * Auth identycznie jak restaurants.js: Bearer Supabase JWT -> requireOwner ->
  * auth.userId jest jedynym zrodlem tozsamosci.
  *
- * Ownership restauracji jest sprawdzane PRZED kazda operacja na menu_items_v2
- * (getOwnedRestaurant, ../_helpers.js) - menu_items_v2 nie ma wlasnej kolumny
- * owner_id (patrz GRANT SELECT w
- * supabase/migrations/20260808000400_stage10_public_catalog_rls.sql:106-109),
- * wiec wlasnosc pozycji menu jest zawsze tranzytywna przez restaurant_id.
- * Dla PATCH/DELETE pojedynczej pozycji ownership jest wymuszany DWUWARSTWOWO:
- * (1) restauracja :restaurantId nalezy do wywolujacego, (2) sam update/delete
+ * ZDOLNOSC: ten plik wymaga `menu.manage`, a NIE `venue.manage` - lustro
+ * polityki `menu_business_read` (20260818000400_newbase_rls.sql:181-184).
+ * Rozdzial jest celowy i jest jedyna roznica wzgledem restaurants.js: rola
+ * moze dostac prawo do karty bez prawa do edycji samego lokalu. Rozszerzenie
+ * o taka role to INSERT do `business_roles`, nie zmiana tego pliku.
+ *
+ * Zasieg firmowy jest sprawdzany PRZED kazda operacja na menu_items_v2
+ * (getScopedRestaurant, ../_helpers.js) - menu_items_v2 nie ma wlasnej kolumny
+ * wlasnosci (patrz GRANT SELECT w
+ * supabase/migrations/20260818000400_newbase_rls.sql:124-129), wiec
+ * przynaleznosc pozycji menu jest zawsze tranzytywna przez restaurant_id.
+ * Dla PATCH/DELETE pojedynczej pozycji jest to wymuszane DWUWARSTWOWO:
+ * (1) lokal :restaurantId lezy w zasiegu wywolujacego, (2) sam update/delete
  * ma `.eq('id', itemId).eq('restaurant_id', restaurantId)` w tym samym query -
  * item z innej restauracji nigdy nie zostanie trafiony, nawet gdyby jego `id`
  * bylo znane atakujacemu (IDOR).
  *
+ * Uwaga jak w restaurants.js: service_role OMIJA RLS, wiec polityki nowej bazy
+ * nie chronia tego pliku. Bramka zasiegu w kodzie jest jedynym mechanizmem.
+ *
  * `restaurant_id` NIGDY nie jest czytane z req.body przy POST - zawsze z URL
- * param, po weryfikacji ownership. Klient nie moze skierowac inserta do cudzej
+ * param, po weryfikacji zasiegu. Klient nie moze skierowac inserta do cudzej
  * restauracji nawet podajac w body inny restaurant_id (pole nie jest w
  * allowliscie insertu, wiec generator patcha go w ogole nie widzi).
  *
@@ -40,7 +49,7 @@
  */
 import { requireOwner } from '../_auth.js';
 import { supabase } from '../_supabase.js';
-import { getOwnedRestaurant, buildAllowlistedPatch } from './_helpers.js';
+import { getScopedRestaurant, buildAllowlistedPatch, CAPABILITY_MENU_MANAGE } from './_helpers.js';
 
 /** Dokladnie kolumny, ktorych uzywa MenuTab (RestaurantManager.jsx render + reload). */
 const MENU_FIELDS = 'id,name,price_pln,description,category,available,image_url,section_order';
@@ -107,8 +116,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    const owned = await getOwnedRestaurant(supabase, auth.userId, restaurantId);
-    if (!owned) {
+    const scoped = await getScopedRestaurant(
+      supabase,
+      auth.userId,
+      restaurantId,
+      CAPABILITY_MENU_MANAGE
+    );
+    if (!scoped) {
       return res.status(404).json({ ok: false, error: 'not_found' });
     }
 
