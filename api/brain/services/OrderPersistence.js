@@ -99,8 +99,17 @@ export async function persistOrderToDB(sessionId, session, options = {}) {
             total_price: totalPLN, // PLN (float) - standard dla Dashboardów
 
             // Status
-            // Zmieniamy na 'confirmed', ponieważ Voice Flow v2 zapisuje zamówienie
-            // JEDYNIE gdy intencja 'confirm_order' została przetworzona przez Brain.
+            // Zmieniamy na 'confirmed', poniewaz Voice Flow v2 zapisuje zamowienie
+            // JEDYNIE gdy intencja 'confirm_order' zostala przetworzona przez Brain.
+            //
+            // UWAGA PRZED ODBLOKOWANIEM TEJ SCIEZKI (P4): po nowej bazie
+            // 'confirmed' znaczy "klient zaplacil", a nie "klient potwierdzil
+            // tresc zamowienia" - to drugie wyraza 'pending' plus zamkniecie
+            // sesji live. Tu zamowienie powstaje PRZED platnoscia, wiec zapis
+            // 'confirmed' oznaczylby je jako oplacone i ukryl przycisk platnosci
+            // (frontend: src/lib/orderPaymentState.ts). Dzis nieszkodliwe, bo
+            // confirmHandler tej funkcji nie wola - stan zamrozony testem
+            // api/brain/tests/orderPersistence.antiDuplicate.test.js.
             status: 'confirmed',
 
             // Timestamps

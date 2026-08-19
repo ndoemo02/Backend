@@ -39,9 +39,14 @@ export default async function finalizeOrder(req, res) {
     }
 
     // ── 2. Update order status to confirmed ──
+    // status ORAZ confirmed_at w JEDNYM update. Kolumna confirmed_at jest
+    // nullowalna, wiec schemat nie wymusi jej wypelnienia - regula zyje w kodzie
+    // (20260818000300_newbase_catalog_orders.sql:141). Sam status zostawialby
+    // ja pusta na zawsze, co potwierdzily 140 zamowien w starej bazie.
+    const confirmedAt = new Date().toISOString();
     const { error: updateErr } = await supabase
       .from('orders')
-      .update({ status: 'confirmed' })
+      .update({ status: 'confirmed', confirmed_at: confirmedAt })
       .eq('id', order_id);
 
     if (updateErr) {
@@ -49,7 +54,7 @@ export default async function finalizeOrder(req, res) {
       return res.status(500).json({ ok: false, error: 'Błąd aktualizacji zamówienia' });
     }
 
-    console.log(`[FINALIZE_ORDER] Order ${order_id} status → confirmed`);
+    console.log(`[FINALIZE_ORDER] Order ${order_id} status → confirmed, confirmed_at=${confirmedAt}`);
 
     // ── 3. Clean backend session ──
     let newSessionId = null;
@@ -71,6 +76,7 @@ export default async function finalizeOrder(req, res) {
       ok: true,
       order_id,
       status: 'confirmed',
+      confirmed_at: confirmedAt,
       newSessionId,
     });
   } catch (err) {
