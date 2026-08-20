@@ -439,6 +439,28 @@ app.delete('/api/owner/restaurants/:restaurantId/menu/:itemId', async (req, res)
   }
 });
 
+// === OWNER ORDERS (zaplecze KDS) ===
+// Zasieg firmowy przez `business_members` -> zdolnosci `orders.read`
+// i `orders.update_status`. Frontend (`lib/kdsApi.ts`) wolal te adresy od
+// dawna, ale handlera nie bylo — KDS dostawal 404 (CLAUDE.md §10, sesja 14).
+app.get('/api/owner/orders', async (req, res) => {
+  try {
+    const mod = await import('./owner/orders.js');
+    return mod.default(req, res);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.patch('/api/owner/orders/:id', async (req, res) => {
+  try {
+    const mod = await import('./owner/orders.js');
+    return mod.default(req, res);
+  } catch (err) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
 // === RESTAURANT RESOLVER (public: name/alias -> {id,name}) ===
 app.get('/api/restaurants/resolve', async (req, res) => {
   try {
