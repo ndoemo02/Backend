@@ -16,7 +16,6 @@ import { OptionHandler } from '../domains/food/optionHandler.js';
 import { ConfirmAddToCartHandler } from '../domains/food/confirmAddToCartHandler.js';
 import { BrainLogger } from '../../../utils/logger.js';
 import { playTTS, stylizeWithGPT4o } from '../tts/ttsClient.js';
-import { EventLogger } from '../services/EventLogger.js';
 import { getConfig } from '../../config/configService.js';
 import {
     checkRequiredState,
@@ -42,7 +41,6 @@ import { shouldRoutePendingDiscoveryClarification } from '../discovery/activeDis
 
 // Reco V1 â€” rule-based recommendation layer (no extra DB calls)
 import { getRecommendations } from '../recommendations/recoEngine.js';
-import { recoTelemetry } from '../recommendations/recoTelemetry.js';
 
 //   Passive Memory Layer (read-only context, no FSM impact)
 import { initTurnBuffer, pushUserTurn, pushAssistantTurn } from '../memory/TurnBuffer.js';
@@ -549,13 +547,6 @@ export class BrainPipeline {
         const requestId = `${sessionId.substring(0, 8)}-${startTime.toString(36)}`;
         devLog(`  [Pipeline] START ${requestId} | session=${sessionId} | text="${text.trim().substring(0, 60)}" | mode=${ENGINE_MODE}`);
 
-        // --- Event Logging: Received (dev only) ---
-        if (EXPERT_MODE && !IS_SHADOW) {
-            const initialWorkflowStep = this._mapWorkflowStep('request_received');
-            EventLogger.logConversation(sessionId).catch(() => { });
-            EventLogger.logEvent(sessionId, 'request_received', { text }, null, initialWorkflowStep).catch(() => { });
-        }
-
         // 
         // CONVERSATION ISOLATION: Auto-create new session if previous was closed
         // 
@@ -654,15 +645,6 @@ export class BrainPipeline {
 
             if (navResult.handled) {
                 BrainLogger.pipeline(` DIALOG NAV: ${navResult.response.intent} - skipping NLU/FSM`);
-
-                // --- Event Logging: Dialog Navigation ---
-                if (EXPERT_MODE && !IS_SHADOW) {
-                    EventLogger.logEvent(activeSessionId, 'dialog_nav', {
-                        navIntent: navResult.response.intent,
-                        reply: navResult.response.reply?.substring(0, 100),
-                        stopTTS: navResult.response.stopTTS
-                    }, null, 'nav').catch(() => { });
-                }
 
                 // Apply context updates if any (e.g., dialogStackIndex)
                 if (navResult.response.contextUpdates && !IS_SHADOW) {
@@ -884,22 +866,6 @@ export class BrainPipeline {
 
                 if (sealing.qtyRejectedReason) {
                     context.trace.push(`qty_rejected:${sealing.qtyRejectedReason}`);
-
-                    if (!IS_SHADOW) {
-                        EventLogger.logEvent(
-                            activeSessionId,
-                            'qty_rejected_reason',
-                            {
-                                reason: sealing.qtyRejectedReason,
-                                quantityConfidence: sealing.quantityConfidence,
-                                extractedQuantity,
-                                text,
-                                intent: intentResult?.intent,
-                            },
-                            null,
-                            'nlu'
-                        ).catch(() => { });
-                    }
                 }
 
                 if (intentResult?.entities?.items && Array.isArray(intentResult.entities.items)) {
@@ -1254,20 +1220,6 @@ if (intentResult?.intent === 'UNKNOWN_INTENT') {
 
             let { intent, domain, confidence, source, entities } = intentResult;
 
-            // --- Event Logging: NLU Result ---
-            if (EXPERT_MODE && !IS_SHADOW) {
-                const entitiesResolved = entities && typeof entities === 'object'
-                    ? Object.entries(entities)
-                        .filter(([, value]) => value !== null && value !== undefined && value !== '')
-                        .map(([key, value]) => ({ key, value }))
-                    : [];
-                EventLogger.logEvent(activeSessionId, 'nlu_result', {
-                    intent, domain, confidence, source,
-                    entities: entities ? Object.keys(entities) : [],
-                    entities_resolved: entitiesResolved,
-                }, confidence, 'nlu').catch(() => { });
-            }
-
             //   Record user turn (passive memory, no FSM impact)
             if (!IS_SHADOW) {
                 pushUserTurn(sessionContext, text, { intent, entities });
@@ -1486,15 +1438,6 @@ if (intentResult?.intent === 'UNKNOWN_INTENT') {
                 // Standard fallback for other cases
                 const fallbackIntent = getFallbackIntent(originalIntent);
                 BrainLogger.pipeline(` ICM GATE: ${originalIntent} blocked (${stateCheck.reason}). Fallback   ${fallbackIntent}`);
-
-                // --- Event Logging: ICM Blocked ---
-                if (EXPERT_MODE && !IS_SHADOW) {
-                    EventLogger.logEvent(activeSessionId, 'icm_blocked', {
-                        originalIntent,
-                        blockedReason: stateCheck.reason,
-                        fallbackIntent
-                    }, null, 'icm').catch(() => { });
-                }
 
                 intent = fallbackIntent;
                 domain = getIntentDomain(fallbackIntent) || 'food';
@@ -2182,15 +2125,6 @@ if (intentResult?.intent === 'UNKNOWN_INTENT') {
 
                 BrainLogger.pipeline(` SurfaceRenderer: ${detectedSurface.key}   "${finalReply.substring(0, 50)}..."`);
 
-                // --- Event Logging: Surface Rendered ---
-                if (EXPERT_MODE && !IS_SHADOW) {
-                    EventLogger.logEvent(activeSessionId, 'surface_rendered', {
-                        surfaceKey: detectedSurface.key,
-                        replyPreview: finalReply?.substring(0, 100),
-                        usedPhraseGenerator: finalReply !== surfaceResult.reply
-                    }, null, 'dialog').catch(() => { });
-                }
-
                 // 
                 // DIALOG STACK: Push rendered surface for BACK/REPEAT navigation
                 // 
@@ -2447,11 +2381,6 @@ if (intentResult?.intent === 'UNKNOWN_INTENT') {
                 // pipeline only provides a safe default
                 response.meta.menuBehavior ??= 'preserve';
 
-                EventLogger.logEvent(activeSessionId, 'cart_updated', {
-                    intent, totalItems, totalPrice, cartVersion,
-                    detectedBy: cartActuallyChanged ? 'snapshot_diff' : 'whitelist'
-                }, null, 'cart').catch(() => {});
-
                 context.trace.push(`cart_event:v=${cartVersion}:items=${totalItems}:price=${totalPrice}:by=${cartActuallyChanged ? 'diff' : 'wl'}`);
             }
             context.cartEventTrace = cartEventTrace;
@@ -2500,10 +2429,6 @@ if (intentResult?.intent === 'UNKNOWN_INTENT') {
 
                 // After order completion, UI should close menu
                 response.meta.menuBehavior = 'forceClose';
-
-                EventLogger.logEvent(activeSessionId, 'order_completed', {
-                    intent, total: completedTotal
-                }, null, 'order').catch(() => {});
 
                 // Lifecycle reset: keep cart, but reset restaurant/menu/order mode context.
                 updateSession(activeSessionId, {
@@ -2557,9 +2482,6 @@ if (intentResult?.intent === 'UNKNOWN_INTENT') {
                         targetItems,
                         topN: 5,
                     });
-                    if (response.recommendations.length > 0) {
-                        recoTelemetry.logShown(activeSessionId, response.recommendations).catch(() => {});
-                    }
                 } catch (e) {
                     if (process.env.RECO_V1_DEBUG === 'true') {
                         console.warn('[RECO_V1] scoring error:', e.message);
@@ -2576,23 +2498,6 @@ if (intentResult?.intent === 'UNKNOWN_INTENT') {
             if (EXPERT_MODE) {
                 const turnId = `turn_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
                 response.turn_id = turnId;
-                // Expert mode allows background analytics
-                const wStep = this._mapWorkflowStep(intent);
-                EventLogger.logEvent(sessionId, 'intent_resolved', {
-                    intent, reply: speechText, confidence, source, domain: context.domain
-                }, confidence, wStep).catch(() => { });
-
-                // --- Event Logging: Response Sent ---
-                EventLogger.logEvent(sessionId, 'response_sent', {
-                    intent,
-                    replyPreview: speechText?.substring(0, 150),
-                    latency_ms: totalLatency,
-                    has_audio: !!audioContent
-                }, null, 'response').catch(() => { });
-
-                this.persistAnalytics({
-                    intent, reply: speechText, durationMs: totalLatency, confidence, ttsMs
-                }).catch(() => { });
             }
 
             //   Record assistant turn + cache entities (passive memory)
@@ -2618,26 +2523,6 @@ if (intentResult?.intent === 'UNKNOWN_INTENT') {
             BrainLogger.pipeline('Error:', error.message);
             if (!IS_SHADOW) BrainPipeline._inFlight.delete(inflightKey);
             return this.createErrorResponse('internal_error', 'Coś poszło nie tak w moich obwodach.');
-        }
-    }
-
-    _mapWorkflowStep(intentName) {
-        if (intentName === 'confirm_order') return 'confirm_order';
-        return intentName;
-    }
-
-    async persistAnalytics(p) {
-        if (process.env.NODE_ENV === 'test') return;
-        try {
-            await supabase.from('amber_intents').insert({
-                intent: p.intent,
-                reply: typeof p.reply === 'string' ? p.reply.slice(0, 1000) : JSON.stringify(p.reply).slice(0, 1000),
-                duration_ms: p.durationMs,
-                confidence: p.confidence || 1.0,
-                tts_ms: p.ttsMs || 0
-            });
-        } catch (e) {
-            // Ignore missing table
         }
     }
 

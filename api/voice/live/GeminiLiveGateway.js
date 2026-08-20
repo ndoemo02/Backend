@@ -9,10 +9,8 @@ import {
     liveMetricsSessionClose,
     liveMetricsSessionStart,
 } from './liveMetrics.js';
-import { buildLiveArgsSummary, logLiveEvent } from './liveTraceEvents.js';
 import { buildInitialTurnTrace } from './liveTurnLedger.js';
 import { updateSession } from '../../brain/session/sessionStore.js';
-import supabase from '../../brain/supabaseClient.js';
 import {
     summarizeLiveToolResult,
     validateLiveOrigin,
@@ -295,44 +293,11 @@ export class GeminiLiveGateway {
                 console.log(`[LiveDiag-BE] WS tool_call received: ${toolName} req:${requestId} session:${sessionId} turn:${turnId}`);
                 console.log(`[InteractionBridge] toolcall_received turn_id=${turnId} session_id=${sessionId} tool=${toolName}`);
 
-                if (transcriptFinal) {
-                    logLiveEvent({
-                        sessionId,
-                        eventType: 'live_transcript_final',
-                        payload: {
-                            source: 'live',
-                            session_id: sessionId,
-                            turn_id: turnId,
-                            text: transcriptFinal,
-                            lang: parsed.lang || null,
-                            asr_confidence: parsed.asr_confidence ?? null,
-                            ts_client: parsed.ts_client || null,
-                        },
-                        eventStatus: 'success',
-                        workflowStep: 'live_transcript',
-                    });
-                }
 
                 const validation = validateAndSanitize(toolName, parsed.args || {});
                 if (!validation.valid) {
                     console.warn(`[LiveDiag-BE] Validation failed: ${toolName} error:${validation.error} field:${validation.field}`);
                     liveLog.toolFail({ sessionId, toolName, requestId, error: validation.error, field: validation.field });
-                    logLiveEvent({
-                        sessionId,
-                        eventType: 'live_tool_error',
-                        payload: {
-                            source: 'live',
-                            session_id: sessionId,
-                            turn_id: turnId,
-                            request_id: requestId,
-                            tool_name: toolName,
-                            error_code: validation.error || 'validation_error',
-                            error_message: validation.error || 'validation_error',
-                            recoverable: true,
-                        },
-                        eventStatus: 'error',
-                        workflowStep: 'live_tool',
-                    });
                     socket.send(JSON.stringify({
                         type: 'tool_error',
                         request_id: requestId,
@@ -361,21 +326,6 @@ export class GeminiLiveGateway {
                 }
 
                 liveLog.toolCall({ sessionId, toolName, requestId });
-                logLiveEvent({
-                    sessionId,
-                    eventType: 'live_tool_call',
-                    payload: {
-                        source: 'live',
-                        session_id: sessionId,
-                        turn_id: turnId,
-                        request_id: requestId,
-                        tool_name: toolName,
-                        args_summary: buildLiveArgsSummary(toolName, validation.sanitized),
-                        ts_server: new Date().toISOString(),
-                    },
-                    eventStatus: 'success',
-                    workflowStep: 'live_tool',
-                });
 
                 try {
                     const result = await withTimeout(
@@ -400,25 +350,6 @@ export class GeminiLiveGateway {
                     const summary = summarizeLiveToolResult(result, toolName);
                     console.log(`[LIVE_TOOL_SUMMARY] session=${sessionId} tool=${toolName} ok=${result.ok !== false} intent=${summary.intent} restaurantLocked=${summary.restaurantLocked} candidateCount=${summary.candidateCount ?? 'n/a'} topMatch=${summary.topMatch ?? 'n/a'} score=${summary.score ?? 'n/a'}`);
 
-                    // Loguj intencję do amber_intents (zasila panel "Ostatnie interakcje Amber")
-                    {
-                        const intentLogged = result?.response?.intent || result?.response?.meta?.liveTool?.runtimeIntent || toolName;
-                        const confidence = result?.response?.meta?.intentVerification?.confidence ?? (result.ok ? 1 : 0);
-                        const blocked = result?.response?.meta?.liveTool?.blocked ?? false;
-                        const latencyLogged = toNumber(result?.response?.timings?.durationMs ?? result?.response?.meta?.liveTool?.totalLatency, null);
-                        supabase
-                            .from('amber_intents')
-                            .insert({
-                                intent: intentLogged,
-                                confidence,
-                                reply: String(reply).slice(0, 120),
-                                duration_ms: latencyLogged,
-                                fallback: blocked,
-                                created_at: new Date().toISOString(),
-                            })
-                            .then(() => {})
-                            .catch(() => {}); // fire-and-forget, silent fail
-                    }
 
                     const liveMeta = result?.response?.meta?.liveTool || {};
                     const actionSummary = buildActionSummary({ toolName, response: result.response });
@@ -426,27 +357,6 @@ export class GeminiLiveGateway {
                     const cartBefore = liveMeta.cartBefore || null;
                     const cartAfter = liveMeta.cartAfter || null;
 
-                    logLiveEvent({
-                        sessionId,
-                        eventType: 'live_tool_result',
-                        payload: {
-                            source: 'live',
-                            session_id: sessionId,
-                            turn_id: liveMeta.turnId || turnId,
-                            request_id: requestId,
-                            tool_name: toolName,
-                            ok: result.ok !== false,
-                            intent: result?.response?.intent || liveMeta.runtimeIntent || null,
-                            entities_resolved: Array.isArray(liveMeta.entitiesResolved) ? liveMeta.entitiesResolved : [],
-                            action_summary: actionSummary,
-                            assistant_text: assistantText || null,
-                            cart_before: cartBefore ? { items: toNumber(cartBefore.items), total: toNumber(cartBefore.total) } : null,
-                            cart_after: cartAfter ? { items: toNumber(cartAfter.items), total: toNumber(cartAfter.total) } : null,
-                            latency_ms: toNumber(result?.response?.timings?.durationMs, null) ?? null,
-                        },
-                        eventStatus: result.ok !== false ? 'success' : 'error',
-                        workflowStep: 'live_tool',
-                    });
 
                     socket.send(JSON.stringify({
                         type: 'tool_result',
@@ -470,38 +380,6 @@ export class GeminiLiveGateway {
                     const errMsg = error?.message || 'live_gateway_error';
                     console.error(`[LiveDiag-BE] ToolRouter threw: ${toolName} error:${errMsg}`);
                     liveLog.toolFail({ sessionId, toolName, requestId, error: errMsg });
-                    if (errMsg === 'tool_timeout') {
-                        logLiveEvent({
-                            sessionId,
-                            eventType: 'live_turn_timeout',
-                            payload: {
-                                source: 'live',
-                                session_id: sessionId,
-                                turn_id: turnId,
-                                request_id: requestId,
-                                timeout_ms: TOOL_EXECUTION_TIMEOUT_MS,
-                            },
-                            eventStatus: 'error',
-                            workflowStep: 'live_tool',
-                        });
-                    }
-                    logLiveEvent({
-                        sessionId,
-                        eventType: 'live_tool_error',
-                        payload: {
-                            source: 'live',
-                            session_id: sessionId,
-                            turn_id: turnId,
-                            request_id: requestId,
-                            tool_name: toolName,
-                            error_code: errMsg,
-                            error_message: errMsg,
-                            recoverable: true,
-                            latency_ms: TOOL_EXECUTION_TIMEOUT_MS,
-                        },
-                        eventStatus: 'error',
-                        workflowStep: 'live_tool',
-                    });
                     socket.send(JSON.stringify({
                         type: 'tool_error',
                         request_id: requestId,

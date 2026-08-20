@@ -32,16 +32,6 @@ export function registerLiveRoutes(app) {
         }
     });
 
-    // ── Live performance instrumentation endpoint ──
-    app.post('/api/live/perf', async (req, res) => {
-      try {
-        const { default: perfHandler } = await import('../../../api/live/perf.js');
-        await perfHandler(req, res);
-      } catch (e) {
-        res.status(500).json({ ok: false, error: 'perf_handler_unavailable' });
-      }
-    });
-
     app.get('/api/voice/live/runtime-config', async (req, res) => {
         const fallbackModel =
             process.env.GEMINI_LIVE_MODEL ||

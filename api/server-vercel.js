@@ -181,14 +181,14 @@ async function runStartupHealthReport() {
 // Przed zmiana ten modul budowal JEDEN klient w kolejnosci
 //   SUPABASE_ANON_KEY || SUPABASE_KEY || SUPABASE_SERVICE_ROLE_KEY
 // czyli anon-first, i uzywal go zarowno do katalogu, jak i do orders oraz
-// amber_intents. Rownolegle tworzyl `supabaseAdmin`, ktorego NIC w repo nie
+// telemetrii. Rownolegle tworzyl `supabaseAdmin`, ktorego NIC w repo nie
 // importowalo - martwy kod. Blok catch podmienial klienta na zaslepke
 // zwracajaca pusta tablice, wiec awaria konfiguracji wygladala jak
 // "brak danych" zamiast jak blad.
 //
 // Teraz:
 //   publicCatalogClient  (klucz anon)   -> wylacznie restaurants / menu
-//   privateServerClient  (service_role) -> orders, RPC, amber_intents
+//   privateServerClient  (service_role) -> orders, RPC
 // Zaslepki nie ma: blad konfiguracji ma byc bledem, nie pusta lista.
 // ===========================================================================
 
@@ -320,55 +320,6 @@ app.get('/api/logs', async (req, res) => {
 
 // --- Diagnostic test endpoints (Supabase / config visibility) ---
 
-
-// --- Hooks ---
-app.post('/api/hooks/amber-intent', async (req, res) => {
-  try { const mod = await import('./hooks/amber-intent.js'); return mod.default(req, res); }
-  catch (err) { res.status(500).json({ ok: false, error: err.message }); }
-});
-
-// --- SSE: Amber live metrics (latest NLU/DB/TTS)
-app.get('/api/amber/live', async (req, res) => {
-  try {
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.flushHeaders?.();
-
-    let closed = false;
-    req.on('close', () => { closed = true; });
-
-    const push = async () => {
-      if (closed) return;
-      try {
-        // amber_intents to klaster runtime/log (SS7) - nigdy klient anon.
-        const { data } = await privateServerClient
-          .from('amber_intents')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(1);
-        if (data && data[0]) {
-          const r = data[0];
-          const payload = {
-            intent: r.intent,
-            nlu_ms: r.nlu_ms ?? r.nluMs ?? 0,
-            db_ms: r.db_ms ?? r.dbMs ?? 0,
-            tts_ms: r.tts_ms ?? r.ttsMs ?? 0,
-            duration_ms: r.duration_ms ?? r.durationMs ?? 0,
-            created_at: r.created_at || r.timestamp
-          };
-          res.write(`data: ${JSON.stringify(payload)}\n\n`);
-        }
-      } catch { }
-    };
-
-    const timer = setInterval(push, 2000);
-    push();
-    req.on('close', () => clearInterval(timer));
-  } catch (err) {
-    res.status(500).json({ ok: false, error: err.message });
-  }
-});
 
 // Brain stats (lekki endpoint do testów)
 app.get('/api/brain/stats', async (req, res) => {

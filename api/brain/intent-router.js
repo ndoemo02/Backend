@@ -1292,23 +1292,13 @@ export async function detectIntent(text, session = null, entities = {}) {
       'dodaj do zamowienia', 'zloz', 'wybieram', 'biore', 'wezme', 'chce', 'chcę'
     ];
 
-    // Pobierz nauczone frazy z bazy
-    const { data: learned } = await supabase
-      .from('phrases')
-      .select('text, intent');
-
-    const learnedNearby = learned?.filter(p => p.intent === 'find_nearby') || [];
-    const learnedMenu = learned?.filter(p => p.intent === 'menu_request') || [];
-    const learnedOrder = learned?.filter(p => p.intent === 'create_order') || [];
-
-    const dynamicNearbyKeywords = learnedNearby.map(p => normalizeTxt(p.text));
-    const dynamicMenuKeywords = learnedMenu.map(p => normalizeTxt(p.text));
-    const dynamicOrderKeywords = learnedOrder.map(p => normalizeTxt(p.text));
-
-    // Deduplikacja — usuń duplikaty między bazowymi a dynamicznymi
-    const allNearbyKeywords = [...new Set([...findNearbyKeywords, ...dynamicNearbyKeywords])];
-    const allMenuKeywords = [...new Set([...menuKeywords, ...dynamicMenuKeywords])];
-    const allOrderKeywords = [...new Set([...orderKeywords, ...dynamicOrderKeywords])];
+    // Korpus slow kluczowych jest statyczny. Warstwa "nauczonych fraz" z tabeli
+    // `phrases` zostala wycieta w P0.5-D: zapis wstawial zawsze intent='none',
+    // odczyt czytal wylacznie intent<>'none', a promocji nie bylo nigdzie w repo.
+    // Realny wklad do NLU wynosil zero.
+    const allNearbyKeywords = [...new Set(findNearbyKeywords)];
+    const allMenuKeywords = [...new Set(menuKeywords)];
+    const allOrderKeywords = [...new Set(orderKeywords)];
 
     // ?? KROK 4: Jeśli w early dish detection znaleziono restaurację, ale nie znaleziono dań
     // to zwróć odpowiedni intent na podstawie słów kluczowych
@@ -1544,13 +1534,6 @@ export async function detectIntent(text, session = null, entities = {}) {
         confidence: 0.8
       });
       return { intent: 'find_nearby', restaurant: null };
-    }
-
-    // Jeśli Amber nie zna frazy — zapisuje ją do bazy do przyszłego uczenia
-    try {
-      await supabase.from('phrases').insert({ text: text, intent: 'none' });
-    } catch (err) {
-      console.warn('?? Phrase insert skipped:', err.message);
     }
 
     // Bezpieczny fallback - zawsze zwróć jakiś intent (NIE 'none')

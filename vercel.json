@@ -40,10 +40,6 @@
     {
       "src": "api/voice/live/openai-session.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "api/live/perf.js",
-      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -82,10 +78,6 @@
     {
       "src": "/api/voice/live/openai-session",
       "dest": "api/voice/live/openai-session.js"
-    },
-    {
-      "src": "/api/live/perf",
-      "dest": "api/live/perf.js"
     },
     {
       "src": "/(.*)",
